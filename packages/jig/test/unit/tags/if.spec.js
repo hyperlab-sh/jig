@@ -121,7 +121,7 @@ test.group('Tags | If ', (group) => {
     }).bind(this)()`)
   })
 
-  test('parse block with arithmatic expression', (assert) => {
+  test('parse block with arithmetic expression', (assert) => {
     const statement = dedent`
     @if(2 + 2)
       <p> It is {{ 2 + 2 }} </p>
@@ -139,7 +139,7 @@ test.group('Tags | If ', (group) => {
     }).bind(this)()`)
   })
 
-  test('parse block with arithmatic and binary expression expression', (assert) => {
+  test('parse block with arithmetic and binary expression expression', (assert) => {
     const statement = dedent`
     @if(2 + 2 === cartTotal)
       <p> Hello {{ cartTotal }} </p>
