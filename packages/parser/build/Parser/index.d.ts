@@ -6,5 +6,7 @@ export default class Parser implements IParser {
     parseStatement(statement: any): any;
     toString(): string;
     toObject(): object[];
+    private normalizeJsArg(arg);
+    private isEscaped(type);
     private parse(cb);
 }

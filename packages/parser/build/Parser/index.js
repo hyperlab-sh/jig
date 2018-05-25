@@ -9,9 +9,11 @@
 */
 Object.defineProperty(exports, "__esModule", { value: true });
 const Tokenizer = require("edge-lexer");
+const Contracts = require("edge-lexer/build/Contracts");
 const acorn = require("acorn");
 const astring_1 = require("astring");
 const EdgeBuffer_1 = require("../EdgeBuffer");
+const utils_1 = require("../utils");
 const Expressions = require("../Expressions");
 class Parser {
     constructor(template, tags) {
@@ -44,6 +46,12 @@ class Parser {
         this.parse((node) => (tokens.push(node)));
         return tokens;
     }
+    normalizeJsArg(arg) {
+        return arg.replace(/^\n|\n$/g, '');
+    }
+    isEscaped(type) {
+        return [Contracts.MustacheType.EMUSTACHE, Contracts.MustacheType.ESMUSTACHE].indexOf(type) > -1;
+    }
     parse(cb) {
         this.tokenizer.parse();
         this.tokenizer.tokens.forEach((token) => {
@@ -55,9 +63,22 @@ class Parser {
                 cb(`'\\n'`);
                 return;
             }
+            if (token.properties.name === Contracts.MustacheType.EMUSTACHE) {
+                cb(`\`{{${token.properties.jsArg}}}\``);
+                return;
+            }
+            if (token.properties.name === Contracts.MustacheType.ESMUSTACHE) {
+                cb(`\`{{{${token.properties.jsArg}}}}\``);
+                return;
+            }
             if (token.type === 'mustache') {
-                const ast = acorn.parse(token.properties.jsArg);
+                const props = token.properties;
+                const ast = acorn.parse(this.normalizeJsArg(props.jsArg));
                 const nodes = ast.body.map((node) => this.parseStatement(node));
+                if (props.name === Contracts.MustacheType.SMUSTACHE) {
+                    cb(utils_1.getCallExpression(nodes));
+                    return;
+                }
                 cb(nodes[0]);
                 return;
             }
