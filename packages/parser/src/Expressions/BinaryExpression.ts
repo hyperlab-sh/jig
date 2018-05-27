@@ -1,3 +1,7 @@
+/**
+ * @module Parser
+ */
+
 export default {
   toStatement (statement, parser) {
     statement.left = parser.parseStatement(statement.left)
