@@ -1,4 +1,4 @@
-const Tokenizer = require('../build/src/Tokenizer').Tokenizer
+const Tokenizer = require('../build/src/Tokenizer/new').Tokenizer
 const Benchmark = require('benchmark')
 const suite = new Benchmark.Suite()
 
@@ -21,7 +21,7 @@ What if we have some tags too?
 @endif
 `
 
-suite.add('Tokenize', function () {
+suite.add('Tokenizer', function () {
   const tokenizer = new Tokenizer(template, {
     if: {
       seekable: true,
