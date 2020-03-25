@@ -14,15 +14,8 @@ export function makeCallableExpression (fnName: string, args: object[]): any {
   return {
     type: 'CallExpression',
     callee: {
-      type: 'MemberExpression',
-      object: {
-        type: 'Identifier',
-        name: 'ctx',
-      },
-      property: {
-        type: 'Identifier',
-        name: fnName,
-      },
+      type: 'Identifier',
+      name: fnName,
     },
     arguments: args,
   }
