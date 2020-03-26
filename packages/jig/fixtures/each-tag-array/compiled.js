@@ -1,22 +1,15 @@
-return (function (template, ctx) {
 let out = "";
-ctx.$lineNumber = 1;
-ctx.$filename = "{{__dirname}}index.edge";
+let $lineNumber = 1;
+let $filename = "{{__dirname}}index.edge";
 try {
 ctx.loop([{
   username: "virk"
-}], function (user, loop) {
-ctx.newFrame();
-ctx.setOnFrame('user', user);
-ctx.setOnFrame('$loop', loop);
-ctx.setOnFrame('key', loop.key);
+}], function (user) {
 out += "  - Hello ";
-ctx.$lineNumber = 2;
-out += `${ctx.escape(ctx.resolve('user').username)}`;
-ctx.removeFrame();
+$lineNumber = 2;
+out += `${ctx.escape(user.username)}`;
 });
 } catch (error) {
-ctx.reThrow(error);
+ctx.reThrow(error, $filename, $lineNumber);
 }
 return out;
-})(template, ctx)
