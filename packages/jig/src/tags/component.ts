@@ -13,7 +13,15 @@ import type { TagToken } from 'edge-lexer/types'
 import { type EdgeBuffer, expressions, type Parser } from 'edge-parser'
 
 import type { TagContract } from '../types.js'
-import { isSubsetOf, unallowedExpression, parseJsArg, StringifiedObject } from '../utils.js'
+import {
+  isSubsetOf,
+  unallowedExpression,
+  parseJsArg,
+  StringifiedObject,
+  computeDedent,
+  dedentRaw,
+  processChildrenDedented,
+} from '../utils.js'
 
 /**
  * A list of allowed expressions for the component name
@@ -227,6 +235,13 @@ export const componentTag: TagContract = {
     let slotsCounter = 0
 
     /**
+     * Compute dedent for main slot content (non-slot children)
+     */
+    const mainSlotChildren = token.children.filter((c) => !lexerUtils.isTag(c, 'slot'))
+    const mainDedent = computeDedent(mainSlotChildren, token.indent)
+    let mainAfterNewline = true
+
+    /**
      * Loop over all the component children
      */
     token.children.forEach((child) => {
@@ -238,9 +253,24 @@ export const componentTag: TagContract = {
          * Ignore first newline inside the unnamed main slot
          */
         if (mainSlot.buffer.size === 0 && child.type === 'newline') {
+          mainAfterNewline = true
           return
         }
+
+        if (child.type === 'newline') {
+          parser.processToken(child, mainSlot.buffer)
+          mainAfterNewline = true
+          return
+        }
+
+        if (child.type === 'raw' && mainAfterNewline && mainDedent > 0) {
+          mainSlot.buffer.outputRaw(dedentRaw(child.value, mainDedent))
+          mainAfterNewline = false
+          return
+        }
+
         parser.processToken(child, mainSlot.buffer)
+        mainAfterNewline = false
         return
       }
 
@@ -278,11 +308,10 @@ export const componentTag: TagContract = {
       }
 
       /**
-       * Self process the slot children.
+       * Self process the slot children with dedentation.
        */
-      child.children.forEach((grandChildren) => {
-        parser.processToken(grandChildren, slots[slotName].buffer)
-      })
+      const slotDedent = computeDedent(child.children, (child as TagToken).indent)
+      processChildrenDedented(parser, slots[slotName].buffer, child.children, slotDedent)
 
       /**
        * Close the frame after process the slot children

@@ -8,12 +8,9 @@
  */
 
 import lodash from '@poppinss/utils/lodash'
-import { htmlSafe } from '../template.js'
-import { stringifyAttributes } from '../utils.js'
 
 /**
- * Representation of component props with ability to serialize
- * them into HTML attributes
+ * Representation of component props
  */
 export class ComponentProps {
   #values: Record<string, any>
@@ -67,26 +64,8 @@ export class ComponentProps {
 
   /**
    * Merge defaults with the props
-   *
-   * - All other attributes will be overwritten when defined in props
-   * - Classes will be merged together.
    */
   merge(values: Record<string, any>) {
-    if (values.class && this.#values['class']) {
-      const classesSet: Set<any> = new Set()
-      ;(Array.isArray(values.class) ? values.class : [values]).forEach((item) => {
-        classesSet.add(item)
-      })
-      ;(Array.isArray(this.#values['class'])
-        ? this.#values['class']
-        : [this.#values['class']]
-      ).forEach((item) => {
-        classesSet.add(item)
-      })
-
-      return new ComponentProps({ ...values, ...this.#values, class: Array.from(classesSet) })
-    }
-
     return new ComponentProps({ ...values, ...this.#values })
   }
 
@@ -108,12 +87,5 @@ export class ComponentProps {
       return this.merge(values)
     }
     return this
-  }
-
-  /**
-   * Converts props to HTML attributes
-   */
-  toAttrs() {
-    return htmlSafe(stringifyAttributes(this.#values))
   }
 }

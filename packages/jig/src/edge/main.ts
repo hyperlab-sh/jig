@@ -15,6 +15,7 @@ import { edgeGlobals } from './globals.js'
 import { Processor } from '../processor.js'
 import { EdgeRenderer } from './renderer.js'
 import type {
+  FilterFn,
   PluginFn,
   TagContract,
   EdgeGlobals,
@@ -59,14 +60,16 @@ export class Edge {
   #renderCallbacks: ((renderer: EdgeRenderer) => void)[] = []
 
   /**
+   * Registered filter functions for {{ mode :: expr }} syntax
+   */
+  #filters: Record<string, FilterFn> = {
+    json: (v) => JSON.stringify(v),
+  }
+
+  /**
    * Reference to the registered processor handlers
    */
   processor = new Processor()
-
-  /**
-   * A flag to know if using compat mode
-   */
-  compat: boolean = false
 
   /**
    * The loader to load templates. A loader can read and return
@@ -122,6 +125,8 @@ export class Edge {
     } else if (!this.loader) {
       this.loader = new Loader()
     }
+
+    this.globals.$filters = this.#filters
 
     this.compiler = new Compiler(this.loader, this.tags, this.processor, {
       cache: !!options.cache,
@@ -255,6 +260,18 @@ export class Edge {
     }
 
     this.tags[tag.tagName] = tag
+    return this
+  }
+
+  /**
+   * Register a filter for use with `{{ mode :: expr }}` syntax.
+   *
+   * ```ts
+   * edge.registerFilter('json', (value) => JSON.stringify(value))
+   * ```
+   */
+  registerFilter(name: string, fn: FilterFn): this {
+    this.#filters[name] = fn
     return this
   }
 

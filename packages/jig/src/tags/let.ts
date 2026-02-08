@@ -13,6 +13,12 @@ import lodash from '@poppinss/utils/lodash'
 import { type TagContract } from '../types.js'
 import { isSubsetOf, unallowedExpression } from '../utils.js'
 
+declare module '../template.js' {
+  export interface Template {
+    setValue: (typeof lodash)['set']
+  }
+}
+
 /**
  * The let tag is used to set runtime values within the template. The value
  * is set inside the current scope of the template.

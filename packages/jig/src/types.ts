@@ -122,7 +122,6 @@ export interface CacheManagerContract {
 export type CompilerOptions = {
   cache?: boolean
   async?: boolean
-  compat?: boolean
 }
 
 /**
@@ -133,6 +132,11 @@ export type EdgeOptions = {
   loader?: LoaderContract
   cache?: boolean
 }
+
+/**
+ * Shape of a filter function used with {{ mode :: expr }} syntax
+ */
+export type FilterFn = (input: any) => string
 
 /**
  * Shape of edge plugin

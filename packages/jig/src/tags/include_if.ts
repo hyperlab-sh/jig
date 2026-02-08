@@ -79,12 +79,21 @@ export const includeIfTag: TagContract = {
       token.filename,
       token.loc.start.line
     )
-    buffer.outputExpression(
-      `${awaitKeyword}${getRenderExpression(parser, include)}`,
-      token.filename,
-      token.loc.start.line,
-      false
-    )
+
+    const renderExpr = `${awaitKeyword}${getRenderExpression(parser, include)}`
+
+    if (token.indent > 0) {
+      const indentStr = JSON.stringify(' '.repeat(token.indent))
+      buffer.outputExpression(
+        `template.indentOutput(${renderExpr}, ${indentStr})`,
+        token.filename,
+        token.loc.start.line,
+        false
+      )
+    } else {
+      buffer.outputExpression(renderExpr, token.filename, token.loc.start.line, false)
+    }
+
     buffer.writeStatement('}', token.filename, -1)
   },
 }

@@ -10,7 +10,13 @@
 import { expressions } from 'edge-parser'
 
 import { type TagContract } from '../types.js'
-import { unallowedExpression, isNotSubsetOf, parseJsArg } from '../utils.js'
+import {
+  unallowedExpression,
+  isNotSubsetOf,
+  parseJsArg,
+  computeDedent,
+  processChildrenDedented,
+} from '../utils.js'
 
 /**
  * If tag is used to define conditional blocks.
@@ -47,9 +53,10 @@ export const ifTag: TagContract = {
     )
 
     /**
-     * Process of all children recursively
+     * Process of all children recursively with dedentation
      */
-    token.children.forEach((child) => parser.processToken(child, buffer))
+    const dedent = computeDedent(token.children, token.indent)
+    processChildrenDedented(parser, buffer, token.children, dedent)
 
     /**
      * Close if block

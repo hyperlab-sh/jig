@@ -10,7 +10,7 @@
 import { EdgeError } from 'edge-error'
 import { expressions } from 'edge-parser'
 
-import { nanoid } from '../utils.js'
+import { nanoid, computeDedent, processChildrenDedented } from '../utils.js'
 import { type TagContract } from '../types.js'
 
 declare module '../template.js' {
@@ -64,11 +64,10 @@ export const pushOnceToTag: TagContract & { generateId(): string } = {
     const stackBuffer = buffer.create(token.filename, { outputVar: stackId })
 
     /**
-     * Process children
+     * Process children with dedentation
      */
-    for (let child of token.children) {
-      parser.processToken(child, stackBuffer)
-    }
+    const dedent = computeDedent(token.children, token.indent)
+    processChildrenDedented(parser, stackBuffer, token.children, dedent)
 
     /**
      * Flush the stack buffer content to the main buffer

@@ -85,11 +85,18 @@ export const includeTag: TagContract = {
       )
     })
 
-    buffer.outputExpression(
-      `${awaitKeyword}${getRenderExpression(parser, parsed)}`,
-      token.filename,
-      token.loc.start.line,
-      false
-    )
+    const renderExpr = `${awaitKeyword}${getRenderExpression(parser, parsed)}`
+
+    if (token.indent > 0) {
+      const indentStr = JSON.stringify(' '.repeat(token.indent))
+      buffer.outputExpression(
+        `template.indentOutput(${renderExpr}, ${indentStr})`,
+        token.filename,
+        token.loc.start.line,
+        false
+      )
+    } else {
+      buffer.outputExpression(renderExpr, token.filename, token.loc.start.line, false)
+    }
   },
 }

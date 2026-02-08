@@ -36,7 +36,6 @@ export class EdgeRenderer {
     this.#compiler = compiler
     this.#asyncCompiler = asyncCompiler
     this.#processor = processor
-
     this.#globals = globals
   }
 

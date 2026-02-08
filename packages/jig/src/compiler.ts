@@ -7,10 +7,9 @@
  * file that was distributed with this source code.
  */
 
-import { EdgeError } from 'edge-error'
-import * as lexerUtils from 'edge-lexer/utils'
 import { Parser, EdgeBuffer, Stack } from 'edge-parser'
-import type { Token, TagToken } from 'edge-lexer/types'
+import { MustacheTypes } from 'edge-lexer'
+import type { Token, MustacheToken } from 'edge-lexer/types'
 
 import { type Processor } from './processor.js'
 import { CacheManager } from './cache_manager.js'
@@ -51,11 +50,6 @@ export class Compiler {
   cacheManager: CacheManager
 
   /**
-   * A boolean to know if compat mode is enabled
-   */
-  compat: boolean
-
-  /**
    * Know if compiler is compiling in the async mode or not
    */
   async: boolean
@@ -67,7 +61,6 @@ export class Compiler {
     options: CompilerOptions = {
       cache: true,
       async: false,
-      compat: false,
     }
   ) {
     this.#processor = processor
@@ -75,129 +68,36 @@ export class Compiler {
     this.#tags = tags
 
     this.async = !!options.async
-    this.compat = options.compat === true
     this.cacheManager = new CacheManager(!!options.cache)
   }
 
   /**
-   * Merges sections of base template and parent template tokens
+   * Generates an array of lexer tokens from the template string.
    */
-  #mergeSections(base: Token[], extended: Token[]): Token[] {
-    /**
-     * Collection of all sections from the extended tokens
-     */
-    const extendedSections: { [key: string]: TagToken } = {}
-
-    /**
-     * Collection of extended set calls as top level nodes. The set
-     * calls are hoisted just like `var` statements in Javascript.
-     */
-    const extendedSetCalls: TagToken[] = []
-
-    extended.forEach((node) => {
-      /**
-       * Ignore new lines, comments, layout tag and empty raw nodes inside the parent
-       * template
-       */
-      if (
-        lexerUtils.isTag(node, 'layout') ||
-        node.type === 'newline' ||
-        (node.type === 'raw' && !node.value.trim()) ||
-        node.type === 'comment'
-      ) {
-        return
-      }
-
-      /**
-       * Collect parent template sections
-       */
-      if (lexerUtils.isTag(node, 'section')) {
-        extendedSections[(node as TagToken).properties.jsArg.trim()] = node
-        return
-      }
-
-      /**
-       * Collect set calls inside parent templates
-       */
-      if (lexerUtils.isTag(node, 'set')) {
-        extendedSetCalls.push(node)
-        return
-      }
-
-      /**
-       * Everything else is not allowed as top level nodes
-       */
-      const [line, col] = lexerUtils.getLineAndColumn(node)
-
-      throw new EdgeError(
-        'Template extending a layout can only use "@section" or "@set" tags as top level nodes',
-        'E_UNALLOWED_EXPRESSION',
-        { line, col, filename: node.filename }
-      )
-    })
-
-    /**
-     * Replace/extend sections inside base tokens list
-     */
-    const finalNodes = base.map((node) => {
-      if (!lexerUtils.isTag(node, 'section')) {
-        return node
-      }
-
-      const sectionName = node.properties.jsArg.trim()
-      const extendedNode = extendedSections[sectionName]
-      if (!extendedNode) {
-        return node
-      }
-
-      /**
-       * Concat children when super was called
-       */
-      if (extendedNode.children.length) {
-        if (lexerUtils.isTag(extendedNode.children[0], 'super')) {
-          extendedNode.children.shift()
-          extendedNode.children = node.children.concat(extendedNode.children)
-        } else if (lexerUtils.isTag(extendedNode.children[1], 'super')) {
-          extendedNode.children.shift()
-          extendedNode.children.shift()
-          extendedNode.children = node.children.concat(extendedNode.children)
-        }
-      }
-
-      return extendedNode
-    })
-
-    /**
-     * Set calls are hoisted to the top
-     */
-    return ([] as Token[]).concat(extendedSetCalls).concat(finalNodes)
+  #templateContentToTokens(content: string, parser: Parser, absPath: string): Token[] {
+    return parser.tokenize(content, { filename: absPath })
   }
 
   /**
-   * Generates an array of lexer tokens from the template string. Further tokens
-   * are checked for layouts and if layouts are used, their sections will be
-   * merged together.
+   * Regex to parse filter syntax: `mode :: expr`
    */
-  #templateContentToTokens(content: string, parser: Parser, absPath: string): Token[] {
-    let templateTokens = parser.tokenize(content, { filename: absPath })
+  static #filterRegex = /^(\w+)\s*::\s*([\s\S]+)$/
 
-    /**
-     * Parse layout and section in compat mode only
-     */
-    if (this.compat) {
-      const firstToken = templateTokens[0]
-
-      /**
-       * The `layout` is inbuilt feature from core, where we merge the layout
-       * and parent template sections together
-       */
-      if (lexerUtils.isTag(firstToken, 'layout')) {
-        const layoutName = firstToken.properties.jsArg.replace(/'|"/g, '')
-        templateTokens = this.#mergeSections(this.tokenize(layoutName, parser), templateTokens)
-      }
+  /**
+   * Hook called for every mustache token before parsing.
+   * - Converts MUSTACHE → SMUSTACHE so escape wrapping is never applied
+   * - Parses `{{ mode :: expr }}` filter syntax
+   */
+  static #onMustache(token: MustacheToken) {
+    if (token.type === MustacheTypes.MUSTACHE) {
+      token.type = MustacheTypes.SMUSTACHE
     }
 
-    return templateTokens
+    const match = Compiler.#filterRegex.exec(token.properties.jsArg.trim())
+    if (match) {
+      const [, mode, expr] = match
+      token.properties.jsArg = `$filters.${mode}(${expr})`
+    }
   }
 
   /**
@@ -211,6 +111,7 @@ export class Compiler {
       escapeCallPath: ['template', 'escape'],
       localVariables: this.#inlineVariables,
       onTag: (tag) => this.#processor.executeTag({ tag, path: templatePath }),
+      onMustache: Compiler.#onMustache,
     })
 
     /**

@@ -7,78 +7,11 @@
  * file that was distributed with this source code.
  */
 
-import classNames from 'classnames'
 import { EdgeError } from 'edge-error'
-import type { TagToken } from 'edge-lexer/types'
-import { find, html } from 'property-information'
-import { type expressions as expressionsList, type Parser } from 'edge-parser'
+import type { TagToken, Token } from 'edge-lexer/types'
+import { type EdgeBuffer, type expressions as expressionsList, type Parser } from 'edge-parser'
 
 type ExpressionList = readonly (keyof typeof expressionsList | 'ObjectPattern' | 'ArrayPattern')[]
-
-/**
- * Function to register custom properties
- * with "property-information" package.
- */
-function definePropertyInformation(property: string, value?: any) {
-  html.normal[property] = property
-  html.property[property] = {
-    attribute: property,
-    boolean: true,
-    property: property,
-    space: 'html',
-    booleanish: false,
-    commaOrSpaceSeparated: false,
-    commaSeparated: false,
-    spaceSeparated: false,
-    number: false,
-    overloadedBoolean: false,
-    defined: false,
-    mustUseProperty: false,
-    ...value,
-  }
-}
-
-definePropertyInformation('x-cloak')
-definePropertyInformation('x-ignore')
-definePropertyInformation('x-transition:enterstart', {
-  attribute: 'x-transition:enter-start',
-  property: 'x-transition:enterStart',
-  boolean: false,
-  spaceSeparated: true,
-  commaOrSpaceSeparated: true,
-})
-definePropertyInformation('x-transition:enterend', {
-  attribute: 'x-transition:enter-end',
-  property: 'x-transition:enterEnd',
-  boolean: false,
-  spaceSeparated: true,
-  commaOrSpaceSeparated: true,
-})
-definePropertyInformation('x-transition:leavestart', {
-  attribute: 'x-transition:leave-start',
-  property: 'x-transition:leaveStart',
-  boolean: false,
-  spaceSeparated: true,
-  commaOrSpaceSeparated: true,
-})
-definePropertyInformation('x-transition:leaveend', {
-  attribute: 'x-transition:leave-end',
-  property: 'x-transition:leaveEnd',
-  boolean: false,
-  spaceSeparated: true,
-  commaOrSpaceSeparated: true,
-})
-
-/**
- * Alpine namespaces we handle with special
- * rules when stringifying attributes
- */
-const alpineNamespaces: Record<string, string> = {
-  x: 'x-',
-  xOn: 'x-on:',
-  xBind: 'x-bind:',
-  xTransition: 'x-transition:',
-}
 
 /**
  * Raise an `E_UNALLOWED_EXPRESSION` exception. Filename and expression is
@@ -246,78 +179,6 @@ export class StringifiedObject {
 }
 
 /**
- * Stringify an object to props to HTML attributes
- */
-export function stringifyAttributes(props: any, namespace?: string): string {
-  const attributes = Object.keys(props)
-  if (attributes.length === 0) {
-    return ''
-  }
-
-  return attributes
-    .reduce<string[]>((result, key) => {
-      let value = props[key]
-      key = namespace ? `${namespace}${key}` : key
-
-      /**
-       * No value defined, remove attribute
-       */
-      if (!value) {
-        return result
-      }
-
-      /**
-       * Handle alpine properties separately
-       */
-      if (alpineNamespaces[key] && typeof value === 'object') {
-        result = result.concat(stringifyAttributes(value, alpineNamespaces[key]))
-        return result
-      }
-
-      const propInfo = find(html, key)
-
-      /**
-       * Ignore unknown attributes
-       */
-      if (!propInfo) {
-        return result
-      }
-
-      const attribute = propInfo.attribute
-
-      /**
-       * Boolean properties
-       */
-      if (value === true) {
-        result.push(attribute)
-        return result
-      }
-
-      /**
-       * Encoding rules for certain properties.
-       *
-       * - Class values can be objects with conditionals
-       * - Non-booleanish and numeric properties will be html escaped
-       * - Arrays will be concatenated into a string list and html escaped
-       */
-      if (key === 'class') {
-        value = `"${classNames(value)}"`
-      } else if (Array.isArray(value)) {
-        value = `"${value.join(propInfo.commaSeparated ? ',' : ' ')}"`
-      } else {
-        value = `"${String(value)}"`
-      }
-
-      /**
-       * Push attribute value string
-       */
-      result.push(`${attribute}=${value}`)
-      return result
-    }, [])
-    .join(' ')
-}
-
-/**
  * Copy-pasted from
  * https://github.com/ai/nanoid/blob/main/nanoid.js
  */
@@ -329,4 +190,81 @@ export let nanoid = (length = 15) => {
     output += seed[63 & random[n]]
   }
   return output
+}
+
+/**
+ * Computes the number of spaces to dedent from block tag children.
+ *
+ * Rule: dedent = firstContentLineIndent - tagIndent
+ *
+ * Scans children to find the first raw or tag token after a newline
+ * boundary, measures its leading whitespace, and returns the difference
+ * from the tag's own indent.
+ */
+export function computeDedent(children: Token[], tagIndent: number): number {
+  let afterNewline = true
+
+  for (const child of children) {
+    if (child.type === 'newline') {
+      afterNewline = true
+      continue
+    }
+
+    if (!afterNewline) {
+      continue
+    }
+
+    if (child.type === 'raw') {
+      const match = child.value.match(/^( *)/)
+      const leadingSpaces = match ? match[1].length : 0
+      return Math.max(0, leadingSpaces - tagIndent)
+    }
+
+    if ('indent' in child) {
+      return Math.max(0, (child as TagToken).indent - tagIndent)
+    }
+
+    afterNewline = false
+  }
+
+  return 0
+}
+
+/**
+ * Strips up to `amount` leading space characters from a string.
+ */
+export function dedentRaw(text: string, amount: number): string {
+  if (amount <= 0) return text
+  const regex = new RegExp(`^ {0,${amount}}`)
+  return text.replace(regex, '')
+}
+
+/**
+ * Processes block tag children with automatic dedentation.
+ * Strips `dedent` leading spaces from raw tokens that follow newlines.
+ */
+export function processChildrenDedented(
+  parser: Parser,
+  buffer: EdgeBuffer,
+  children: Token[],
+  dedent: number
+): void {
+  let afterNewline = true
+
+  for (const child of children) {
+    if (child.type === 'newline') {
+      parser.processToken(child, buffer)
+      afterNewline = true
+      continue
+    }
+
+    if (child.type === 'raw' && afterNewline && dedent > 0) {
+      buffer.outputRaw(dedentRaw(child.value, dedent))
+      afterNewline = false
+      continue
+    }
+
+    parser.processToken(child, buffer)
+    afterNewline = false
+  }
 }
