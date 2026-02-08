@@ -10,9 +10,9 @@ This guide documents all differences between Edge.js 6.x and Jig 7.0.
 
 ## Philosophy Shift
 
-**Edge.js** is designed for rendering HTML with automatic escaping to prevent XSS attacks. It includes helpers for HTML attributes, class names, and newline-to-BR conversion.
+**Edge.js is designed for rendering HTML** with automatic escaping to prevent XSS attacks. It includes helpers for HTML attributes, class names, and newline-to-BR conversion.
 
-**Jig** is designed for generating code, configuration files, SQL, GraphQL schemas, and other structured text formats. It removes all HTML concerns and adds features for controlling output indentation and applying transformations via filters.
+**Jig is designed for generating code**, configuration files, SQL, GraphQL schemas, and other structured text formats. It removes all HTML concerns and adds features for controlling output indentation and applying transformations via filters.
 
 ## Breaking Changes
 

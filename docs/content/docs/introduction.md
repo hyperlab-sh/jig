@@ -4,7 +4,11 @@ summary: Jig is a template engine for code generation in Node.js, forked from Ed
 
 # Introduction
 
-Jig is a template engine for Node.js purpose-built for **code generation**. It is a fork of [Edge](https://edgejs.dev) — the template engine behind [AdonisJS](https://adonisjs.com) — with HTML-specific features stripped out and new capabilities like implicit indentation control and filter syntax added in. If you know JavaScript, you know Jig.
+Jig is a **simple**, **Modern**, and **batteries included** template engine, purpose-built for **code generation**. Jig is similar to writing JavaScript. If you know JavaScript, you know Jig. 
+
+Jig is a fork of [Edge](https://edgejs.dev), with HTML-specific features stripped out and new capabilities like **implicit indentation control** and **filter syntax** added in.
+
+If you already know Edge, just [check the differences](/docs/edge-vs-jig) and you'll know Jig too.
 
 <div class="feature_highlight">
 
