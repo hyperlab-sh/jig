@@ -193,7 +193,12 @@ export class Template extends Macroable {
    * to point back to the original filename
    */
   reThrow(error: any, filename: string, lineNumber: number): never {
-    if (error instanceof EdgeError) {
+    if (
+      error instanceof Error &&
+      typeof (error as any).filename === 'string' &&
+      typeof (error as any).line === 'number' &&
+      typeof (error as any).col === 'number'
+    ) {
       throw error
     }
 
