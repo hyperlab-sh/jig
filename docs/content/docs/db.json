@@ -12,6 +12,12 @@
     "category": "Guides"
   },
   {
+    "permalink": "edge-vs-jig",
+    "title": "Edge vs Jig",
+    "contentPath": "./edge-vs-jig.md",
+    "category": "Guides"
+  },
+  {
     "permalink": "interpolation",
     "title": "Interpolation",
     "contentPath": "./interpolation.md",
