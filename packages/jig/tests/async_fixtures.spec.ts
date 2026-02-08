@@ -20,7 +20,6 @@ import { Loader } from '../src/loader.js'
 import { Template } from '../src/template.js'
 import { Compiler } from '../src/compiler.js'
 import { Processor } from '../src/processor.js'
-import * as compatTags from '../src/migrate/tags/main.js'
 
 import { normalizeNewLines, normalizeFilename } from '../tests_helpers/index.js'
 
@@ -43,9 +42,6 @@ test.group('Async Fixtures', (group) => {
     Object.keys(tags).forEach((tag) => {
       tags[tag as keyof typeof tags].boot?.(Template)
     })
-    Object.keys(compatTags).forEach((tag) => {
-      compatTags[tag as keyof typeof compatTags].boot?.(Template)
-    })
   })
 
   const dirs = readdirSync(basePath).filter((file) => statSync(join(basePath, file)).isDirectory())
@@ -53,7 +49,6 @@ test.group('Async Fixtures', (group) => {
     loader,
     {
       ...tags,
-      ...compatTags,
     },
     processor,
     { async: true }
@@ -61,11 +56,8 @@ test.group('Async Fixtures', (group) => {
 
   dirs.forEach((dir) => {
     const dirBasePath = join(basePath, dir)
-    const compatMode = dir.endsWith('-compat')
 
     test(dir, async ({ assert }) => {
-      compiler.compat = compatMode
-
       /**
        * Compiled output
        */
@@ -100,7 +92,7 @@ test.group('Async Fixtures', (group) => {
       )
       assert.stringEqual(output.trim(), out)
       assert.stringEqual(outputRaw.trim(), out)
-    }).tags(compatMode ? ['compat'] : [])
+    })
   })
 })
 
@@ -116,9 +108,6 @@ test.group('Async Fixtures | Cached', (group) => {
     Object.keys(tags).forEach((tag) => {
       tags[tag as keyof typeof tags].boot?.(Template)
     })
-    Object.keys(compatTags).forEach((tag) => {
-      compatTags[tag as keyof typeof compatTags].boot?.(Template)
-    })
   })
 
   const dirs = readdirSync(basePath).filter((file) => statSync(join(basePath, file)).isDirectory())
@@ -126,7 +115,6 @@ test.group('Async Fixtures | Cached', (group) => {
     loader,
     {
       ...tags,
-      ...compatTags,
     },
     processor,
     { async: true, cache: true }
@@ -134,11 +122,8 @@ test.group('Async Fixtures | Cached', (group) => {
 
   dirs.forEach((dir) => {
     const dirBasePath = join(basePath, dir)
-    const compatMode = dir.endsWith('-compat')
 
     test(dir, async ({ assert }) => {
-      compiler.compat = compatMode
-
       /**
        * Compiled output
        */
@@ -173,6 +158,6 @@ test.group('Async Fixtures | Cached', (group) => {
       )
       assert.stringEqual(output.trim(), out)
       assert.stringEqual(outputRaw.trim(), out)
-    }).tags(compatMode ? ['compat'] : [])
+    })
   })
 })

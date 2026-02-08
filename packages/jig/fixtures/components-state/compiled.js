@@ -5,9 +5,9 @@ try {
 out += template.compileComponent("components-state/alert")(template, template.getComponentState({}, { $context: Object.assign({}, $context), main: function () { const $context = this.$context;
 let slot_main = "";
 try {
-slot_main += "  Hello ";
+slot_main += "Hello ";
 $lineNumber = 2;
-slot_main += `${template.escape(state.username)}`;
+slot_main += `${state.username}`;
 } catch (error) {
 template.reThrow(error, $filename, $lineNumber);
 }

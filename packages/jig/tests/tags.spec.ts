@@ -17,7 +17,6 @@ import { Loader } from '../src/loader.js'
 import * as tags from '../src/tags/main.js'
 import { Compiler } from '../src/compiler.js'
 import { Processor } from '../src/processor.js'
-import * as compatTags from '../src/migrate/tags/main.js'
 
 const fs = new Filesystem(join(dirname(fileURLToPath(import.meta.url)), 'views'))
 
@@ -44,7 +43,7 @@ test.group('If tag', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error: any) {
+    } catch (error) {
       assert.equal(error.message, 'Unexpected token ')
       assert.equal(error.line, 4)
     }
@@ -62,7 +61,7 @@ test.group('If tag', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error: any) {
+    } catch (error) {
       assert.equal(error.line, 4)
       assert.equal(error.message, '"foo, bar" is not a valid argument type for the @if tag')
     }
@@ -79,7 +78,7 @@ test.group('If tag', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error: any) {
+    } catch (error) {
       assert.equal(error.message, 'Unclosed tag if')
     }
   })
@@ -99,7 +98,7 @@ test.group('Include', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error: any) {
+    } catch (error) {
       assert.equal(
         error.stack.split('\n')[1],
         `    at anonymous (${join(fs.basePath, 'foo.edge')}:2:13)`
@@ -115,7 +114,7 @@ test.group('Include', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error: any) {
+    } catch (error) {
       assert.equal(
         error.stack.split('\n')[1],
         `    at anonymous (${join(fs.basePath, 'foo.edge')}:1:9)`
@@ -142,7 +141,7 @@ test.group('IncludeIf', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error: any) {
+    } catch (error) {
       assert.equal(error.message, '"foo" is not a valid argument type for the @includeIf tag')
       assert.equal(
         error.stack.split('\n')[1],
@@ -160,7 +159,7 @@ test.group('IncludeIf', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error: any) {
+    } catch (error) {
       assert.equal(error.message, '@includeIf expects a total of 2 arguments')
       assert.equal(
         error.stack.split('\n')[1],
@@ -178,7 +177,7 @@ test.group('IncludeIf', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error: any) {
+    } catch (error) {
       assert.equal(
         error.message,
         '"SequenceExpression" is not a valid 1st argument type for the @includeIf tag'
@@ -208,7 +207,7 @@ test.group('Component', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error: any) {
+    } catch (error) {
       assert.equal(
         error.stack.split('\n')[1],
         `    at anonymous (${join(fs.basePath, 'foo.edge')}:2:6)`
@@ -229,7 +228,7 @@ test.group('Component', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error: any) {
+    } catch (error) {
       assert.equal(
         error.stack.split('\n')[1],
         `    at anonymous (${join(fs.basePath, 'foo.edge')}:2:6)`
@@ -250,7 +249,7 @@ test.group('Component', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error: any) {
+    } catch (error) {
       assert.equal(
         error.stack.split('\n')[1],
         `    at anonymous (${join(fs.basePath, 'foo.edge')}:2:6)`
@@ -274,7 +273,7 @@ test.group('Component', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error: any) {
+    } catch (error) {
       assert.equal(
         error.stack.split('\n')[1],
         `    at anonymous (${join(fs.basePath, 'foo.edge')}:4:2)`
@@ -298,7 +297,7 @@ test.group('Component', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error: any) {
+    } catch (error) {
       assert.equal(
         error.stack.split('\n')[1],
         `    at anonymous (${join(fs.basePath, 'foo.edge')}:4:8)`
@@ -306,95 +305,6 @@ test.group('Component', (group) => {
       assert.equal(
         error.message,
         '@slot tag must appear as top level tag inside the @component tag'
-      )
-    }
-  })
-})
-
-test.group('Layouts | Compat', (group) => {
-  group.each.teardown(async () => {
-    await fs.cleanup()
-  })
-  group.tap((t) => t.tags(['compat']))
-
-  test('raise error when section is nested inside conditional block', async ({ assert }) => {
-    assert.plan(2)
-
-    const templateContent = dedent`@layout('master')
-
-      @if(username)
-        @section('body')
-          <p> Hello world </p>
-        @endsection
-      @endif`
-
-    await fs.add('foo.edge', templateContent)
-    await fs.add('master.edge', "@!section('body')")
-
-    try {
-      new Compiler(loader, { ...tags, ...compatTags }, processor, { compat: true }).compile('foo')
-    } catch (error: any) {
-      assert.equal(
-        error.stack.split('\n')[1],
-        `    at anonymous (${join(fs.basePath, 'foo.edge')}:3:4)`
-      )
-      assert.equal(
-        error.message,
-        'Template extending a layout can only use "@section" or "@set" tags as top level nodes'
-      )
-    }
-  })
-
-  test('raise error when section is not a top level tag inside nested layouts', async ({
-    assert,
-  }) => {
-    assert.plan(2)
-
-    const templateContent = dedent`@layout('master')
-
-      @if(username)
-        @section('body')
-          <p> Hello world </p>
-        @endsection
-      @endif`
-
-    await fs.add('foo.edge', templateContent)
-    await fs.add('master.edge', "@layout('super')")
-    await fs.add('super.edge', "@!section('body')")
-
-    try {
-      new Compiler(loader, { ...tags, ...compatTags }, processor, { compat: true }).compile('foo')
-    } catch (error: any) {
-      assert.equal(
-        error.stack.split('\n')[1],
-        `    at anonymous (${join(fs.basePath, 'foo.edge')}:3:4)`
-      )
-      assert.equal(
-        error.message,
-        'Template extending a layout can only use "@section" or "@set" tags as top level nodes'
-      )
-    }
-  })
-
-  test('raise error when there are raw content outside sections', async ({ assert }) => {
-    assert.plan(2)
-
-    const templateContent = dedent`@layout('master')
-      <p> Hello world </p>`
-
-    await fs.add('foo.edge', templateContent)
-    await fs.add('master.edge', "@!section('body')")
-
-    try {
-      new Compiler(loader, { ...tags, ...compatTags }, processor, { compat: true }).compile('foo')
-    } catch (error: any) {
-      assert.equal(
-        error.stack.split('\n')[1],
-        `    at anonymous (${join(fs.basePath, 'foo.edge')}:2:0)`
-      )
-      assert.equal(
-        error.message,
-        'Template extending a layout can only use "@section" or "@set" tags as top level nodes'
       )
     }
   })
@@ -417,7 +327,7 @@ test.group('Each tag', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error: any) {
+    } catch (error) {
       assert.equal(error.message, '"users" is not valid expression for the @each tag')
       assert.equal(error.line, 4)
     }
@@ -435,7 +345,7 @@ test.group('Each tag', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error: any) {
+    } catch (error) {
       assert.equal(error.message, 'invalid left hand side "Literal" expression for the @each tag')
       assert.equal(error.line, 4)
     }

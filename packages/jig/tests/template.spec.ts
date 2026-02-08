@@ -19,7 +19,7 @@ import { slotTag } from '../src/tags/slot.js'
 import { Processor } from '../src/processor.js'
 import { includeTag } from '../src/tags/include.js'
 import { componentTag } from '../src/tags/component.js'
-import { Template, htmlSafe } from '../src/template.js'
+import { Template } from '../src/template.js'
 
 const tags = { slot: slotTag, component: componentTag, include: includeTag }
 const fs = new Filesystem(join(path.dirname(fileURLToPath(import.meta.url)), 'views'))
@@ -169,46 +169,12 @@ test.group('Template', (group) => {
     assert.equal(output.trim(), 'HELLO VIRK')
   })
 
-  test('escape HTML', ({ assert }) => {
+  test('escape method stringifies input', ({ assert }) => {
     const processor = new Processor()
     const compiler = new Compiler(loader, tags, processor, { cache: false })
     const template = new Template(compiler, {}, {}, processor)
-    assert.equal(template.escape('<h2> Hello world </h2>'), '&lt;h2&gt; Hello world &lt;/h2&gt;')
-  })
-
-  test('stringify value during escape', ({ assert }) => {
-    const processor = new Processor()
-    const compiler = new Compiler(loader, tags, processor, { cache: false })
-    const template = new Template(compiler, {}, {}, processor)
+    assert.equal(template.escape('<h2> Hello world </h2>'), '<h2> Hello world </h2>')
     assert.equal(template.escape(22), '22')
-  })
-
-  test('do not escape values, which instance of safe value', ({ assert }) => {
-    const processor = new Processor()
-    const compiler = new Compiler(loader, tags, processor, { cache: false })
-    const template = new Template(compiler, {}, {}, processor)
-    assert.equal(template.escape(htmlSafe('<h2> Hello world </h2>')), '<h2> Hello world </h2>')
-  })
-
-  test('stringify array before escape', ({ assert }) => {
-    const processor = new Processor()
-    const compiler = new Compiler(loader, tags, processor, { cache: false })
-    const template = new Template(compiler, {}, {}, processor)
-    assert.equal(template.escape(['<h2> Hello world </h2>']), '&lt;h2&gt; Hello world &lt;/h2&gt;')
-  })
-
-  test('stringify object before escape', ({ assert }) => {
-    const processor = new Processor()
-    const compiler = new Compiler(loader, tags, processor, { cache: false })
-    const template = new Template(compiler, {}, {}, processor)
-    assert.equal(
-      template.escape({
-        toString() {
-          return '<h2> Hello world </h2>'
-        },
-      }),
-      '&lt;h2&gt; Hello world &lt;/h2&gt;'
-    )
   })
 
   test('add macros to context', ({ assert }) => {

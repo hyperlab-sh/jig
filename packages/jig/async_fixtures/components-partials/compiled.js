@@ -7,9 +7,9 @@ out += await template.compileComponent("components-partials/alert")(template, te
 }, { $context: Object.assign({}, $context), main: async function () { const $context = this.$context;
 let slot_main = "";
 try {
-slot_main += "  Hello ";
+slot_main += "Hello ";
 $lineNumber = 2;
-slot_main += `${template.escape(state.username || "Guest")}`;
+slot_main += `${state.username || "Guest"}`;
 } catch (error) {
 template.reThrow(error, $filename, $lineNumber);
 }

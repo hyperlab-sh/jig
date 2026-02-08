@@ -6,7 +6,7 @@ let username = "nikk";
 $lineNumber = 2;
 username = "virk";
 $lineNumber = 3;
-out += `${template.escape(username)}`;
+out += `${username}`;
 } catch (error) {
 template.reThrow(error, $filename, $lineNumber);
 }

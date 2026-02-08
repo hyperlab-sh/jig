@@ -9,12 +9,10 @@
 
 import './assert_extend.js'
 import dedent from 'dedent-js'
-import { EOL } from 'node:os'
 import { join } from 'node:path'
 import { test } from '@japa/runner'
 
 import { Edge } from '../src/edge/main.js'
-import { migrate } from '../src/migrate/plugin.js'
 import { edgeGlobals } from '../src/edge/globals.js'
 
 test.group('Edge', () => {
@@ -155,7 +153,7 @@ test.group('Edge', () => {
 
     try {
       await edge.render('foo')
-    } catch ({ stack }: any) {
+    } catch ({ stack }) {
       assert.equal(
         stack.split('\n')[1].trim(),
         `at anonymous (${join(fs.basePath, 'foo.edge')}:1:4)`
@@ -172,51 +170,13 @@ test.group('Edge', () => {
 
     try {
       await edge.render('foo')
-    } catch ({ stack }: any) {
+    } catch ({ stack }) {
       assert.equal(
         stack.split('\n')[1].trim(),
         `at anonymous (${join(fs.basePath, 'foo.edge')}:1:11)`
       )
     }
   })
-
-  test('pass absolute path of layout to lexer errors', async ({ assert, fs }) => {
-    assert.plan(1)
-    await fs.create('foo.edge', "@layout('bar')")
-    await fs.create('bar.edge', '@if(username)')
-
-    const edge = new Edge()
-    edge.mount(fs.basePath)
-    edge.use(migrate)
-
-    try {
-      await edge.render('foo')
-    } catch ({ stack }: any) {
-      assert.equal(
-        stack.split('\n')[1].trim(),
-        `at anonymous (${join(fs.basePath, 'bar.edge')}:1:4)`
-      )
-    }
-  }).tags(['compat'])
-
-  test('pass absolute path of layout to parser errors', async ({ assert, fs }) => {
-    assert.plan(1)
-    await fs.create('foo.edge', "@layout('bar')")
-    await fs.create('bar.edge', '{{ a:b }}')
-
-    const edge = new Edge()
-    edge.mount(fs.basePath)
-    edge.use(migrate)
-
-    try {
-      await edge.render('foo')
-    } catch ({ stack }: any) {
-      assert.equal(
-        stack.split('\n')[1].trim(),
-        `at anonymous (${join(fs.basePath, 'bar.edge')}:1:3)`
-      )
-    }
-  }).tags(['compat'])
 
   test('pass absolute path of partial to lexer errors', async ({ assert, fs }) => {
     assert.plan(1)
@@ -228,7 +188,7 @@ test.group('Edge', () => {
 
     try {
       await edge.render('foo')
-    } catch ({ stack }: any) {
+    } catch ({ stack }) {
       console.log(stack)
       assert.equal(
         stack.split('\n')[1].trim(),
@@ -247,7 +207,7 @@ test.group('Edge', () => {
 
     try {
       await edge.render('foo')
-    } catch ({ stack }: any) {
+    } catch ({ stack }) {
       assert.equal(
         stack.split('\n')[1].trim(),
         `at anonymous (${join(fs.basePath, 'bar.edge')}:1:3)`
@@ -265,7 +225,7 @@ test.group('Edge', () => {
 
     try {
       await edge.render('foo')
-    } catch ({ stack }: any) {
+    } catch ({ stack }) {
       assert.equal(
         stack.split('\n')[1].trim(),
         `at anonymous (${join(fs.basePath, 'bar.edge')}:1:4)`
@@ -283,7 +243,7 @@ test.group('Edge', () => {
 
     try {
       await edge.render('foo')
-    } catch ({ stack }: any) {
+    } catch ({ stack }) {
       assert.equal(
         stack.split('\n')[1].trim(),
         `at anonymous (${join(fs.basePath, 'bar.edge')}:1:3)`
@@ -523,22 +483,12 @@ test.group('Edge | regression', () => {
     )
   })
 
-  test('do not escape when using safe global method', async ({ assert }) => {
-    const edge = new Edge()
-    edge.use(migrate)
-
-    edge.registerTemplate('eval', {
-      template: 'Hello {{ safe(username) }}',
-    })
-    assert.equal(await edge.render('eval', { username: '<p>virk</p>' }), 'Hello <p>virk</p>')
-  }).tags(['compat'])
-
   test('truncate string by characters', async ({ assert }) => {
     const edge = new Edge()
     edge.globals = edgeGlobals
 
     edge.registerTemplate('eval', {
-      template: '{{{ truncate(text, 10) }}}',
+      template: '{{ truncate(text, 10) }}',
     })
     assert.equal(
       await edge.render('eval', { text: '<p>hello world & universe</p>' }),
@@ -551,7 +501,7 @@ test.group('Edge | regression', () => {
     edge.globals = edgeGlobals
 
     edge.registerTemplate('eval', {
-      template: '{{{ truncate(text, 10, { strict: true }) }}}',
+      template: '{{ truncate(text, 10, { strict: true }) }}',
     })
     assert.equal(
       await edge.render('eval', { text: '<p>hello world & universe</p>' }),
@@ -564,7 +514,7 @@ test.group('Edge | regression', () => {
     edge.globals = edgeGlobals
 
     edge.registerTemplate('eval', {
-      template: '{{{ truncate(text, 10, { suffix: ". more" }) }}}',
+      template: '{{ truncate(text, 10, { suffix: ". more" }) }}',
     })
     assert.equal(
       await edge.render('eval', { text: '<p>hello world & universe</p>' }),
@@ -577,7 +527,7 @@ test.group('Edge | regression', () => {
     edge.globals = edgeGlobals
 
     edge.registerTemplate('eval', {
-      template: '{{{ excerpt(text, 10) }}}',
+      template: '{{ excerpt(text, 10) }}',
     })
     assert.equal(
       await edge.render('eval', { text: '<p>hello world & universe</p>' }),
@@ -590,7 +540,7 @@ test.group('Edge | regression', () => {
     edge.globals = edgeGlobals
 
     edge.registerTemplate('eval', {
-      template: '{{{ excerpt(text, 10) }}}',
+      template: '{{ excerpt(text, 10) }}',
     })
     assert.equal(
       await edge.render('eval', {
@@ -605,7 +555,7 @@ test.group('Edge | regression', () => {
     edge.globals = edgeGlobals
 
     edge.registerTemplate('eval', {
-      template: '{{{ excerpt(text, 10, { strict: true }) }}}',
+      template: '{{ excerpt(text, 10, { strict: true }) }}',
     })
     assert.equal(
       await edge.render('eval', {
@@ -620,7 +570,7 @@ test.group('Edge | regression', () => {
     edge.globals = edgeGlobals
 
     edge.registerTemplate('eval', {
-      template: '{{{ excerpt(text, 10, { suffix: ". more" }) }}}',
+      template: '{{ excerpt(text, 10, { suffix: ". more" }) }}',
     })
     assert.equal(
       await edge.render('eval', {
@@ -630,54 +580,68 @@ test.group('Edge | regression', () => {
     )
   })
 
-  test('convert newline to br tags', async ({ assert }) => {
+  test('stringify data structures', async ({ assert }) => {
     const edge = new Edge()
     edge.globals = edgeGlobals
 
-    /**
-     * Intentionally using `EOL`, so that we can test that in windows
-     * the newlines are also converted to br tags
-     */
     edge.registerTemplate('eval', {
-      template: '{{{ nl2br(text) }}}',
+      template: `{{ js.stringify({ user: { username: 'virk' } }) }}`,
     })
 
-    assert.equal(await edge.render('eval', { text: `Hello${EOL}world` }), 'Hello<br>world')
+    assert.equal(await edge.render('eval'), '{"user":{"username":"virk"}}')
+  })
+})
+
+test.group('Edge | filters', () => {
+  test('{{ json :: value }} outputs JSON', async ({ assert }) => {
+    const edge = new Edge()
+    edge.registerTemplate('eval', {
+      template: '{{ json :: value }}',
+    })
+    assert.equal(await edge.render('eval', { value: { a: 1, b: 2 } }), '{"a":1,"b":2}')
   })
 
-  test('escape user input except the new lines', async ({ assert }) => {
+  test('{{ json :: expr }} with complex expressions', async ({ assert }) => {
     const edge = new Edge()
-    edge.use(migrate)
-
-    /**
-     * Intentionally using `EOL`, so that we can test that in windows
-     * the newlines are also converted to br tags
-     */
     edge.registerTemplate('eval', {
-      template: '{{{ nl2br(e(text)) }}}',
+      template: "{{ json :: { a: 1, b: 'two' } }}",
     })
+    assert.equal(await edge.render('eval'), '{"a":1,"b":"two"}')
+  })
 
-    assert.equal(
-      await edge.render('eval', { text: `Hello${EOL}<strong>world</strong>` }),
-      'Hello<br>&lt;strong&gt;world&lt;/strong&gt;'
-    )
-  }).tags(['compat'])
-
-  test('stringify data structures', async ({ assert }) => {
+  test('custom filter via edge.registerFilter()', async ({ assert }) => {
     const edge = new Edge()
-    edge.use(migrate)
-
-    /**
-     * Intentionally using `EOL`, so that we can test that in windows
-     * the newlines are also converted to br tags
-     */
+    edge.registerFilter('upper', (v) => String(v).toUpperCase())
     edge.registerTemplate('eval', {
-      template: `{{ stringify({ user: { username: 'virk' } }) }}`,
+      template: '{{ upper :: name }}',
     })
+    assert.equal(await edge.render('eval', { name: 'virk' }), 'VIRK')
+  })
 
-    assert.equal(
-      await edge.render('eval'),
-      '{&quot;user&quot;:{&quot;username&quot;:&quot;virk&quot;}}'
+  test('unknown filter throws clear error', async ({ assert }) => {
+    const edge = new Edge()
+    edge.registerTemplate('eval', {
+      template: '{{ nope :: value }}',
+    })
+    await assert.rejects(
+      () => edge.render('eval', { value: 'x' }),
+      /\$filters\.nope is not a function/
     )
-  }).tags(['compat'])
+  })
+
+  test('{{ }} without filter outputs raw value', async ({ assert }) => {
+    const edge = new Edge()
+    edge.registerTemplate('eval', {
+      template: '{{ username }}',
+    })
+    assert.equal(await edge.render('eval', { username: 'virk' }), 'virk')
+  })
+
+  test('{{{ }}} still works (same as {{ }})', async ({ assert }) => {
+    const edge = new Edge()
+    edge.registerTemplate('eval', {
+      template: '{{{ username }}}',
+    })
+    assert.equal(await edge.render('eval', { username: 'virk' }), 'virk')
+  })
 })

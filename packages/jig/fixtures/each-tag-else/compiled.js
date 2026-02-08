@@ -5,13 +5,13 @@ try {
 if(template.size(state.users)) {
 template.loop(state.users, function (user) {
 out += "\n";
-out += "  - Hello ";
+out += "- Hello ";
 $lineNumber = 2;
-out += `${template.escape(user.username)}`;
+out += `${user.username}`;
 });
 } else {
 out += "\n";
-out += "  No users found";
+out += "No users found";
 }
 } catch (error) {
 template.reThrow(error, $filename, $lineNumber);

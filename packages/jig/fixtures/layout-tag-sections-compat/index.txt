@@ -1,3 +1,0 @@
-This is the base template
-
-Here goes the content section content

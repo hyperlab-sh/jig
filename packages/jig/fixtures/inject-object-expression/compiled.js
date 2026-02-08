@@ -6,7 +6,7 @@ out += template.compileComponent('inject-object-expression/modal')(template, tem
 let slot_main = "";
 try {
 $lineNumber = 2;
-slot_main += `${template.escape($context.foo)}`;
+slot_main += `${$context.foo}`;
 } catch (error) {
 template.reThrow(error, $filename, $lineNumber);
 }

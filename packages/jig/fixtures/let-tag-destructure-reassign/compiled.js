@@ -4,9 +4,9 @@ let $filename = "{{__dirname}}index.edge";
 try {
 let {username, age: userAge} = state.user;
 $lineNumber = 2;
-out += `${template.escape(username)}`;
+out += `${username}`;
 out += ", ";
-out += `${template.escape(userAge)}`;
+out += `${userAge}`;
 } catch (error) {
 template.reThrow(error, $filename, $lineNumber);
 }

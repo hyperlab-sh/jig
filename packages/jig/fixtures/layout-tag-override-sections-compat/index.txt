@@ -1,3 +1,0 @@
-This is the base template
-
-I will override the base content

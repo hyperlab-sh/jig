@@ -8,9 +8,9 @@ state.users.push({
 $lineNumber = 2;
 template.loop(state.users, function (user) {
 out += "\n";
-out += "  - ";
+out += "- ";
 $lineNumber = 3;
-out += `${template.escape(user.username)}`;
+out += `${user.username}`;
 });
 } catch (error) {
 template.reThrow(error, $filename, $lineNumber);

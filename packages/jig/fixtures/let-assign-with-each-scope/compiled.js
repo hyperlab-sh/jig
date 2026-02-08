@@ -10,14 +10,14 @@ $lineNumber = 3;
 index = index + 1;
 out += "  ";
 $lineNumber = 4;
-out += `${template.escape(index)}`;
+out += `${index}`;
 });
 $lineNumber = 6;
 state.index = (state.index || 0) + 1;
 out += "";
 out += "\n";
 $lineNumber = 8;
-out += `${template.escape(state.index)}`;
+out += `${state.index}`;
 } catch (error) {
 template.reThrow(error, $filename, $lineNumber);
 }

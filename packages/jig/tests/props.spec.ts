@@ -47,148 +47,57 @@ test.group('ComponentProps', () => {
     })
   })
 
-  test('serialize props to html attributes', ({ assert }) => {
+  test('merge defaults with props', ({ assert }) => {
     const props = ComponentProps.create({
       class: ['foo', 'bar'],
       onclick: 'foo = bar',
     })
-    assert.equal(props.toAttrs().value, 'class="foo bar" onclick="foo = bar"')
-  })
-
-  test('serialize by merging custom properties', ({ assert }) => {
-    const props = ComponentProps.create({
+    const merged = props.merge({ id: '1' })
+    assert.deepEqual(merged.all(), {
+      id: '1',
       class: ['foo', 'bar'],
       onclick: 'foo = bar',
     })
-    assert.equal(
-      props.merge({ id: '1' }).toAttrs().value,
-      'id="1" class="foo bar" onclick="foo = bar"'
-    )
   })
 
-  test('serialize specific keys to html attributes', ({ assert }) => {
+  test('props override defaults in merge', ({ assert }) => {
     const props = ComponentProps.create({
-      class: ['foo', 'bar'],
-      onclick: 'foo = bar',
+      class: 'user-class',
     })
-    assert.equal(props.only(['class']).toAttrs().value, 'class="foo bar"')
+    const merged = props.merge({ class: 'default-class', id: '1' })
+    assert.deepEqual(merged.all(), {
+      class: 'user-class',
+      id: '1',
+    })
   })
 
-  test('serialize specific keys and merge custom properties', ({ assert }) => {
-    const props = ComponentProps.create({
-      class: ['foo', 'bar'],
-      onclick: 'foo = bar',
-    })
-    assert.equal(props.only(['class']).merge({ id: '1' }).toAttrs().value, 'id="1" class="foo bar"')
+  test('mergeUnless skips merge when condition is true', ({ assert }) => {
+    const props = ComponentProps.create({ title: 'Hello' })
+    const result = props.mergeUnless(true, { id: '1' })
+    assert.strictEqual(result, props)
   })
 
-  test('serialize all except defined keys to html attributes', ({ assert }) => {
-    const props = ComponentProps.create({
-      class: ['foo', 'bar'],
-      onclick: 'foo = bar',
-    })
-
-    assert.equal(props.except(['class']).toAttrs().value, 'onclick="foo = bar"')
+  test('mergeUnless merges when condition is false', ({ assert }) => {
+    const props = ComponentProps.create({ title: 'Hello' })
+    const result = props.mergeUnless(false, { id: '1' })
+    assert.deepEqual(result.all(), { id: '1', title: 'Hello' })
   })
 
-  test('serialize specific keys and merge custom properties', ({ assert }) => {
-    const props = ComponentProps.create({
-      class: ['foo', 'bar'],
-      onclick: 'foo = bar',
-    })
-
-    assert.equal(
-      props.except(['class']).merge({ id: '1' }).toAttrs().value,
-      'id="1" onclick="foo = bar"'
-    )
+  test('mergeIf merges when condition is true', ({ assert }) => {
+    const props = ComponentProps.create({ title: 'Hello' })
+    const result = props.mergeIf(true, { id: '1' })
+    assert.deepEqual(result.all(), { id: '1', title: 'Hello' })
   })
 
-  test('merge default and user supplied classes', ({ assert }) => {
-    const props = ComponentProps.create({
-      class: ['foo', 'bar'],
-      onclick: 'foo = bar',
-    })
-
-    assert.equal(
-      props
-        .except(['onclick'])
-        .merge({ class: ['foo', 'baz'] })
-        .toAttrs().value,
-      'class="foo baz bar"'
-    )
+  test('mergeIf skips merge when condition is false', ({ assert }) => {
+    const props = ComponentProps.create({ title: 'Hello' })
+    const result = props.mergeIf(false, { id: '1' })
+    assert.strictEqual(result, props)
   })
 
-  test('merge default and user supplied classes as object', ({ assert }) => {
-    const props = ComponentProps.create({
-      class: [
-        'foo',
-        {
-          'input-error': false,
-          'input-disabled': true,
-          'input-large': false,
-          'input-medium': true,
-          'input-rounded': true,
-        },
-      ],
-      onclick: 'foo = bar',
-    })
-
-    assert.equal(
-      props
-        .except(['onclick'])
-        .merge({ class: ['foo', 'input-error'] })
-        .toAttrs().value,
-      'class="foo input-error input-disabled input-medium input-rounded"'
-    )
-  })
-
-  test('mergeUnless a conditional is true', ({ assert }) => {
-    const props = ComponentProps.create({
-      class: [
-        'foo',
-        {
-          'input-error': false,
-          'input-disabled': true,
-          'input-large': false,
-          'input-medium': true,
-          'input-rounded': true,
-        },
-      ],
-      ignoreExistingClasses: true,
-      onclick: 'foo = bar',
-    })
-
-    assert.equal(
-      props
-        .except(['onclick', 'ignoreExistingClasses'])
-        .mergeUnless(props.get('ignoreExistingClasses'), { class: ['foo', 'input-error'] })
-        .toAttrs().value,
-      'class="foo input-disabled input-medium input-rounded"'
-    )
-  })
-
-  test('mergeIf a conditional is true', ({ assert }) => {
-    const props = ComponentProps.create({
-      class: [
-        'foo',
-        {
-          'input-error': false,
-          'input-disabled': true,
-          'input-large': false,
-          'input-medium': true,
-          'input-rounded': true,
-        },
-      ],
-      applyDefaults: true,
-      onclick: 'foo = bar',
-    })
-
-    assert.equal(
-      props
-        .except(['onclick', 'applyDefaults'])
-        .mergeIf(props.get('applyDefaults'), { class: ['foo', 'input-error'] })
-        .toAttrs().value,
-      'class="foo input-error input-disabled input-medium input-rounded"'
-    )
+  test('has checks key existence', ({ assert }) => {
+    const props = ComponentProps.create({ title: 'Hello' })
+    assert.isTrue(props.has('title'))
+    assert.isFalse(props.has('missing'))
   })
 })

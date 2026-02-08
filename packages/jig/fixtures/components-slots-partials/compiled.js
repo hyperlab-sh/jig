@@ -6,7 +6,7 @@ out += template.compileComponent("components-slots-partials/alert")(template, te
 let slot_main = "";
 try {
 $lineNumber = 2;
-slot_main += template.compilePartial("components-slots-partials/partial")(template,state,$context);
+slot_main += template.indentOutput(template.compilePartial("components-slots-partials/partial")(template,state,$context), "  ");
 } catch (error) {
 template.reThrow(error, $filename, $lineNumber);
 }
