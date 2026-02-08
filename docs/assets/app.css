@@ -1,3 +1,12 @@
+@font-face {
+  font-family: 'Martian Grotesk';
+  src: url('/fonts/MartianGrotesk-VFVF.woff2') format('woff2'),
+       url('/fonts/MartianGrotesk-VFVF.ttf') format('truetype');
+  font-weight: 100 900;
+  font-stretch: 75% 125%;
+  font-display: swap;
+}
+
 @import 'unpoly';
 @import '@docsearch/css';
 
