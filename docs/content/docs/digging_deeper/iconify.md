@@ -1,18 +1,18 @@
 # Svg Icons (via Iconify)
 
-Edge has an official integration for rendering icons using [Iconify](https://icon-sets.iconify.design/). Iconify has over 100 open-source icon sets you can reference using a unified API.
+Jig has an official integration for rendering icons using [Iconify](https://icon-sets.iconify.design/). Iconify has over 100 open-source icon sets you can reference using a unified API.
 
 ## Installation
-The Edge and Iconify integration is a plugin you must install from the npm packages registry.
+The Jig and Iconify integration is a plugin you must install from the npm packages registry.
 
 ```sh
 npm i edge-iconify
 ```
 
-The next step is to register the plugin with Edge.
+The next step is to register the plugin with Jig.
 
 ```ts
-import edge from 'edge.js'
+import edge from 'jig'
 import { edgeIconify } from 'edge-iconify'
 
 edge.use(edgeIconify)
@@ -20,7 +20,7 @@ edge.use(edgeIconify)
 
 ### Installing Iconify bundles
 
-Before you can render icons, you will have to install the Iconify icon bundles. Iconify provides various distribution bundles. However, the Edge integration works only with JSON collections.
+Before you can render icons, you will have to install the Iconify icon bundles. Iconify provides various distribution bundles. However, the Jig integration works only with JSON collections.
 
 Let's install and use the [HeroIcons](https://icon-sets.iconify.design/heroicons/) icon set.
 
@@ -29,7 +29,7 @@ npm i @iconify-json/heroicons
 ```
 
 ```ts
-import { Edge } from 'edge.js'
+import { Edge } from 'jig'
 // highlight-start
 import { edgeIconify, addCollection } from 'edge-iconify'
 import { icons as heroIcons } from '@iconify-json/heroicons'

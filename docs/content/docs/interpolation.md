@@ -4,7 +4,7 @@ summary: Learn how to embed JavaScript expression alongside raw text
 
 # Interpolation
 
-Interpolation refers to embedding the output of JavaScript expressions alongside the raw text markup. EdgeJS uses double curly braces `{{ }}` as delimiters. 
+Interpolation refers to embedding the output of JavaScript expressions alongside the raw text markup. Jig uses double curly braces `{{ }}` as delimiters. 
 
 ```edge
 Hello {{ username }}!
@@ -16,7 +16,7 @@ Given the username is `Virk`. The output will be
 Hello Virk!
 ```
 
-You can use any valid [JavaScript expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators#expressions) inside the curly braces, and Edge will evaluate it for you.
+You can use any valid [JavaScript expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators#expressions) inside the curly braces, and Jig will evaluate it for you.
 
 ```edge
 {{ user.username }}
@@ -136,48 +136,38 @@ Hello {{
 }}
 ```
 
-## Escaped HTML output
+## Filter syntax
 
-The output of a JavaScript expression is HTML escaped to prevent your applications from XSS attacks.
-
-Given the following HTML string
+Jig supports a filter syntax for transforming output. Use `{{ mode :: expression }}` where `mode` is a registered filter name.
 
 ```edge
-{{
- '<span style="color: red">This should be red.</span>'
-}}
+{{ json :: { name: 'User', id: 1 } }}
 ```
 
-The output will be 
+Output:
 
 ```
-&lt;span style="color: red"&gt;This should be red.&lt;/span&gt;
+{"name":"User","id":1}
 ```
 
-If you want to render HTML as it is, you can either wrap it inside triple curly braces or use the `html.safe` global method.
+The built-in `json` filter outputs JSON. You can register custom filters using `jig.registerFilter`:
 
-```edge
-{{{
- '<span style="color: red">This should be red.</span>'
-}}}
+```ts
+jig.registerFilter('upper', (value) => String(value).toUpperCase())
 ```
 
 ```edge
-{{
-  html.safe(
-    '<span style="color: red">This should be red.</span>'
-  )
-}}
+{{ upper :: username }}
 ```
 
-## Skipping curly braces from evaluation 
+## Skipping curly braces from evaluation
 
-If you are using Edge in combination with a frontend framework that also uses double curly braces, you can instruct Edge to skip certain statements by prefixing the braces with the `@` symbol.
+If you are using Jig to generate code that includes double curly braces (e.g., generating templates for other systems), you can instruct Jig to skip certain statements by prefixing the braces with the `@` symbol.
 
 ```edge
 {{-- Input -- }}
-Edge should not parse @{{ username }}
+Jig should not parse @{{ username }}
 
 {{-- Output -- }}
-Edge should not parse {{ username }}
+Jig should not parse {{ username }}
 ```

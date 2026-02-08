@@ -1,10 +1,10 @@
 ---
-summary: Edge is a simple, Modern and batteries included template engine for Node.js
+summary: Jig is a template engine for code generation in Node.js, forked from Edge
 ---
 
 # Introduction
 
-Edge is a **simple**, **Modern**, and **batteries included** template engine for Node.js. Edge is similar to writing JavaScript. If you know JavaScript, you know Edge.
+Jig is a template engine for Node.js purpose-built for **code generation**. It is a fork of [Edge](https://edgejs.dev) — the template engine behind [AdonisJS](https://adonisjs.com) — with HTML-specific features stripped out and new capabilities like implicit indentation control and filter syntax added in. If you know JavaScript, you know Jig.
 
 <div class="feature_highlight">
 
@@ -68,16 +68,16 @@ You have made {{ payments.length }} payments so far.
 
 ```edge
 @accordion()
-  @accordion.item({ title: 'What is Edge?' })
-    Edge is a template engine for Node.js
+  @accordion.item({ title: 'What is Jig?' })
+    Jig is a template engine for code generation
   @end
 
-  @accordion.item({ title: 'Why should I use Edge?' })
+  @accordion.item({ title: 'Why should I use Jig?' })
     Because you need a template engine 🤷🏻‍♂️
   @end
 
-  @accordion.item({ title: 'How can I support Edge?' })
-    By becoming a sponsor on Github
+  @accordion.item({ title: 'How can I contribute?' })
+    By opening issues and PRs on Github
   @end
 @end
 ```
@@ -88,59 +88,33 @@ You have made {{ payments.length }} payments so far.
 
 ## Why another template engine?
 
-Many will not ask this question because all the popular template engines in the Node.js ecosystem are on life support or have barely innovated in the past few years.
+Edge has powered AdonisJS for almost seven years and is battle-tested. Jig inherits that foundation and adapts it for code generation — where you need clean, predictable output without HTML baggage.
 
-On the other hand, we have evolved and used Edge inside [AdonisJS](https://adonisjs.com) for almost seven years. Following are some of the hand-picked features of Edge.
+### Differences from Edge
 
-- Edge is not restrictive - You can write any JavaScript expression inside it.
-- Accurate error stack.
-- Simple mental model and no custom dialect to learn.
+Jig is specifically optimized for code generation, not HTML rendering:
+
+- **No HTML escaping**: `{{ }}` outputs raw values. There's no automatic HTML escaping since you're generating code, not HTML.
+- **Implicit indentation control**: Block tag content is automatically dedented, and `@include` re-indents partial output. Clean output without manual whitespace management.
+- **Filter syntax**: New `{{ mode :: expr }}` syntax for output transformation. Built-in `json` filter with extensible `registerFilter` API.
+- **No HTML-specific helpers**: Removed `html.attrs`, `html.classNames`, `nl2br`, and other HTML utilities.
+- **Same powerful syntax**: Inherits Edge's lexer and parser, so you still get `.edge` file syntax, components, slots, and all the features you know.
+
+### Key Features
+
+- Not restrictive — write any JavaScript expression inside templates.
+- Accurate error stack pointing to the original source file and line.
+- Simple mental model — no custom dialect to learn.
+- **Implicit indentation control** — block tags automatically strip cosmetic indentation, and include tags re-indent partial output. Template nesting doesn't pollute output formatting.
 - Components layer with support for slots and provide/inject API.
-- Icons integration with [Iconify](https://iconify.design/).
-- Extensible API. 80% of Edge features are implemented using the public API.
+- Extensible API. 80% of Jig features are implemented using the public API.
+- Filter syntax for custom output transformations.
 
-## Edge vs Vue.js / React / Svelte?
+## Why should I use Jig?
 
-Edge is a backend template engine completely different from frontend libraries like Vue.js or React.
-
-- There is no Reactivity in Edge.
-- It is not tied to any DOM implementation. Edge is not even tied to HTML.
-- You do not have to compile Edge templates. They are compiled at runtime.
-
-A better comparison will be Nunjucks vs. Edge or Pug vs. Edge.
-
-## Edge vs JSX
-
-While JSX is excellent, it is technically not a template engine. JSX is a JavaScript syntax extension for XML, commonly used in frameworks like React, which many web developers employ to generate HTML.
-
-On the other hand, Edge is a template engine that you can embed inside any markup language. Be it Markdown, JSON, YAML, and, of course, HTML.
-
-I like JSX for many reasons, including type safety (when used with TypeScript). However, JSX can get verbose and is slightly low-level to cater to everyone's taste. On the other hand, Edge can be an excellent fit for individuals who enjoy the template engine's terse syntax and expressive nature.
-
-## Why should I use Edge?
-
-If you like the simplicity of using backend template engines and have been looking for one that feels modern, refreshing, and does not force you to learn a new language, then Edge is for you.
-
-If you swim in the `<your-frontend-framework>` ecosystem, you do not need Edge. Imagine, you never opened this website 😉
+If you're building code generators, scaffolding tools, or any system that needs to output structured text (TypeScript, GraphQL schemas, configuration files, etc.), Jig provides a clean template syntax without the overhead of HTML-specific features.
 
 ## Next steps
 
 - Start with the [Getting Started](./getting_started.md) guide.
-- Read the [Syntax specification](./syntax_specification.md) guide to understand the Edge templating syntax better.
-<!-- - Browse [components examples](). -->
-
-## Call for Contributors
-
-We are seeking contributors to help us create syntax highlighting extensions for all mainstream code editors.
-
-- **Sublime Text** - [Officially supported](https://github.com/edge-js/edge-sublime)
-- **VSCode** - [Officially supported](https://marketplace.visualstudio.com/items?itemName=AdonisJS.vscode-edge)
-- **Zed** - [Unofficially supported](https://zed.dev/extensions/edge) 
-- **Vim** - [Unofficially supported](https://github.com/Yohannfra/edge.vim).
-- **WebStorm** - Need contributors. The JetBrains issues tracker has an [open issue](https://youtrack.jetbrains.com/issue/WEB-41625/AdonisJS-.edge-template-engine-support) requesting a syntax highlighter.
-
-Do let us know by [opening an issue on Github](https://github.com/edge-js/edge/issues/new?title=Creating%20a%20syntax%20highlighter%20for%20%3Ccode%20editor%3E) if you decide to build an extension for a code editor. You can learn more about the Edge syntax by reading the [syntax specification](./syntax_specification.md) guide.
-
-## Sponsors
-
-::include{template="partials/sponsors"}
+- Read the [Syntax specification](./syntax_specification.md) guide to understand the Jig templating syntax better.

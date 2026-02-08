@@ -14,11 +14,11 @@ You can use slots to render templates. Let's create a `app.edge` file inside the
   <meta charset="utf-8">
   <title>{{ title || "Your default title" }}</title>
   @if ($slots.meta)
-    {{{ await $slots.meta() }}}
+    {{ await $slots.meta() }}
   @endif
 </head>
 <body>
-  {{{ await $slots.main() }}}
+  {{ await $slots.main() }}
 </body>
 </html>
 ```
@@ -36,7 +36,7 @@ In this example, we want to render the main content of our welcome page using `$
 // title: views/welcome.edge
 @layout.app({ title: "Welcome page title" })
   @slot('meta')
-    <meta name="description" content="A welcome page made with EdgeJS">
+    <meta name="description" content="A welcome page made with Jig">
   @endslot
 
   @slot('main')

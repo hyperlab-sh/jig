@@ -1,30 +1,30 @@
 ---
-summary: In-depth guide on Edge syntax specification
+summary: In-depth guide on Jig syntax specification
 ---
 
 # Syntax specification
 
-This document outlines the Edge templating syntax specification. You can reference this doc to understand the Edge internals better or create a syntax highlighter for your favorite code editor.
+This document outlines the Jig templating syntax specification. You can reference this doc to understand Jig internals better or create a syntax highlighter for your favorite code editor.
 
 ## Goals
 
-Edge's primary goal is not to introduce any new dialect to the templating layer. Instead, use JavaScript everywhere.
+Jig's primary goal is not to introduce any new dialect to the templating layer. Instead, use JavaScript everywhere.
 
 1. Keep the syntax closer to JavaScript.
 2. It should be easier to type and understand.
-3. Edge should work with any markup language and not just HTML.
+3. Jig should work with any text format (code, config files, schemas, etc.).
 4. Generate error stacks pointing to the original source file and the line number.
 
 ## Primitives
 
-Edge is built on two core primitives, i.e
+Jig is built on two core primitives:
 
 - **Curly braces**: The familiar curly braces `{{ }}` are used to evaluate a JavaScript expression.
-- **Edge tags**: Edge tags starts with an `@` symbol followed by the tag name. Tags can receive properties and have children elements surrounded by an opening and a closing statement.
+- **Jig tags**: Jig tags start with an `@` symbol followed by the tag name. Tags can receive properties and have children elements surrounded by an opening and a closing statement.
 
 ## Curly braces
 
-Edge uses the familiar curly braces `{{ }}` for evaluating JavaScript expressions. The output of the expression is concatenated to the output string. For example:
+Jig uses the familiar curly braces `{{ }}` for evaluating JavaScript expressions. The output of the expression is concatenated to the output string. For example:
 
 ```edge
 Hello {{ username }}!
@@ -67,57 +67,24 @@ Hello {{
 }}
 ```
 
-### Escaped HTML output
-
-Edge performs HTML escaping on JavaScript expressions output rendered using the mustache braces.
-
-Given the following HTML string
-
-```edge
-{{
- '<span style="color: red">This should be red.</span>'
-}}
-```
-
-The output will be 
-
-```
-&lt;span style="color: red"&gt;This should be red.&lt;/span&gt;
-```
-
-If you want to render HTML as it is, you can either wrap it inside triple curly braces or use the `html.safe` global method.
-
-```edge
-{{{
- '<span style="color: red">This should be red.</span>'
-}}}
-```
-
-```edge
-{{
-  html.safe(
-    '<span style="color: red">This should be red.</span>'
-  )
-}}
-```
 
 ### Escaping curly braces
 
-Suppose you are using Edge in combination with a frontend template engine that also uses curly braces for interpolation. In that case, you may use the `@` symbol to inform Edge to skip a given statement. For example:
+Suppose you are using Jig to generate code that contains curly braces (e.g., generating templates for other systems). In that case, you may use the `@` symbol to inform Jig to skip a given statement. For example:
 
 ```edge
 // title: Input
-Edge should not parse @{{ username }}
+Jig should not parse @{{ username }}
 ```
 
 ```edge
 // title: Output
-Edge should not parse {{ username }}
+Jig should not parse {{ username }}
 ```
 
-## Edge tags
+## Jig tags
 
-Edge tags are used to add rich features to the templating layer. Features like conditionals, loops, components, and partials are implemented using the [tags API](./digging_deeper/creating-custom-tags.md). 
+Jig tags are used to add rich features to the templating layer. Features like conditionals, loops, components, and partials are implemented using the [tags API](./digging_deeper/creating-custom-tags.md). 
 
 
 :::note
@@ -209,9 +176,52 @@ Hello
 Hello virk
 ```
 
+### Implicit indentation control
+
+Block tags like `@if`, `@each`, `@unless`, `@component`, `@slot`, `@pushTo`, and `@pushOnceTo` automatically remove cosmetic indentation from their contents. This ensures the output reflects the logical structure of the data, not the visual nesting of the template source.
+
+The dedent amount is computed as: `firstContentLineIndent - tagIndent`, clamped to zero.
+
+```edge
+// title: Template
+function render() {
+  @if(showGreeting)
+    return "hello"
+  @end
+}
+```
+
+```
+// title: Output
+function render() {
+  return "hello"
+}
+```
+
+Without implicit indentation control, the output would contain extra leading whitespace on the `return` line. Jig strips the excess indentation so output aligns with the tag's position, not the template's visual nesting.
+
+Include tags (`@include`, `@includeIf`) handle indentation differently: they indent subsequent lines of the partial's output based on the include tag's column position. This ensures multi-line partial output stays aligned with where the include tag appears.
+
+```edge
+// title: Template
+before
+  @include('partial')
+after
+```
+
+If `partial` renders as `line1\nline2\nline3`, the output will be:
+
+```
+before
+  line1
+  line2
+  line3
+after
+```
+
 ## Comments
 
-You can write comments in Edge by wrapping the text inside the `{{-- --}}` block.
+You can write comments in Jig by wrapping the text inside the `{{-- --}}` block.
 
 ```edge
 {{-- Inline before --}} Hello {{-- Inline after --}}

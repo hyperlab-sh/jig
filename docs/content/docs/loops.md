@@ -1,5 +1,5 @@
 ---
-summary: Learn how to loop over Arrays and Objects in Edge
+summary: Learn how to loop over Arrays and Objects in Jig
 ---
 
 # Loops
@@ -23,7 +23,7 @@ You can loop over `Objects` and `Arrays` using the `@each` tag. The `each` tag's
 You can loop over JavaScript objects using the same `@each` tag. For example:
 
 ```ts
-await edge.render('recipes', {
+await jig.render('recipes', {
   food: {
     ketchup: '5 tbsp',
     mustard: '1 tbsp',

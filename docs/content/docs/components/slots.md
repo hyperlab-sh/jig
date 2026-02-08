@@ -10,20 +10,15 @@ Let's create a card component and use slots to render different card sections.
 
 ```edge
 // title: views/components/card.edge
-@let(attributes = $props
-  .merge({
-    class: ['card']
-  })
-  .toAttrs()
-)
+@let(mergedProps = $props.merge({ role: 'region' }))
 
-<div {{ attributes }}>
+<div {{ json :: mergedProps.all() }}>
   <div class="card_header">
-    {{{ await $slots.header() }}}
+    {{ await $slots.header() }}
   </div>
 
   <div class="card_contents">
-    {{{ await $slots.content() }}}
+    {{ await $slots.content() }}
   </div>
 </div>
 ```
@@ -31,13 +26,13 @@ Let's create a card component and use slots to render different card sections.
 Now, let's use the `card` component and define its contents using slots.
 
 ```edge
-@card({ class: ['card-lg', 'card-shadow'] })
+@card({ role: 'article', variant: 'large' })
   @slot('header')
-    <strong> Quick start </strong>
+    Quick start
   @end
-  
+
   @slot('content')
-    <p> Start building your next project in minutes </p>
+    Start building your next project in minutes
   @end
 @end
 ```
@@ -55,7 +50,7 @@ The main slot refers to all the contents inside the component's opening and clos
   </div>
 
   <div class="card_contents">
-    {{{ await $slots.main() }}}
+    {{ await $slots.main() }}
   </div>
 </div>
 ```
@@ -86,11 +81,11 @@ In the following example, we define the `cardSize` and the `sizes` variables. Th
 
 <div class="{{ sizes[cardSize] }}">
   <div class="card_header">
-    {{{ await $slots.header() }}}
+    {{ await $slots.header() }}
   </div>
 
   <div class="card_contents">
-    {{{ await $slots.content() }}}
+    {{ await $slots.content() }}
   </div>
 </div>
 ```
@@ -124,13 +119,13 @@ However, a component can pass data to the slot when rendering it. Let's look at 
 <div class="{{ sizes[cardSize] }}">
   <div class="card_header">
     // highlight-start
-    {{{ await $slots.header({ sizes, cardSize }) }}}
+    {{ await $slots.header({ sizes, cardSize }) }}}
     // highlight-end
   </div>
 
   <div class="card_contents">
     // highlight-start
-    {{{ await $slots.content({ sizes, cardSize }) }}}
+    {{ await $slots.content({ sizes, cardSize }) }}}
     // highlight-end
   </div>
 </div>

@@ -1,17 +1,17 @@
 ---
-summary: Learn how to use Edge Markdown to transform Markdown documents into HTML with support for MDC components, GitHub Flavored Markdown, and enhanced code blocks.
+summary: Learn how to use Jig Markdown to transform Markdown documents into HTML with support for MDC components, GitHub Flavored Markdown, and enhanced code blocks.
 ---
 
-# Edge Markdown
-Edge Markdown builds on top of [Remark](https://unifiedjs.com/explore/package/remark/) and [MDC](https://github.com/nuxtlabs/remark-mdc) to transform Markdown documents into HTML.
+# Jig Markdown
+Jig Markdown builds on top of [Remark](https://unifiedjs.com/explore/package/remark/) and [MDC](https://github.com/nuxtlabs/remark-mdc) to transform Markdown documents into HTML.
 
 **MDC (Markdown Components)** is an extended Markdown format that allows you to use components directly inside Markdown. This makes it easy to combine prose and interactive elements in the same document.
 
-The following are some of the key features of Edge Markdown.
+The following are some of the key features of Jig Markdown.
 
 - **GitHub Flavored Markdown (GFM)**: Support for GFM features such as tables, task lists, autolinks, and strikethrough.
 
-- **Embedding Edge components**: Use Edge components inline within your Markdown files using MDC syntax.
+- **Embedding Jig components**: Use Jig components inline within your Markdown files using MDC syntax.
 
 - **Enhanced code blocks**: Code samples are rendered with **Shiki**, offering syntax highlighting, code block titles, line highlighting, and inline diffs.
 
@@ -29,7 +29,7 @@ npm i edge-markdown
 The next step is to register the plugin with Edge.
 
 ```ts
-import edge from 'edge.js'
+import edge from 'jig'
 import { edgeMarkdown } from 'edge-markdown'
 
 edge.use(edgeMarkdown())
@@ -55,10 +55,10 @@ The `@markdown` tag writes the generated HTML to the output. If you want to acce
   file: absolutePathToMdFile,
 }))
 
-<h1>{{{ doc.frontmatter.title }}}</h1>
-<div>{{{ doc.content }}}</div>
+<h1>{{ doc.frontmatter.title }}</h1>
+<div>{{ doc.content }}</div>
 
-<div>{{{ doc.toc }}}</div>
+<div>{{ doc.toc }}</div>
 ```
 
 ## Configuration options
@@ -155,11 +155,11 @@ By default, headings up to level 2 are used to generate the TOC. However, you ma
 }))
 
 <div>
-  {{{ doc.content }}}
+  {{ doc.content }}
 </div>
 
 <div>
-  {{{ doc.toc }}}
+  {{ doc.toc }}
 </div>
 ```
 

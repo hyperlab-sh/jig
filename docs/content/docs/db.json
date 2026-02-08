@@ -90,61 +90,19 @@
     "category": "Components"
   },
   {
-    "permalink": "uikit/introduction",
-    "title": "Introduction",
-    "draft": true,
-    "contentPath": "./uikit/introduction.md",
-    "category": "UIKit"
-  },
-  {
-    "permalink": "uikit/form_controls",
-    "title": "Form controls",
-    "draft": true,
-    "contentPath": "./uikit/form_controls.md",
-    "category": "UIKit"
-  },
-  {
-    "permalink": "uikit/formatted_inputs",
-    "title": "Formatted inputs",
-    "draft": true,
-    "contentPath": "./uikit/formatted_inputs.md",
-    "category": "UIKit"
-  },
-  {
-    "permalink": "uikit/tabs",
-    "title": "Tabs",
-    "draft": true,
-    "contentPath": "./uikit/tabs.md",
-    "category": "UIKit"
-  },
-  {
-    "permalink": "uikit/alerts",
-    "title": "Alerts",
-    "draft": true,
-    "contentPath": "./uikit/alerts.md",
-    "category": "UIKit"
-  },
-  {
-    "permalink": "uikit/accordion",
-    "title": "Accordion",
-    "draft": true,
-    "contentPath": "./uikit/accordion.md",
-    "category": "UIKit"
-  },
-  {
     "permalink": "helpers",
     "title": "Helpers",
     "contentPath": "./digging_deeper/helpers.md",
     "category": "Digging deeper"
   },
   {
-    "permalink": "edge-iconify",
+    "permalink": "iconify",
     "title": "SVG icons",
     "contentPath": "./digging_deeper/iconify.md",
     "category": "Digging deeper"
   },
   {
-    "permalink": "edge-markdown",
+    "permalink": "markdown",
     "title": "Markdown rendering",
     "contentPath": "./digging_deeper/edge-markdown.md",
     "category": "Digging deeper"
@@ -156,8 +114,8 @@
     "category": "Digging deeper"
   },
   {
-    "permalink": "changelog/upgrading-to-v6",
-    "title": "Upgrading to version 6",
+    "permalink": "upgrading-to-v6",
+    "title": "Upgrading to Jig",
     "contentPath": "./changelog/upgrading-to-v6.md",
     "category": "Changelog"
   }

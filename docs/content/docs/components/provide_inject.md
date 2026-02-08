@@ -9,11 +9,11 @@ Most of the time, a group of related components will use the Provide/inject API 
 
 ## Rendering a Map with Markers
 
-Let's reproduce the Maps example from Svelte's context API tutorial and learn how to build it with Edge. We will also use [Alpine.js](https://alpinejs.dev/) to render the Map using the Mapbox JavaScript SDK.
+Let's reproduce the Maps example from Svelte's context API tutorial and learn how to build it with Jig. We will also use [Alpine.js](https://alpinejs.dev/) to render the Map using the Mapbox JavaScript SDK.
 
 :::note
 
-The final source code for this example is available on [Github](https://github.com/edge-js/example-map-component). You will need an [access token](https://docs.mapbox.com/help/glossary/access-token) for your Mapbox account to render the Map.
+The final source code for this example is available on [Github](https://github.com/jig/example-map-component). You will need an [access token](https://docs.mapbox.com/help/glossary/access-token) for your Mapbox account to render the Map.
 
 :::
 
@@ -119,7 +119,7 @@ document.addEventListener('alpine:init', () => {
 
 ### Final result
 
-The final source code for this example is available on [Github](https://github.com/edge-js/example-map-component). You will need an [access token](https://docs.mapbox.com/help/glossary/access-token) for your Mapbox account to render the Map.
+The final source code for this example is available on [Github](https://github.com/jig/example-map-component). You will need an [access token](https://docs.mapbox.com/help/glossary/access-token) for your Mapbox account to render the Map.
 
 ![](./provide_inject_result.png)
 

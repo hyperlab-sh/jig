@@ -1,10 +1,10 @@
 ---
-summary: Learn how to write conditionals in Edge
+summary: Learn how to write conditionals in Jig
 ---
 
 # Conditionals
 
-You can write conditional blocks within Edge templates using the `@if`, `@elseif`, and the `@else` tags. The inner working of these tags is similar to the JavaScript `if/else` statements.
+You can write conditional blocks within Jig templates using the `@if`, `@elseif`, and the `@else` tags. The inner working of these tags is similar to the JavaScript `if/else` statements.
 
 ```edge
 @if(user)

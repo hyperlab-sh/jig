@@ -1,10 +1,10 @@
 ---
-summary: In-depth guide on creating custom Edge tags
+summary: In-depth guide on creating custom Jig tags
 ---
 
 # Creating custom tags
 
-Most of the Edge features are implemented using its public tags API, which you can use to extend the Edge capabilities further.
+Most of the Jig features are implemented using its public tags API, which you can use to extend the Jig capabilities further.
 
 When implementing a custom tag, you will be dealing with **Abstract syntax trees (AST)**, so having prior knowledge of the same will help. 
 
@@ -12,19 +12,19 @@ However, if you are starting with ASTs, we recommend visiting [astexplorer.net](
 
 In this guide, we will cover the following topics.
 
-- Create and register a custom edge tag.
+- Create and register a custom Jig tag.
 - A Hello World introduction to parsing and re-printing ASTs.
-- Implementing a conditional Edge tag.
+- Implementing a conditional Jig tag.
 - Creating locally scoped variables within the conditional block.
 
-## Registering an Edge tag
+## Registering a Jig tag
 A tag must implement the `TagContract` interface, and you can register it using the `edge.registerTag` method.
 
 In the following example, we create a tag named `reverse` which writes a "Hello greeting" to the output.
 
 ```ts
-import edge from 'edge.js'
-import { TagContract } from 'edge.js/types'
+import edge from 'jig'
+import { TagContract } from 'jig/types'
 
 /**
  * Defining a tag
@@ -39,7 +39,7 @@ const reverse: TagContract = {
 }
 
 /**
- * Registering it with Edge
+ * Registering it with Jig
  */
 edge.registerTag(reverse)
 
@@ -51,7 +51,7 @@ const output = await edge.renderRaw('@reverse()')
 console.log(output) // I am the reverse tag
 ```
 
-- `block`: The `block` flag creates a block-level Edge tag which must be used with an opening and a closing statement. For example: The `@if` and `@each` tags are block-level.
+- `block`: The `block` flag creates a block-level Jig tag which must be used with an opening and a closing statement. For example: The `@if` and `@each` tags are block-level.
 - `seekable`: A `seekable` tag accepts one or more arguments. If you create a tag that will never accept arguments, set this flag to `false`.
 - `tagName`: A unique name for the tag.
 - `compile`: The compile method converts the tag to JavaScript output. This is where you will be spending most of your time.
@@ -273,8 +273,8 @@ The `@notification` tag will accept the notification type and render the childre
 Under the hood, the tag will look for the `notifications` object within the [template state](../templates_state.md).
 
 ```ts
-import edge from 'edge.js'
-import { TagContract } from 'edge.js/types'
+import edge from 'jig'
+import { TagContract } from 'jig/types'
 
 const notification: TagContract = {
   /**

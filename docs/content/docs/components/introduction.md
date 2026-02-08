@@ -8,15 +8,15 @@ Components allows you to split the application UI into reusable pieces with isol
 
 Before we talk more about components, let's understand how they differ from components in the frontend ecosystem.
 
-- **No reactivity**: Since Edge is a backend template engine, there is no concept of reactivity in Edge or its components layer.
+- **No reactivity**: Since Jig is a code generation template engine, there is no concept of reactivity in Jig or its components layer.
 
-- **No support CSS or frontend JavaScript**: Edge templates are not processed using build tools. Therefore we do not process inline CSS or create frontend bundles.
+- **No support CSS or frontend JavaScript**: Jig templates are not processed using build tools. They generate code output, not web pages.
 
 ## Creating components
 
-Components are regular Edge templates created with the purpose of reuse. Components can access additional runtime properties like `$props` and `$slots`, which are unavailable to other Edge templates.
+Components are regular Jig templates created with the purpose of reuse. Components can access additional runtime properties like `$props` and `$slots`, which are unavailable to other Jig templates.
 
-We recommend you create components inside the `components` directory of your template's root path. This helps create a visual boundary between the components and the rest of the templates used by your application.
+We recommend you create components inside the `components` directory of your template's root path. This helps create a visual boundary between the components and the rest of the templates used by your code generator.
 
 Let's start by creating a button component. We will store it inside the `components/button.edge` file. 
 
@@ -89,8 +89,8 @@ In the following example, we render the contents of the main slots using the `$s
 See also: [Slots reference](./slots.md)
 
 ```edge
-<button {{ $props.toAttrs() }}>
-  {{{ await $slots.main() }}}
+<button {{ $props.serialize() }}>
+  {{ await $slots.main() }}
 </button>
 ```
 
@@ -107,30 +107,28 @@ The contents of the `main` slot are place between the opening and the closing ta
 
 ## Components as tags
 
-Edge allows you to reference components as tags. So, instead of using the `@component` tag, you can use the component filename as the tag name to render it.
-
+Jig allows you to reference components as tags. So, instead of using the `@component` tag, you can use the component filename as the tag name to render it.
 
 :::note
 
 Components as tags only work for components stored inside the `components` directory.
 
-
 :::
 
 
 ```edge
-// title: views/component/modal.edge
+// title: templates/components/modal.edge
 <div class="modal">
   <header>
-    {{{ await $slots.header() }}}
+    {{ await $slots.header() }}
   </header>
 
   <main>
-    {{{ await $slots.content() }}}
+    {{ await $slots.content() }}
   </main>
 
   <footer>
-    {{{ await $slots.footer() }}}
+    {{ await $slots.footer() }}
   </footer>
 </div>
 ```
@@ -166,7 +164,7 @@ You can reference components as tags from named disks by prefixing the disk name
 
 ### Filename to tagName conversion
 
-You can reference the files stored within the `components` directory as tags inside your edge templates. The following transformation rules are applied when creating a tag from the file name.
+You can reference the files stored within the `components` directory as tags inside your Jig templates. The following transformation rules are applied when creating a tag from the file name.
 
 | Template path | Tag name |
 |---------------|------------|

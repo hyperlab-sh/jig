@@ -1,164 +1,145 @@
 ---
-summary: Everything you need to know when upgrading from v5 to v6
+summary: Migration guide for Edge.js v5 users and what changed in Jig
 ---
 
-# Upgrading to version 6
+# Upgrading to Jig (from Edge.js v5/v6)
 
-The latest release of Edge contains a handful of breaking changes, some performance improvements and most importantly works only with ES modules. This guide covers the steps you must follow to upgrade to `edge.js@6`.
+Jig is a fork of Edge.js v6, optimized for code generation rather than HTML rendering. This page covers all breaking changes and new features.
 
-## Upgrading packages
-You can install the latest release from the npm packages registry. For now, the version 6 is tagged with `@next` tag.
+For Jig-specific documentation, see the [Introduction](../introduction.md) page.
 
-```sh
-npm i edge.js@next
-```
+## Breaking Changes
 
-The functionality of [`edge-supercharged`](https://github.com/edge-js/edge-supercharged) plugin is now baked into Edge directly, hence you can uninstall this package and remove its usage.
+### HTML escaping removed
 
-```sh
-npm uninstall edge-supercharged
-```
+`{{ }}` now outputs raw values. There is no automatic escaping. `{{ }}` and `{{{ }}}` behave identically.
 
-If you were using [`edge-stacks`](https://github.com/edge-js/stacks), and [`edge-iconify`](https://github.com/edge-js/edge-iconify), make sure to update these packages as well.
-
-```sh
-npm i edge-stacks@next
-npm i edge-iconify@next
-```
-
-## Compatibility plugin
-If your projects are not ready for the breaking changes (except ESM migration), you can configure the `migrate` plugin at application startup that provides compatibility between version 5 and 6.
-
-```ts
-import edge from 'edge.js'
-import { migrate } from 'edge.js/plugins/migrate'
-
-edge.use(migrate)
-```
-
-## Breaking changes
-
-- All of the packages are now ESM only. 
-- Requires `Node.js >= 18.16.0`.
-- Layouts and sections have been removed. We recommend using components instead. Configure [compatibility plugin](#compatibility-plugin) to continue using layouts.
-- Changes to the [Props API](#changes-to-props-api).
-- Removed `@set` tag in favor of `@let` and `@assign` tags. [Learn more](#removing-set-tag-in-favor-of-let-and-assign-tags).
-- Changes to global helpers.
-
-## Changes to Props API
-The components props have been changed completely, and methods like `serialize` and `serializeExcept` no longer exist. Instead, you have to use the `toAttrs` method.
-
-:::note
-You can get back the old Props API using the [compatibility plugin](#compatibility-plugin)
-:::
-
-```ts
-/**
- * Serialize all attributes
- */
-// delete-start
-$props.serialize()
-// delete-end
-// insert-start
-$props.toAttrs()
-// insert-end
-
-/**
- * Serialize all except the mentioned attributes
- */
-// delete-start
-$props.serializeExcept(['text'])
-// delete-end
-// insert-start
-$props.except(['text']).toAttrs()
-// insert-end
-
-/**
- * Serialize only the mentioned attributes
- */
-// delete-start
-$props.serializeOnly(['class'])
-// delete-end
-// insert-start
-$props.only(['class']).toAttrs()
-// insert-end
-
-/**
- * Merge custom attributes
- */
-// delete-start
-$props.serializeOnly(['class'], { type: 'text' })
-// delete-end
-// insert-start
-$props.only(['class']).merge({ type: 'text' }).toAttrs()
-// insert-end
-```
-
-## Removing `@set` tag in favor of `@let` and `@assign` tags
-The `@set` tag has been removed in the favor of new `@let` and the `@assign` tags. Their inner workings and syntax are both different from the set tag.
-
-:::note
-You can add back support for the `@set` tag using the [compatibility plugin](#compatibility-plugin)
-:::
-
+**Before (Edge.js v5):**
 ```edge
-/**
- * Define new variable
- */
-// delete-start
+{{-- Escaped output --}}
+{{ userInput }}
+
+{{-- Raw output --}}
+{{{ userInput }}}
+```
+
+**After (Jig):**
+```edge
+{{-- Both produce raw output --}}
+{{ userInput }}
+{{{ userInput }}}
+```
+
+### `safe()` function removed
+
+The `safe()` global function no longer exists. Since all output is raw, there is no need to bypass escaping.
+
+**Before:**
+```edge
+{{ safe('<strong>bold</strong>') }}
+```
+
+**After:**
+```edge
+{{ '<strong>bold</strong>' }}
+```
+
+### HTML helpers removed
+
+The following globals have been removed:
+
+| Removed helper | Reason |
+|---------------|--------|
+| `html.attrs()` | HTML-specific |
+| `html.classNames()` | HTML-specific |
+| `html.escape()` | No escaping in Jig |
+| `html.safe()` | No escaping in Jig |
+| `nl2br()` | HTML-specific |
+| `stringify()` | Use `{{ json :: value }}` filter instead |
+
+### `$props.toAttrs()` removed
+
+The `toAttrs()` method on `ComponentProps` has been removed because it serialized props as HTML attributes. Use `$props.all()` or `$props.serialize()` with the `json` filter instead.
+
+**Before:**
+```edge
+<div {{ $props.toAttrs() }}>
+```
+
+**After:**
+```edge
+{{ json :: $props.all() }}
+```
+
+### `@set` tag removed
+
+The `@set` tag was part of the v5 compatibility layer. Use `@let` for new variables and `@assign` for reassigning existing ones.
+
+**Before:**
+```edge
 @set('username', 'virk')
-// delete-end
-// insert-start
-@let(username = 'virk')
-// insert-end
-
-/**
- * Update existing variable
- */
-// delete-start
-@set('username', 'romain')
-// delete-end
-// insert-start
-@assign(username = 'romain')
-// insert-end
-
-/**
- * Mutate object properties
- */
-// delete-start
-@set(user, 'username', 'romain')
-// delete-end
-// insert-start
-@assign(user.username = 'romain')
-// insert-end
 ```
 
-## Global helpers changes
+**After:**
+```edge
+@let(username = 'virk')
+```
 
-- Remove `e` method in favor of `html.escape`.
-- Remove `stringify` method in favor of `js.stringify`.
-- Remove `safe` method in favor of `html.safe`.
-- Remove `raise` method. It was never documented.
+### Migration plugin removed
+
+The `edge.js/plugins/migrate` export no longer exists. All v5 compatibility features (layouts via `@layout`/`@section`/`@super`, `@set` tag, compat `Props` class) have been removed.
+
+## New Features
+
+### Implicit indentation control
+
+Block tags (`@if`, `@each`, `@unless`, `@component`, `@slot`, `@pushTo`, `@pushOnceTo`) automatically strip cosmetic indentation from their children. The formula is: `dedent = firstContentLineIndent - tagIndent`, clamped to zero.
 
 ```edge
-// delete-start
-{{ e(post.content) }}
-// delete-end
-// insert-start
-{{ html.escape(post.content) }}
-// insert-end
+function render() {
+  @if(showGreeting)
+    return "hello"
+  @end
+}
+```
 
-// delete-start
-{{ stringify(someJSONObject) }}
-// delete-end
-// insert-start
-{{ js.stringify(someJSONObject) }}
-// insert-end
+Output:
+```
+function render() {
+  return "hello"
+}
+```
 
-// delete-start
-{{ safe(post.content) }}
-// delete-end
-// insert-start
-{{ html.safe(post.content) }}
-// insert-end
+Include tags (`@include`, `@includeIf`) automatically indent subsequent lines of the partial's output based on the tag's column position.
+
+```edge
+function setup() {
+  @include('body')
+}
+```
+
+If `body.edge` renders `const a = 1\nreturn a`, the output is:
+```
+function setup() {
+  const a = 1
+  return a
+}
+```
+
+### Filter syntax
+
+Use `{{ filterName :: expression }}` to apply a registered filter to expression output.
+
+```edge
+{{ json :: { name: 'User', id: 1 } }}
+```
+
+The built-in `json` filter calls `JSON.stringify`. Register custom filters with:
+
+```ts
+jig.registerFilter('upper', (value) => String(value).toUpperCase())
+```
+
+```edge
+{{ upper :: username }}
 ```

@@ -8,7 +8,7 @@ Stacks allow you to create inline placeholders for other templates to push conte
 
 :::note
 
-Stacks are available from `edge.js@6.1.0`. Before you start using them, make sure to update the package version.
+Stacks are available since version 6.1.0.
 
 :::
 

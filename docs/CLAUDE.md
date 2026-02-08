@@ -1,110 +1,110 @@
-# Documentation Writing Guidelines
+# CLAUDE.md
 
-This file contains instructions for writing clear, readable documentation for all my projects. These guidelines are based on the principles in `writing-readable-docs.md`.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Working relationship
-- You can push back on ideas-this can lead to better documentation. Cite sources and explain your reasoning when you do so
+## Project Overview
+
+Jig documentation website. A static site generator built on **AdonisJS** using `@dimerapp/content` for markdown-to-HTML rendering with Edge.js templates. Uses Shiki for syntax highlighting, Alpine.js for frontend interactivity, and Unpoly for AJAX navigation.
+
+Documentation site: [jig.saulo.engineer](https://jig.saulo.engineer)
+
+## Commands
+
+```bash
+# Development server (build assets + start server)
+npm run dev
+
+# Start dev server only (without rebuilding assets)
+npm run serve
+
+# Production static export → dist/
+APP_URL=https://jig.saulo.engineer npm run export
+
+# Download sponsor data
+npm run download:sponsors
+```
+
+Dev server runs at `http://localhost:3333/docs/introduction`.
+
+**Note:** `APP_URL` env var is required for `export` to generate correct og:url and twitter:url meta tags.
+
+## Architecture
+
+### Content Organization
+
+- `content/docs/db.json` — Navigation database. Manually maintained; each entry has `permalink`, `title`, `contentPath`, `category`. No convention-based file scanning.
+- `content/docs/**/*.md` — Markdown files with YAML frontmatter (`summary` for SEO)
+- `content/config.json` — Site config (links, fileEditBaseUrl, copyright, optional menu/search)
+- Images/videos stored alongside markdown files in content directories
+
+### Rendering Pipeline
+
+`src/bootstrap.ts` wires the pipeline:
+1. `@dimerapp/content` Collection loads entries from `db.json`
+2. `@dimerapp/edge` RenderingPipeline with `docsHook` from `@dimerapp/docs-theme`
+3. Custom hooks for image rendering
+4. Shiki syntax highlighting with custom VSCode grammars from `vscode_grammars/`
+5. Noctis color theme
+
+### Collections
+
+Defined in `src/collections.ts`. Each collection has its own `db.json`, URL prefix, and renderer. Currently one collection: `docs` at `/docs`.
+
+### Templates
+
+- `templates/docs.edge` — Main content layout (sidebar, content, TOC)
+- `templates/layouts/main.edge` — HTML wrapper (meta tags, fonts, Vite assets, dark mode)
+- `templates/partials/` — Logo, sponsors, features, color mode detection
+- Components from `@dimerapp/docs-theme`: `docs::header`, `docs::sidebar`, `docs::content`, `docs::toc`
+
+### Frontend
+
+- `assets/app.js` — Alpine.js + Unpoly + medium-zoom + DocSearch + edge-uikit tabs
+- `assets/app.css` — Radix Colors (sage/teal), theme variables, `@dimerapp/docs-theme/styles`
+- Dark mode via Alpine.js store + `.dark` CSS class
+
+### Build Scripts
+
+- `bin/serve.ts` — Dev server with URL rewriting, wildcard route matching against collections
+- `bin/build.ts` — Static export: iterates collections, writes each entry to `dist/`
+- `bin/download_sponsors.ts` — Fetches sponsor data from configured URLs
+
+---
+
+## Documentation Writing Guidelines
+
+Guidelines based on `writing-readable-docs.md`.
+
+### Working Relationship
+- Push back on ideas — cite sources and explain reasoning
 - ALWAYS ask for clarification rather than making assumptions
 - NEVER lie, guess, or make up information
 
-## Project context
-- Format: Markdown files with YAML frontmatter
-- Config: content/docs/db.json for navigation
-
-## Document Structure
-
-### General guidelines
-- Explain the topic a little before showcasing the code examples
-- When describing a method, do explain the parameters it accepts
-- Prioritize accuracy and usability of information
-- Check existing patterns for consistency
-- Search for existing information before adding new content. Avoid duplication unless it is done for a strategic reason
-- Start by making the smallest reasonable changes
-- Write an SEO friendly summary in the YAML frontend
+### Document Structure
 
 Every document should be divided into these groups (not all docs need all groups):
 
-### Explanations
-- Most docs will start with an explanation. In certain cases these explanations can be super small.
-- Explanations are text heavy
-- Avoid code examples until the end
-- Goal is comprehension, not copy-paste
-- If there are installation instructions, they should be right after the explanation and before the basic example.
+**Explanations** — Text-heavy, avoid code until end, goal is comprehension. Installation instructions go right after explanation, before basic example.
 
-### Usage
-- Most of our docs are focused on showcasing the usage of a module
-- Its okay to explain a little before showcasing the usage code examples
-- Code examples should be familiar but don't need to be copy-paste ready
-- Can hide supplementary code details that users can reveal if needed
-- The first usage example should be a basic example.
-- Other usage examples can be around small topics or APIs within a module
+**Usage** — Most docs focus here. OK to explain briefly before code examples. Code should be familiar but need not be copy-paste ready. First usage example should be basic.
 
-### Tutorial or Step-by-Step Instructions
-- Not every doc will have step-by-step instructions
-- Include full working examples
-- Focus on getting users to complete tasks with minimal reading
-- Explain less, show more
-- Make examples copy-paste ready
+**Tutorial / Step-by-Step** — Not every doc needs this. Include full working examples. Make examples copy-paste ready. Explain less, show more.
 
-### Reference
-- List separately when possible
-- If included in a doc, cover under a higher-level topic
+**Reference** — List separately when possible.
 
-## Visual Structure Guidelines
+### Visual Structure
+- Use headings freely but don't break sections below H3
+- Admonition blocks: use sparingly — if everything is critical, nothing is
+- Explain first, then show code/visuals — don't surround code with before-and-after explanations
 
-### Headings
-- Use headings freely to break content into digestible sections. However, the sections within an H3 tag should not be broken further.
-- Divide docs into sub-topics with small, focused sections
-- Avoid long linear sections without breaks
-
-### Admonition Blocks
-- Use sparingly - overuse reduces effectiveness
-- Only for critical information that needs user attention
-- If everything is critical, nothing is
-
-### Rich Elements
-- Don't use fancy widgets unnecessarily
-- Avoid over-structuring textual information with complex elements
-- Multiple competing visual elements (text, accordions, admonitions) fight for focus
-
-### Code and Visual Placement
-- Explain first, then show code/visuals
-- Do not surround the code examples with before and after explanations of the same topic.
-
-## Code Examples
-
-### Diff Usage
-- Avoid showing code examples as diffs from previous steps
-- Don't use delete/insert blocks unless its part of step-by-step instructions or tutorials
+### Code Examples
+- Avoid diffs between examples (except in step-by-step tutorials)
+- Usage/reference examples rarely need line highlights
 - Treat related topics as separate usage examples, not incremental changes
 
-### Highlighting
-- Usage and reference examples rarely need line or word highlights
-- Keep highlighting minimal and purposeful unless it's truly step-by-step instructions
-
-## Other Elements
-
-### Tables
-- Use for displaying checklists
-- Keep simple and scannable
-
-### Definition Lists
-- Use for documenting parameters, configuration options, and values
-- Include label, data type, and description
-
-### Keep It Simple
-- No other rich elements needed
-- Focus on clarity over visual complexity
-
-## Writing Tone
-
-- Write simple, declarative sentences. Brevity is a plus. Get to the point.
-- Use present tense
-- Focus on helping users accomplish their goals
-- Prioritize understanding over comprehensive coverage
-- Make examples feel familiar to developers
-- Second-person voice ("you")
-- Prefer wordings that avoid "you"s and "your"s.
-- When using pronouns in reference to a hypothetical person, such as "a user with a session cookie", gender neutral pronouns (they/their/them) should be used
-- Use American English
-- Use the Oxford comma
+### Writing Tone
+- Simple, declarative sentences. Brevity is a plus.
+- Present tense, second-person voice ("you") — but prefer wordings that avoid "you"s
+- American English, Oxford comma
+- Gender-neutral pronouns for hypothetical people
+- Write an SEO-friendly summary in the YAML frontmatter

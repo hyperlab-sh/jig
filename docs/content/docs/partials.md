@@ -25,6 +25,35 @@ You may include partials from other disks by prefixing the disk name before the 
 @include('shared::partials/footer')
 ```
 
+## Indentation handling
+
+When an `@include` tag is indented, Jig automatically indents subsequent lines of the partial's output to match. The first line of output appears at the tag's position, and all following lines receive the same indentation prefix.
+
+```edge
+// title: main.edge
+function setup() {
+  @include('body')
+}
+```
+
+```edge
+// title: body.edge
+const a = 1
+const b = 2
+return a + b
+```
+
+```
+// title: Output
+function setup() {
+  const a = 1
+  const b = 2
+  return a + b
+}
+```
+
+This is automatic — no configuration is needed. If the `@include` tag has no leading whitespace, no extra indentation is added.
+
 ## Include conditionally
 
 You may use the `@includeIf` method to conditionally include partials when a given statement returns `true`. For example:

@@ -4,157 +4,121 @@ summary: Learn about different APIs to define template state
 
 # Templates state
 
-Templates state refers to the data the templates can access during their rendering phase. Edge provides four layers to pass or define the template state.
-
-
-:::note
-
-Since Edge templates are rendered on the server, the data is never shared with the client-side runtime.
-
-:::
+Templates state refers to the data the templates can access during their rendering phase. Jig provides four layers to pass or define the template state.
 
 ## Globals
 
-The globals refer to the state defined using the `edge.global` method. Globals are available to all the templates, including components.
+The globals refer to the state defined using the `jig.global` method. Globals are available to all the templates, including components.
 
-For example, you can use globals to share the website config with all the templates.
+For example, you can use globals to share configuration with all the templates.
 
 ```ts
-edge.global('config', {
-  colorScheme: 'dark',
-  menu: [],
-  socialLinks: [],
+jig.global('config', {
+  defaultType: 'string',
+  indent: 2,
+  exportKeyword: 'export'
 })
 ```
 
 ```edge
-<html class="{{ config.colorScheme }}">
-  <head>
-  <head>
-
-  <body>
-    <header>
-      @each(item in config.menu)
-      @end
-    </header>
-
-    <footer>
-      @each(link in config.socialLinks)
-      @end
-    </footer>
-  </body>
-</html>
+{{ config.exportKeyword }} interface User {
+  id: {{ config.defaultType }}
+}
 ```
 
 You can also share classes, functions, and almost every JavaScript data-type as global properties.
 
 ```ts
-edge.global('findUser', async function (id) {
-  return User.findById(id)
+jig.global('getTypeDefinition', async function (name) {
+  return TypeRegistry.find(name)
 })
 ```
 
 ```edge
-@let(user = await findUser(1))
-{{ user.username }}
+@let(typedef = await getTypeDefinition('User'))
+{{ typedef.toTypeScript() }}
 ```
 
 ## Locals
 
 The `locals` are similar to the global state but isolated between multiple render calls.
 
-In the following example, we use the `edge.createRenderer` method to create multiple children instances of edge and share separate data objects with them.
+In the following example, we use the `jig.createRenderer` method to create multiple children instances of Jig and share separate data objects with them.
 
 The data will be available globally to all the templates included as partials or components, but not with the isolated children instances.
 
 ```ts
-const templ1 = edge.createRenderer()
-const templ2 = edge.createRenderer()
+const renderer1 = jig.createRenderer()
+const renderer2 = jig.createRenderer()
 
-templ1.share({
-  url: '/posts',
+renderer1.share({
+  namespace: 'Models',
 })
 
-templ2.share({
-  url: '/posts/1',
+renderer2.share({
+  namespace: 'Controllers',
 })
 
-await templ1.renderRaw('{{ url }}') // /posts
-await templ2.renderRaw('{{ url }}') // /posts/1
+await renderer1.renderRaw('export namespace {{ namespace }} {}') // export namespace Models {}
+await renderer2.renderRaw('export namespace {{ namespace }} {}') // export namespace Controllers {}
 ```
 
 ### Why use locals?
 
 You might be thinking, why create a new isolated instance and use the `.share()` method to share locals with a template when you can pass the data during the `.render()` method call?
 
-
 :::caption{for="info"}
 
 **Why this?**
 
-
 :::
 
 ```ts
-const view = edge.createRenderer().share({
-  url: req.url
+const renderer = jig.createRenderer().share({
+  namespace: 'Models'
 })
 
-await view.render('template-path')
+await renderer.render('template-path')
 ```
-
-
 
 :::caption{for="info"}
 
 **And not this?**
 
-
 :::
 
 ```ts
-await edge.render('template-path', {
-  url: req.url
+await jig.render('template-path', {
+  namespace: 'Models'
 })
 ```
 
 Let's use a concrete example and understand when locals can be helpful.
 
-Imagine you use Express.js and Edge together and want to share data with a template using middleware. Also, the shared data should be isolated between concurrent requests handled by your application.
-
-You can create a new instance of the Edge renderer for each request and use the `share` method to share global data isolated between multiple HTTP requests.
+Imagine you're building a code generator that processes multiple entities in parallel, and each entity needs its own isolated context. You can create a new instance of the Jig renderer for each entity and use the `share` method to share data that's isolated between concurrent generation tasks.
 
 ```ts
-app.use(function (req, res) {
-  res.view = edge.createRenderer()
-})
-
-app.use(function (req, res) {
-  res.view.share({
-    url: req.url
+async function generateModel(entity) {
+  const renderer = jig.createRenderer()
+  renderer.share({
+    namespace: entity.namespace,
+    imports: entity.dependencies
   })
-})
 
-app.use(function (req, res) {
-  res.view.share({
-    user: req.auth.user
-  })
-})
+  return await renderer.render('model', { entity })
+}
 
-// Finally render a template
-app.get('/posts', async (req, res) => {
-  const html = await res.view.render('posts')
-  res.send(html)
-})
+// Generate multiple models concurrently
+await Promise.all(entities.map(generateModel))
 ```
 
 ## Rendering data object
 
-The rendering data refers to the data object passed when calling the `edge.render` method. The rendering data is not shared with the components used by a template.
+The rendering data refers to the data object passed when calling the `jig.render` method. The rendering data is not shared with the components used by a template.
 
 ```ts
 const renderingData = {}
-await edge.render('template-path', renderingData)
+await jig.render('template-path', renderingData)
 ```
 
 ## Inline variables
