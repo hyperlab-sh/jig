@@ -6,7 +6,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "export": "vite build && npm run download:sponsors && node --import=ts-node-maintained/register/esm bin/build.ts",
-    "postexport": "copyfiles -u 1 public/* public/**/* dist",
+    "postexport": "copyfiles -u 1 'public/**/*' dist",
     "download:sponsors": "node --import=ts-node-maintained/register/esm bin/download_sponsors.ts",
     "start": "node bin/test.js",
     "serve": "node --import=ts-node-maintained/register/esm bin/serve.ts",
