@@ -27,6 +27,8 @@
         @!component('dimer_contents', { nodes: file.ast.children, pipeline })~
       @end
 
+      @include('partials/sponsors')
+
       @if(file.toc)
         @component('docs::toc')
           @!component('dimer_element', { node: file.toc, pipeline })~

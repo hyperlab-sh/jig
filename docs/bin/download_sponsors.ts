@@ -34,7 +34,7 @@ export async function downloadSponsors() {
      * No sources configured. So going to create an empty
      * sponsors.json file.
      */
-    if (sources.length === 0) {
+    if (!sources || sources.length === 0) {
       console.log('skipping download. No sources found...')
       await writeFile(SPONSORS_FILE_PATH, JSON.stringify(sponsorsList))
       return

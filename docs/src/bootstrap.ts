@@ -40,7 +40,7 @@ edge.global('getSponsors', async () =>
 )
 
 /**
- * Globally loads the sponsors file
+ * Globally loads the iconify icons set
  */
 edge.global('getIconifyIconsSet', async () => {
   return JSON.parse(

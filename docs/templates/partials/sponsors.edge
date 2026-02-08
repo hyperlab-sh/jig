@@ -1,57 +1,69 @@
 @let(sponsors = await getSponsors())
 
 <div class="sponsors_wrapper">
-  <p>
-    List of individuals and companies publicly sponsoring <a href="https://github.com/sponsors/thetutlage">Harminder Virk on Github</a>. If you are sponsoring and cannot see your name, ensure your <a
-      href="https://docs.github.com/en/sponsors/sponsoring-open-source-contributors/managing-your-sponsorship#managing-the-privacy-setting-for-your-sponsorship"
-    >sponsorship is not private</a>.
-  </p>
+  @if(sponsors.length === 0)
+    <p>
+      Jig is free and open source. If you find it useful, consider supporting its development.
+    </p>
+    <a
+      href="https://github.com/sponsors/svallory"
+      class="become_sponsor_button"
+      target="_blank"
+      rel="noopener"
+    >
+      Become a Sponsor
+    </a>
+  @else
+    <p>
+      Thanks to all our sponsors! If you find Jig useful, consider
+      <a href="https://github.com/sponsors/svallory">becoming a sponsor</a>.
+    </p>
 
-  @include('partials/featured_sponsors')
+    @include('partials/featured_sponsors')
 
-  {{-- Rendering Github sponsors as per their selected tier --}}
-  @!component('docs::elements/sponsors', {
-    sponsors,
-    tier: 'gold',
-    title: 'Gold sponsors',
-    finder: (sponsor) => {
-      return !sponsor.isOneTime && sponsor.monthlyDollars > 29
-    }
-  })
+    @!component('docs::elements/sponsors', {
+      sponsors,
+      tier: 'gold',
+      title: 'Gold sponsors',
+      finder: (sponsor) => {
+        return !sponsor.isOneTime && sponsor.monthlyDollars > 29
+      }
+    })
 
-  @!component('docs::elements/sponsors', {
-    sponsors,
-    tier: 'silver',
-    title: 'Silver sponsors',
-    finder: (sponsor) => {
-      return !sponsor.isOneTime && sponsor.monthlyDollars === 29
-    }
-  })
+    @!component('docs::elements/sponsors', {
+      sponsors,
+      tier: 'silver',
+      title: 'Silver sponsors',
+      finder: (sponsor) => {
+        return !sponsor.isOneTime && sponsor.monthlyDollars === 29
+      }
+    })
 
-  @!component('docs::elements/sponsors', {
-    sponsors,
-    tier: 'basic',
-    title: 'Sponsors',
-    finder: (sponsor) => {
-      return !sponsor.isOneTime && sponsor.monthlyDollars >= 19 && sponsor.monthlyDollars < 29
-    }
-  })
+    @!component('docs::elements/sponsors', {
+      sponsors,
+      tier: 'basic',
+      title: 'Sponsors',
+      finder: (sponsor) => {
+        return !sponsor.isOneTime && sponsor.monthlyDollars >= 19 && sponsor.monthlyDollars < 29
+      }
+    })
 
-  @!component('docs::elements/sponsors', {
-    sponsors,
-    tier: 'basic',
-    title: 'Backers',
-    finder: (sponsor) => {
-      return !sponsor.isOneTime && sponsor.monthlyDollars >= 0 && sponsor.monthlyDollars < 19
-    }
-  })
+    @!component('docs::elements/sponsors', {
+      sponsors,
+      tier: 'basic',
+      title: 'Backers',
+      finder: (sponsor) => {
+        return !sponsor.isOneTime && sponsor.monthlyDollars >= 0 && sponsor.monthlyDollars < 19
+      }
+    })
 
-  @!component('docs::elements/sponsors', {
-    sponsors,
-    tier: 'previous',
-    title: 'Past sponsors',
-    finder: (sponsor) => {
-      return sponsor.monthlyDollars === -1 || sponsor.isOneTime
-    }
-  })
+    @!component('docs::elements/sponsors', {
+      sponsors,
+      tier: 'previous',
+      title: 'Past sponsors',
+      finder: (sponsor) => {
+        return sponsor.monthlyDollars === -1 || sponsor.isOneTime
+      }
+    })
+  @end
 </div>

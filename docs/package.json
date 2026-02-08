@@ -5,11 +5,10 @@
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
-    "export": "vite build && npm run download:sponsors && node --import=ts-node-maintained/register/esm bin/build.ts",
-    "postexport": "cp -r public/* dist/",
+    "export": "vite build && npm run download:sponsors && node --import=ts-node-maintained/register/esm bin/build.ts && cp -r public/* dist/",
     "download:sponsors": "node --import=ts-node-maintained/register/esm bin/download_sponsors.ts",
     "start": "node bin/test.js",
-    "serve": "node --import=ts-node-maintained/register/esm bin/serve.ts",
+    "serve": "NODE_ENV=production node --import=ts-node-maintained/register/esm bin/serve.ts",
     "dev": "vite build && npm run serve",
     "test": "node ace test"
   },

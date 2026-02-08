@@ -161,3 +161,36 @@ html.dark {
   grid-template-columns: repeat(1, minmax(0, 1fr));
   gap: 1rem;
 }
+
+/* Sponsors CTA */
+.sponsors_wrapper {
+  max-width: var(--content-width);
+  margin: auto;
+  padding: 24px var(--surface-spacing) 40px;
+  text-align: center;
+  color: var(--neutral-gray-11);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.sponsors_wrapper p {
+  margin: 0 0 16px;
+}
+
+.become_sponsor_button {
+  display: inline-block;
+  padding: 10px 24px;
+  background-color: var(--accent-9);
+  color: white;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.become_sponsor_button:hover {
+  background-color: var(--accent-10);
+  text-decoration: none;
+  color: white;
+}
