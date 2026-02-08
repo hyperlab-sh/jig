@@ -147,6 +147,7 @@ export class Tokenizer {
         end: closingLoc,
       },
       children: [],
+      indent: tag.indent,
     }
   }
 

@@ -97,6 +97,7 @@ export type TagToken = {
   loc: LexerLoc
   children: Token[]
   filename: string
+  indent: number
 }
 
 export type Token = RawToken | NewLineToken | TagToken | MustacheToken | CommentToken
@@ -112,6 +113,7 @@ export type RuntimeTag = LexerTagDefinitionContract & {
   line: number
   escaped: boolean
   hasBrace: boolean
+  indent: number
 }
 
 /**

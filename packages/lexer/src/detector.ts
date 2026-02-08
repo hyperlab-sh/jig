@@ -90,6 +90,7 @@ export function getTag(
     escaped,
     hasBrace,
     noNewLine,
+    indent: whitespaceLeft,
   }
 }
 

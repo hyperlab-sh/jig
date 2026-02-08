@@ -975,6 +975,7 @@ test.group('Tokenizer Comment', () => {
           },
         },
         children: [],
+        indent: 0,
       },
       {
         type: 'newline',

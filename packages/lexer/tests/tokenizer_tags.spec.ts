@@ -82,6 +82,7 @@ test.group('Tokenizer | Tags', () => {
           },
         },
         children: [],
+        indent: 0,
       },
     ])
   })
@@ -148,6 +149,7 @@ test.group('Tokenizer | Tags', () => {
             line: 4,
           },
         ],
+        indent: 0,
       },
     ])
   })
@@ -240,8 +242,10 @@ test.group('Tokenizer | Tags', () => {
                 line: 5,
               },
             ],
+            indent: 2,
           },
         ],
+        indent: 0,
       },
     ])
   })
@@ -310,6 +314,7 @@ test.group('Tokenizer | Tags', () => {
             line: 6,
           },
         ],
+        indent: 0,
       },
     ])
   })
@@ -378,6 +383,7 @@ test.group('Tokenizer | Tags', () => {
             line: 6,
           },
         ],
+        indent: 0,
       },
     ])
   })
@@ -409,6 +415,7 @@ test.group('Tokenizer | Tags', () => {
           selfclosed: false,
         },
         children: [],
+        indent: 0,
       },
     ])
   })
@@ -476,6 +483,7 @@ test.group('Tokenizer | Tags', () => {
               selfclosed: false,
             },
             children: [],
+            indent: 0,
           },
           {
             type: 'newline',
@@ -489,6 +497,7 @@ test.group('Tokenizer | Tags', () => {
             line: 4,
           },
         ],
+        indent: 0,
       },
     ])
   })
@@ -541,6 +550,7 @@ test.group('Tokenizer | Tags', () => {
           },
         },
         children: [],
+        indent: 0,
       },
     ])
   })
@@ -623,6 +633,7 @@ test.group('Tokenizer | Tags', () => {
           },
         },
         children: [],
+        indent: 0,
       },
     ])
   })
@@ -654,6 +665,7 @@ test.group('Tokenizer | Tags', () => {
           selfclosed: false,
         },
         children: [],
+        indent: 0,
       },
     ])
   })
@@ -710,6 +722,7 @@ test.group('Tokenizer | Tags', () => {
           selfclosed: true,
         },
         children: [],
+        indent: 0,
       },
     ])
   })
@@ -744,6 +757,7 @@ test.group('Tokenizer | Tags', () => {
           selfclosed: false,
         },
         children: [],
+        indent: 0,
       },
     ])
   })
@@ -805,6 +819,7 @@ test.group('Tokenizer | Tags', () => {
             line: 4,
           },
         ],
+        indent: 0,
       },
     ])
   })
@@ -868,6 +883,7 @@ test.group('Tokenizer | Tags', () => {
             line: 6,
           },
         ],
+        indent: 0,
       },
     ])
   })
@@ -955,8 +971,10 @@ test.group('Tokenizer | Tags', () => {
                 line: 5,
               },
             ],
+            indent: 2,
           },
         ],
+        indent: 0,
       },
     ])
   })
@@ -1046,8 +1064,10 @@ test.group('Tokenizer | Tags', () => {
                 line: 7,
               },
             ],
+            indent: 2,
           },
         ],
+        indent: 0,
       },
     ])
   })
@@ -1117,6 +1137,7 @@ test.group('Tokenizer | Tags', () => {
             line: 4,
           },
         ],
+        indent: 0,
       },
     ])
   })
@@ -1209,8 +1230,10 @@ test.group('Tokenizer | Tags', () => {
                 line: 7,
               },
             ],
+            indent: 2,
           },
         ],
+        indent: 0,
       },
     ])
   })
@@ -1254,6 +1277,7 @@ test.group('Tokenizer | Tags', () => {
             line: 2,
           },
         ],
+        indent: 0,
       },
       {
         type: 'raw',
@@ -1294,6 +1318,7 @@ test.group('Tokenizer | Tags', () => {
         type: TagTypes.TAG,
         filename: 'eval.edge',
         children: [],
+        indent: 0,
         loc: {
           start: {
             line: 2,
@@ -1374,6 +1399,7 @@ test.group('Tokenizer | Tags', () => {
             line: 2,
           },
         ],
+        indent: 0,
       },
       {
         type: 'newline',
@@ -1450,6 +1476,7 @@ test.group('Tokenizer | Tags', () => {
           },
         },
         children: [],
+        indent: 0,
       },
     ])
   })
@@ -1505,6 +1532,7 @@ test.group('Tokenizer columns', () => {
           },
         },
         children: [],
+        indent: 0,
       },
     ])
   })
@@ -1558,6 +1586,7 @@ test.group('Tokenizer columns', () => {
           },
         },
         children: [],
+        indent: 0,
       },
     ])
   })
@@ -1611,6 +1640,7 @@ test.group('Tokenizer columns', () => {
           },
         },
         children: [],
+        indent: 2,
       },
     ])
   })
@@ -1666,6 +1696,7 @@ test.group('Tokenizer columns', () => {
           },
         },
         children: [],
+        indent: 0,
       },
     ])
   })

@@ -29,6 +29,7 @@ test.group('Utils | isTag', () => {
             end: { line: 1, col: 20 },
           },
           children: [],
+          indent: 0,
         },
         'include'
       )
@@ -51,6 +52,7 @@ test.group('Utils | isTag', () => {
             end: { line: 1, col: 20 },
           },
           children: [],
+          indent: 0,
         },
         'layout'
       )
@@ -86,6 +88,7 @@ test.group('Utils | isTag', () => {
           end: { line: 1, col: 20 },
         },
         children: [],
+        indent: 0,
       })
     )
   })
@@ -105,6 +108,7 @@ test.group('Utils | isTag', () => {
           end: { line: 1, col: 20 },
         },
         children: [],
+        indent: 0,
       })
     )
   })
@@ -219,6 +223,7 @@ test.group('Utils | getLineAndColumn', () => {
           end: { line: 1, col: 20 },
         },
         children: [],
+        indent: 0,
       }),
       [1, 0]
     )
