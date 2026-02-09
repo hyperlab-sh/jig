@@ -8,7 +8,7 @@
  */
 
 import { EdgeError } from 'edge-error'
-import { expressions } from 'edge-parser'
+import { expressions } from '@jig-lang/parser'
 
 import { nanoid, computeDedent, processChildrenDedented } from '../utils.js'
 import { type TagContract } from '../types.js'

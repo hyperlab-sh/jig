@@ -8,8 +8,8 @@
  */
 
 import { EdgeError } from 'edge-error'
-import type { TagToken, Token } from 'edge-lexer/types'
-import { type EdgeBuffer, type expressions as expressionsList, type Parser } from 'edge-parser'
+import type { TagToken, Token } from '@jig-lang/lexer/types'
+import { type EdgeBuffer, type expressions as expressionsList, type Parser } from '@jig-lang/parser'
 
 type ExpressionList = readonly (keyof typeof expressionsList | 'ObjectPattern' | 'ArrayPattern')[]
 

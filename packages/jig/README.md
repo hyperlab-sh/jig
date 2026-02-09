@@ -1,16 +1,20 @@
+<p align="center">
+  <img src="logo.png" width="128" alt="Jig logo" />
+</p>
+
 # Jig
 
 [![gh-workflow-image]][gh-workflow-url] [![typescript-image]][typescript-url] [![npm-image]][npm-url] [![license-image]][license-url]
 
-A template engine for code generation, built on the Edge.js foundation.
+A template engine purpose-built for code generation. Fork of [Edge](https://edgejs.dev).
 
 ## What is Jig?
 
-Jig is a fork of [Edge.js](https://github.com/edge-js/edge) that strips away HTML-specific functionality and optimizes the engine for code generation. It inherits Edge.js's syntax (powered by `edge-lexer` and `edge-parser`) while removing all escaping and HTML helpers, making it ideal for generating code, configuration files, SQL, and other text-based formats.
+Jig is a fork of [Edge](https://edgejs.dev) — the template engine behind [AdonisJS](https://adonisjs.com) — purpose-built for code generation. It strips away HTML escaping and HTML-specific helpers, adds implicit indentation control and filter syntax, and keeps everything else that makes Edge great: components, slots, partials, and full JavaScript expressions.
 
 If you know JavaScript, you know Jig. Use familiar control flow (`@if`, `@each`, `@component`), interpolation (`{{ }}`), and add custom filters for transformations.
 
-## Key Differences from Edge.js
+## Key Differences from Edge
 
 - **No HTML escaping** — `{{ value }}` outputs raw values without any escaping
 - **No HTML helpers** — `html.attrs`, `html.classNames`, `nl2br`, and other HTML-specific utilities are removed
@@ -66,9 +70,9 @@ bun add jig
 
 Full documentation is available at [https://jig.saulo.engineer](https://jig.saulo.engineer)
 
-## Built on Edge.js
+## Built on Edge
 
-Jig is forked from [Edge.js](https://github.com/edge-js/edge), an excellent template engine created by the [AdonisJS](https://adonisjs.com) team. We thank them for building such a solid foundation.
+Jig is forked from [Edge](https://edgejs.dev), the template engine created by the [AdonisJS](https://adonisjs.com) team. We thank them for building such a solid foundation.
 
 ## License
 

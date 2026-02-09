@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-import { expressions } from 'edge-parser'
+import { expressions } from '@jig-lang/parser'
 import { type TagContract } from '../types.js'
 import { isNotSubsetOf, unallowedExpression, parseJsArg } from '../utils.js'
 

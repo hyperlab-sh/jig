@@ -8,7 +8,7 @@
  */
 
 import { test } from '@japa/runner'
-import type { Token } from 'edge-lexer/types'
+import type { Token } from '@jig-lang/lexer/types'
 
 import { computeDedent, dedentRaw } from '../src/utils.js'
 import { Template } from '../src/template.js'

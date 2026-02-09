@@ -7,9 +7,9 @@
  * file that was distributed with this source code.
  */
 
-import { Parser, EdgeBuffer, Stack } from 'edge-parser'
-import { MustacheTypes } from 'edge-lexer'
-import type { Token, MustacheToken } from 'edge-lexer/types'
+import { Parser, EdgeBuffer, Stack } from '@jig-lang/parser'
+import { MustacheTypes } from '@jig-lang/lexer'
+import type { Token, MustacheToken } from '@jig-lang/lexer/types'
 
 import { type Processor } from './processor.js'
 import { CacheManager } from './cache_manager.js'
@@ -24,7 +24,7 @@ import type {
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor
 
 /**
- * Compiler is to used to compile templates using the `edge-parser`. Along with that
+ * Compiler is to used to compile templates using the `@jig-lang/parser`. Along with that
  * it natively merges the contents of a layout with a parent template.
  */
 export class Compiler {
@@ -184,7 +184,7 @@ export class Compiler {
   }
 
   /**
-   * Compiles the template contents to string. The output is same as the `edge-parser`,
+   * Compiles the template contents to string. The output is same as the `@jig-lang/parser`,
    * it's just that the compiler uses the loader to load the templates and also
    * handles layouts.
    *
@@ -229,7 +229,7 @@ export class Compiler {
   }
 
   /**
-   * Compiles the template contents to string. The output is same as the `edge-parser`,
+   * Compiles the template contents to string. The output is same as the `@jig-lang/parser`,
    * it's just that the compiler uses the loader to load the templates and also
    * handles layouts.
    *

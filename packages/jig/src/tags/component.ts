@@ -8,9 +8,9 @@
  */
 
 import { EdgeError } from 'edge-error'
-import * as lexerUtils from 'edge-lexer/utils'
-import type { TagToken } from 'edge-lexer/types'
-import { type EdgeBuffer, expressions, type Parser } from 'edge-parser'
+import * as lexerUtils from '@jig-lang/lexer/utils'
+import type { TagToken } from '@jig-lang/lexer/types'
+import { type EdgeBuffer, expressions, type Parser } from '@jig-lang/parser'
 
 import type { TagContract } from '../types.js'
 import {

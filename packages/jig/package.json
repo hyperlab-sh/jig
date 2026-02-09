@@ -1,7 +1,7 @@
 {
-  "name": "edge.js",
-  "description": "Template engine",
-  "version": "6.5.1",
+  "name": "@jig-lang/jig",
+  "description": "A template engine for code generation. Forked from Edge.js by Harminder Virk.",
+  "version": "1.0.1",
   "engines": {
     "node": ">=18.16.0"
   },
@@ -57,27 +57,31 @@
     "@poppinss/macroable": "^1.1.2",
     "@poppinss/utils": "^7.0.1",
     "edge-error": "^4.0.2",
-    "edge-lexer": "file:./agent/repos/lexer",
-    "edge-parser": "file:./agent/repos/parser"
+    "@jig-lang/lexer": "^1.0.0",
+    "@jig-lang/parser": "^1.0.0"
   },
-  "homepage": "https://github.com/edge-js/edge#readme",
+  "homepage": "https://github.com/svallory/jig#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/edge-js/edge.git"
+    "url": "git+https://github.com/svallory/jig.git",
+    "directory": "jig"
   },
   "bugs": {
-    "url": "https://github.com/edge-js/edge/issues"
+    "url": "https://github.com/svallory/jig/issues"
   },
   "keywords": [
+    "jig",
     "template",
-    "mustache",
-    "edge"
+    "template-engine",
+    "code-generation"
   ],
-  "author": "Harminder Virk <virk@adonisjs.com>",
+  "author": "Saulo Vallory",
+  "contributors": [
+    "Harminder Virk <virk@adonisjs.com>"
+  ],
   "license": "MIT",
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "tsdown": {
     "entry": [

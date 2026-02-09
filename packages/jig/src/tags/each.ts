@@ -8,8 +8,8 @@
  */
 
 import lodash from '@poppinss/utils/lodash'
-import * as lexerUtils from 'edge-lexer/utils'
-import { type Parser, expressions } from 'edge-parser'
+import * as lexerUtils from '@jig-lang/lexer/utils'
+import { type Parser, expressions } from '@jig-lang/parser'
 
 import { type TagContract } from '../types.js'
 import {
