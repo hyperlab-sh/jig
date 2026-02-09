@@ -121,7 +121,7 @@
   },
   {
     "permalink": "upgrading-to-v6",
-    "title": "Upgrading to Jig",
+    "title": "Migrating to Jig",
     "contentPath": "./changelog/upgrading-to-v6.md",
     "category": "Changelog"
   }

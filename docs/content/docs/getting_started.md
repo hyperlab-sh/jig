@@ -13,7 +13,7 @@ Jig is an ESM-only package, and therefore your applications must use ES modules 
 :::
 
 ```sh
-npm i jig
+npm i @jig-lang/jig
 ```
 
 You can start using Jig as soon as you install it. You do not need any compiler or build tools to compile the templates.
@@ -30,7 +30,7 @@ Let's start with the following project structure. We will store templates within
 
 ```ts
 // title: index.js
-import { Edge } from 'jig'
+import { Edge } from '@jig-lang/jig'
 
 // highlight-start
 const jig = Edge.create()
@@ -63,7 +63,7 @@ export interface {{ name }} {
 
 Let's go through the source code line by line.
 
-- We start by importing the `jig` package. Note: the class is still called `Edge` internally, but the package name is `jig`.
+- We start by importing the `@jig-lang/jig` package. Note: the class is still called `Edge` internally, but the package name is `@jig-lang/jig`.
 
 - We use the `jig.mount` method to register the `templates` directory as the root for our templates. Template files end with the `.edge` extension.
 

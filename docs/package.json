@@ -5,8 +5,9 @@
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
-    "export": "vite build && npm run download:sponsors && node --import=ts-node-maintained/register/esm bin/build.ts && cp -r public/* dist/",
+    "export": "vite build && npm run download:sponsors && npm run generate:llms && node --import=ts-node-maintained/register/esm bin/build.ts && cp -r public/* dist/",
     "download:sponsors": "node --import=ts-node-maintained/register/esm bin/download_sponsors.ts",
+    "generate:llms": "node --import=ts-node-maintained/register/esm bin/generate_llms_txt.ts",
     "start": "node bin/test.js",
     "serve": "NODE_ENV=production node --import=ts-node-maintained/register/esm bin/serve.ts",
     "dev": "vite build && npm run serve",

@@ -2,9 +2,9 @@
 summary: Migration guide for Edge.js v5 users and what changed in Jig
 ---
 
-# Upgrading to Jig (from Edge.js v5/v6)
+# Migrating to Jig (from Edge.js v5/v6)
 
-Jig is a fork of Edge.js v6, optimized for code generation rather than HTML rendering. This page covers all breaking changes and new features.
+Jig is a fork of Edge.js v6, optimized for **code generation** rather than HTML rendering. This page covers all breaking changes and new features.
 
 For Jig-specific documentation, see the [Introduction](../introduction.md) page.
 
