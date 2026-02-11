@@ -120,6 +120,12 @@
     "category": "Digging deeper"
   },
   {
+    "permalink": "tools/ide-extensions",
+    "title": "IDE Extensions",
+    "contentPath": "./tools/ide_extensions.md",
+    "category": "Tools"
+  },
+  {
     "permalink": "upgrading-to-v6",
     "title": "Migrating to Jig",
     "contentPath": "./changelog/upgrading-to-v6.md",

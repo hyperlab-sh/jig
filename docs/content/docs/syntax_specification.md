@@ -176,6 +176,41 @@ Hello
 Hello virk
 ```
 
+### Content type suffix
+
+Tags can carry an optional content type suffix that annotates what kind of content their body contains. The suffix is written as `: identifier` after the tag's closing parenthesis (for seekable tags) or after the tag name (for non-seekable tags).
+
+```edge
+@if(generateReadme): markdown
+  # {{ projectName }}
+  {{ description }}
+@end
+```
+
+The suffix is purely metadata — no built-in tag changes behavior based on it. It is available to tag implementations via `token.properties.contentType` and is used by the [VSCode extension](./tools/ide_extensions.md) to provide syntax highlighting for embedded language blocks.
+
+**Valid identifiers** start with a letter and may contain letters, digits, `_`, `+`, `#`, `-`, and `.`. This covers language names like `markdown`, `ts`, `c++`, `c#`, `objective-c`, and `es6.proxy`.
+
+The suffix can be combined with the tilde (`~`) to swallow the newline:
+
+```edge
+@if(x): ts~
+const y = 1;
+@end
+```
+
+The tilde must come **after** the identifier. Writing `~` before `:` (e.g., `@if(x)~: ts`) is invalid and will raise an error.
+
+Non-seekable tags also support the suffix:
+
+```edge
+@if(format === 'md')
+  plain text
+@else: markdown
+  **bold text**
+@end
+```
+
 ### Implicit indentation control
 
 Block tags like `@if`, `@each`, `@unless`, `@component`, `@slot`, `@pushTo`, and `@pushOnceTo` automatically remove cosmetic indentation from their contents. This ensures the output reflects the logical structure of the data, not the visual nesting of the template source.
@@ -356,4 +391,3 @@ username
 </tr>
 </tbody>
 </table>
-
