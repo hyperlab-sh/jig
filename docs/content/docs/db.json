@@ -126,6 +126,12 @@
     "category": "Tools"
   },
   {
+    "permalink": "tools/claude-code-skill",
+    "title": "Claude Code Skill",
+    "contentPath": "./tools/claude_code_skill.md",
+    "category": "Tools"
+  },
+  {
     "permalink": "upgrading-to-v6",
     "title": "Migrating to Jig",
     "contentPath": "./changelog/upgrading-to-v6.md",
