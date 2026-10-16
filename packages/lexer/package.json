@@ -1,7 +1,7 @@
 {
-  "name": "edge-lexer",
-  "description": "Edge parser to convert text markup to lexer tokens",
-  "version": "6.0.4",
+  "name": "@jig-lang/lexer",
+  "description": "Tokenizer for the Jig template engine. Forked from Edge.js by Harminder Virk.",
+  "version": "1.0.1",
   "engines": {
     "node": ">=18.16.0"
   },
@@ -54,23 +54,28 @@
   "dependencies": {
     "edge-error": "^4.0.2"
   },
-  "homepage": "https://github.com/edge-js/lexer#readme",
+  "homepage": "https://github.com/svallory/jig#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/edge-js/lexer.git"
+    "url": "git+https://github.com/svallory/jig.git",
+    "directory": "lexer"
   },
   "bugs": {
-    "url": "https://github.com/edge-js/lexer/issues"
+    "url": "https://github.com/svallory/jig/issues"
   },
   "keywords": [
-    "edge",
+    "jig",
     "template",
-    "template-engine"
+    "template-engine",
+    "lexer",
+    "code-generation"
   ],
-  "author": "Harminder Virk <virk@adonisjs.com>",
+  "author": "Saulo Vallory",
+  "contributors": [
+    "Harminder Virk <virk@adonisjs.com>"
+  ],
   "license": "MIT",
   "publishConfig": {
-    "provenance": true,
     "access": "public"
   },
   "tsdown": {
