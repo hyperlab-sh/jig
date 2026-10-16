@@ -137,7 +137,12 @@ export class Tokenizer {
    * loc is computed using the scanner and must be passed to this
    * method.
    */
-  #getTagNode(tag: RuntimeTag, jsArg: string, closingLoc: LexerLoc['end'], contentType?: string): TagToken {
+  #getTagNode(
+    tag: RuntimeTag,
+    jsArg: string,
+    closingLoc: LexerLoc['end'],
+    contentType?: string
+  ): TagToken {
     const properties: TagProps = {
       name: tag.name,
       jsArg: jsArg,
