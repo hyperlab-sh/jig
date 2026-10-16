@@ -1,7 +1,7 @@
 /**
  * edge-lexer
  *
- * (c) Edge
+ * (c) Jig
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -22,6 +22,7 @@ import {
 import type {
   Tags,
   Token,
+  TagProps,
   LexerLoc,
   TagToken,
   RawToken,
@@ -33,6 +34,12 @@ import type {
   RuntimeMustache,
   TokenizerOptions,
 } from './types.js'
+
+/**
+ * Matches a content type suffix after a tag's closing paren or after a
+ * non-seekable tag name. Examples: `: markdown`, `: ts~`, `: c++`, `: c#`
+ */
+const SUFFIX_REGEX = /^:\s*([a-zA-Z][a-zA-Z0-9_+#.-]*)(\s*~)?$/
 
 /**
  * Tokenizer converts a bunch of text into an array of tokens. Later
@@ -130,15 +137,20 @@ export class Tokenizer {
    * loc is computed using the scanner and must be passed to this
    * method.
    */
-  #getTagNode(tag: RuntimeTag, jsArg: string, closingLoc: LexerLoc['end']): TagToken {
+  #getTagNode(tag: RuntimeTag, jsArg: string, closingLoc: LexerLoc['end'], contentType?: string): TagToken {
+    const properties: TagProps = {
+      name: tag.name,
+      jsArg: jsArg,
+      selfclosed: tag.selfclosed,
+    }
+    if (contentType) {
+      properties.contentType = contentType
+    }
+
     return {
       type: tag.escaped ? TagTypes.ETAG : TagTypes.TAG,
       filename: tag.filename,
-      properties: {
-        name: tag.name,
-        jsArg: jsArg,
-        selfclosed: tag.selfclosed,
-      },
+      properties,
       loc: {
         start: {
           line: tag.line,
@@ -160,11 +172,11 @@ export class Tokenizer {
    *
    * Otherwise, we move it to the tokens array directly.
    */
-  #consumeTag(tag: RuntimeTag, jsArg: string, loc: LexerLoc['end']) {
+  #consumeTag(tag: RuntimeTag, jsArg: string, loc: LexerLoc['end'], contentType?: string) {
     if (tag.block && !tag.selfclosed) {
-      this.#openedTags.push(this.#getTagNode(tag, jsArg, loc))
+      this.#openedTags.push(this.#getTagNode(tag, jsArg, loc, contentType))
     } else {
-      this.#consumeNode(this.#getTagNode(tag, jsArg, loc))
+      this.#consumeNode(this.#getTagNode(tag, jsArg, loc, contentType))
     }
   }
 
@@ -181,8 +193,22 @@ export class Tokenizer {
      * a scanner instance, just consume it right away.
      */
     if (!tag.seekable) {
-      this.#consumeTag(tag, '', { line: tag.line, col: tag.col })
-      if (tag.noNewLine || line.endsWith('~')) {
+      const rest = line.slice(tag.col).trim()
+      let contentType: string | undefined
+      let shouldDropNewLine = false
+
+      if (rest === '~') {
+        shouldDropNewLine = true
+      } else if (rest !== '') {
+        const suffixMatch = SUFFIX_REGEX.exec(rest)
+        if (suffixMatch) {
+          contentType = suffixMatch[1]
+          shouldDropNewLine = !!suffixMatch[2]
+        }
+      }
+
+      this.#consumeTag(tag, '', { line: tag.line, col: tag.col }, contentType)
+      if (tag.noNewLine || shouldDropNewLine) {
         this.#dropNewLine = true
       }
       return
@@ -227,36 +253,30 @@ export class Tokenizer {
     }
 
     /**
-     * Consume the tag once we have found the closing brace and set
-     * block statement to null
+     * Parse any suffix after the closing brace ')'
      */
-    this.#consumeTag(tag, scanner.match, scanner.loc)
+    const leftOver = scanner.leftOver.trim()
+    let contentType: string | undefined
+    let shouldDropNewLine = false
 
-    /**
-     * If tag endswith `~`. Then instruct the tokenizer to drop the
-     * next new line
-     */
-    if (scanner.leftOver.trim() === '~') {
-      this.tagStatement = null
-      this.#dropNewLine = true
-      return
+    if (leftOver === '~') {
+      shouldDropNewLine = true
+    } else if (leftOver === '') {
+      // no suffix
+    } else {
+      const suffixMatch = SUFFIX_REGEX.exec(leftOver)
+      if (!suffixMatch) {
+        throw cannotSeekStatement(scanner.leftOver, scanner.loc, tag.filename)
+      }
+      contentType = suffixMatch[1]
+      shouldDropNewLine = !!suffixMatch[2]
     }
 
-    /**
-     * Raise error, if there is inline content after the closing brace ')'
-     * `@if(username) hello {{ username }}` is invalid
-     */
-    if (scanner.leftOver.trim()) {
-      throw cannotSeekStatement(scanner.leftOver, scanner.loc, tag.filename)
-    }
+    this.#consumeTag(tag, scanner.match, scanner.loc, contentType)
 
-    /**
-     * Do not add newline when tag instructs for it
-     */
-    if (tag.noNewLine) {
+    if (shouldDropNewLine || tag.noNewLine) {
       this.#dropNewLine = true
     }
-
     this.tagStatement = null
   }
 
