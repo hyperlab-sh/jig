@@ -153,7 +153,7 @@ test.group('Edge', () => {
 
     try {
       await edge.render('foo')
-    } catch ({ stack }) {
+    } catch ({ stack }: any) {
       assert.equal(
         stack.split('\n')[1].trim(),
         `at anonymous (${join(fs.basePath, 'foo.edge')}:1:4)`
@@ -170,7 +170,7 @@ test.group('Edge', () => {
 
     try {
       await edge.render('foo')
-    } catch ({ stack }) {
+    } catch ({ stack }: any) {
       assert.equal(
         stack.split('\n')[1].trim(),
         `at anonymous (${join(fs.basePath, 'foo.edge')}:1:11)`
@@ -188,7 +188,7 @@ test.group('Edge', () => {
 
     try {
       await edge.render('foo')
-    } catch ({ stack }) {
+    } catch ({ stack }: any) {
       console.log(stack)
       assert.equal(
         stack.split('\n')[1].trim(),
@@ -207,7 +207,7 @@ test.group('Edge', () => {
 
     try {
       await edge.render('foo')
-    } catch ({ stack }) {
+    } catch ({ stack }: any) {
       assert.equal(
         stack.split('\n')[1].trim(),
         `at anonymous (${join(fs.basePath, 'bar.edge')}:1:3)`
@@ -225,7 +225,7 @@ test.group('Edge', () => {
 
     try {
       await edge.render('foo')
-    } catch ({ stack }) {
+    } catch ({ stack }: any) {
       assert.equal(
         stack.split('\n')[1].trim(),
         `at anonymous (${join(fs.basePath, 'bar.edge')}:1:4)`
@@ -243,7 +243,7 @@ test.group('Edge', () => {
 
     try {
       await edge.render('foo')
-    } catch ({ stack }) {
+    } catch ({ stack }: any) {
       assert.equal(
         stack.split('\n')[1].trim(),
         `at anonymous (${join(fs.basePath, 'bar.edge')}:1:3)`

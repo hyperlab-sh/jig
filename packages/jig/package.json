@@ -122,14 +122,5 @@
       }
     }
   },
-  "c8": {
-    "reporter": [
-      "text",
-      "html"
-    ],
-    "exclude": [
-      "tests/**"
-    ]
-  },
   "prettier": "@adonisjs/prettier-config"
 }

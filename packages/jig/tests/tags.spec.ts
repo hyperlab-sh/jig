@@ -43,7 +43,7 @@ test.group('If tag', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error) {
+    } catch (error: any) {
       assert.equal(error.message, 'Unexpected token ')
       assert.equal(error.line, 4)
     }
@@ -61,7 +61,7 @@ test.group('If tag', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error) {
+    } catch (error: any) {
       assert.equal(error.line, 4)
       assert.equal(error.message, '"foo, bar" is not a valid argument type for the @if tag')
     }
@@ -78,7 +78,7 @@ test.group('If tag', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error) {
+    } catch (error: any) {
       assert.equal(error.message, 'Unclosed tag if')
     }
   })
@@ -98,7 +98,7 @@ test.group('Include', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error) {
+    } catch (error: any) {
       assert.equal(
         error.stack.split('\n')[1],
         `    at anonymous (${join(fs.basePath, 'foo.edge')}:2:13)`
@@ -114,7 +114,7 @@ test.group('Include', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error) {
+    } catch (error: any) {
       assert.equal(
         error.stack.split('\n')[1],
         `    at anonymous (${join(fs.basePath, 'foo.edge')}:1:9)`
@@ -141,7 +141,7 @@ test.group('IncludeIf', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error) {
+    } catch (error: any) {
       assert.equal(error.message, '"foo" is not a valid argument type for the @includeIf tag')
       assert.equal(
         error.stack.split('\n')[1],
@@ -159,7 +159,7 @@ test.group('IncludeIf', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error) {
+    } catch (error: any) {
       assert.equal(error.message, '@includeIf expects a total of 2 arguments')
       assert.equal(
         error.stack.split('\n')[1],
@@ -177,7 +177,7 @@ test.group('IncludeIf', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error) {
+    } catch (error: any) {
       assert.equal(
         error.message,
         '"SequenceExpression" is not a valid 1st argument type for the @includeIf tag'
@@ -207,7 +207,7 @@ test.group('Component', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error) {
+    } catch (error: any) {
       assert.equal(
         error.stack.split('\n')[1],
         `    at anonymous (${join(fs.basePath, 'foo.edge')}:2:6)`
@@ -228,7 +228,7 @@ test.group('Component', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error) {
+    } catch (error: any) {
       assert.equal(
         error.stack.split('\n')[1],
         `    at anonymous (${join(fs.basePath, 'foo.edge')}:2:6)`
@@ -249,7 +249,7 @@ test.group('Component', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error) {
+    } catch (error: any) {
       assert.equal(
         error.stack.split('\n')[1],
         `    at anonymous (${join(fs.basePath, 'foo.edge')}:2:6)`
@@ -273,7 +273,7 @@ test.group('Component', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error) {
+    } catch (error: any) {
       assert.equal(
         error.stack.split('\n')[1],
         `    at anonymous (${join(fs.basePath, 'foo.edge')}:4:2)`
@@ -297,7 +297,7 @@ test.group('Component', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error) {
+    } catch (error: any) {
       assert.equal(
         error.stack.split('\n')[1],
         `    at anonymous (${join(fs.basePath, 'foo.edge')}:4:8)`
@@ -327,7 +327,7 @@ test.group('Each tag', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error) {
+    } catch (error: any) {
       assert.equal(error.message, '"users" is not valid expression for the @each tag')
       assert.equal(error.line, 4)
     }
@@ -345,7 +345,7 @@ test.group('Each tag', (group) => {
     await fs.add('foo.edge', templateContent)
     try {
       compiler.compile('foo')
-    } catch (error) {
+    } catch (error: any) {
       assert.equal(error.message, 'invalid left hand side "Literal" expression for the @each tag')
       assert.equal(error.line, 4)
     }
