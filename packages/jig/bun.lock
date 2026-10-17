@@ -5,8 +5,8 @@
     "": {
       "name": "edge.js",
       "dependencies": {
-        "@jig-lang/lexer": "^1.0.0",
-        "@jig-lang/parser": "^1.0.0",
+        "@jig-lang/lexer": "^1.1.0",
+        "@jig-lang/parser": "^1.1.0",
         "@poppinss/inspect": "^1.0.1",
         "@poppinss/macroable": "^1.1.2",
         "@poppinss/utils": "^7.0.1",
@@ -135,9 +135,9 @@
 
     "@jest/schemas": ["@jest/schemas@30.0.5", "", { "dependencies": { "@sinclair/typebox": "^0.34.0" } }, "sha512-DmdYgtezMkh3cpU8/1uyXakv3tJRcmcXxBOcO0tbaozPwpmh4YMsnWrQm9ZmZMfa5ocbxzbFk6O4bDPEc/iAnA=="],
 
-    "@jig-lang/lexer": ["@jig-lang/lexer@1.0.1", "", { "dependencies": { "edge-error": "^4.0.2" } }, "sha512-yInxc1XAJF3I/nQQUqvSZlCdQZwTJ6oRSiDH4u0oLQ3MFGgX5QSGyl7UvmBGn5JDgU7DhY8TxvFQ1VXTqcx8Kg=="],
+    "@jig-lang/lexer": ["@jig-lang/lexer@1.1.0", "", { "dependencies": { "edge-error": "^4.0.2" } }, "sha512-8J8aTIjcQeZHudrxZ3xrDNCjJRJfZPbG8Cpa8RXqnyFJt99JSx3l0dacWQdNVauvTMf/Vv466Drnqavmk0AIAA=="],
 
-    "@jig-lang/parser": ["@jig-lang/parser@1.0.0", "", { "dependencies": { "@jig-lang/lexer": "^1.0.0", "acorn": "^8.15.0", "astring": "^1.9.0", "edge-error": "^4.0.2", "js-stringify": "^1.0.2" } }, "sha512-ARmr2BMpFKVXXfDPueVCKJGjItcL4QSFEWuB89eV2Jol1zugAZ8FbPn1xKSOR0OaqAWcucOAmnjmooZEfkvqnw=="],
+    "@jig-lang/parser": ["@jig-lang/parser@1.1.0", "", { "dependencies": { "@jig-lang/lexer": "^1.1.0", "acorn": "^8.15.0", "astring": "^1.9.0", "edge-error": "^4.0.2", "js-stringify": "^1.0.2" } }, "sha512-SW2Vi39acLtsyKLYwExvMOPLk/Ky04QIf2bbfI3PxEbK0gvpYkZAZrk4DvIG0FLEvh7acK1GOx1KTYeJIU2BFQ=="],
 
     "@keyv/bigmap": ["@keyv/bigmap@1.3.1", "", { "dependencies": { "hashery": "^1.4.0", "hookified": "^1.15.0" }, "peerDependencies": { "keyv": "^5.6.0" } }, "sha512-WbzE9sdmQtKy8vrNPa9BRnwZh5UF4s1KTmSK0KUVLo3eff5BlQNNWDnFOouNpKfPKDnms9xynJjsMYjMaT/aFQ=="],
 
