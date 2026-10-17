@@ -12,7 +12,13 @@ import { expressions } from '@jig-lang/parser'
 
 import { type TagContract } from '../types.js'
 import { ALLOWED_EXPRESSION, getRenderExpression } from './include.js'
-import { unallowedExpression, isSubsetOf, parseJsArg, isNotSubsetOf } from '../utils.js'
+import {
+  unallowedExpression,
+  isSubsetOf,
+  parseJsArg,
+  isNotSubsetOf,
+  getActiveDedent,
+} from '../utils.js'
 
 /**
  * Include tag is used to include partials in the same scope of the parent
@@ -82,8 +88,9 @@ export const includeIfTag: TagContract = {
 
     const renderExpr = `${awaitKeyword}${getRenderExpression(parser, include)}`
 
-    if (token.indent > 0) {
-      const indentStr = JSON.stringify(' '.repeat(token.indent))
+    const indent = Math.max(0, token.indent - getActiveDedent(parser))
+    if (indent > 0) {
+      const indentStr = JSON.stringify(' '.repeat(indent))
       buffer.outputExpression(
         `template.indentOutput(${renderExpr}, ${indentStr})`,
         token.filename,

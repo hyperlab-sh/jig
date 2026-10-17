@@ -9,6 +9,7 @@
 
 import { EdgeError } from 'edge-error'
 import type { TagToken, Token } from '@jig-lang/lexer/types'
+import * as lexerUtils from '@jig-lang/lexer/utils'
 import { type EdgeBuffer, type expressions as expressionsList, type Parser } from '@jig-lang/parser'
 
 type ExpressionList = readonly (keyof typeof expressionsList | 'ObjectPattern' | 'ArrayPattern')[]
@@ -240,8 +241,48 @@ export function dedentRaw(text: string, amount: number): string {
 }
 
 /**
+ * Total dedent applied by the block tags enclosing the token currently being
+ * processed. Nested blocks must strip the indentation of every ancestor,
+ * not only their own, and include tags need it to compute their column.
+ */
+const activeDedents = new WeakMap<Parser, number>()
+
+/**
+ * Returns the cumulative dedent of the block tags that enclose the token
+ * the parser is currently processing.
+ */
+export function getActiveDedent(parser: Parser): number {
+  return activeDedents.get(parser) ?? 0
+}
+
+/**
+ * Runs `callback` with `amount` added to the parser's cumulative dedent.
+ */
+export function withDedent<T>(parser: Parser, amount: number, callback: () => T): T {
+  const outer = getActiveDedent(parser)
+  activeDedents.set(parser, outer + amount)
+  try {
+    return callback()
+  } finally {
+    activeDedents.set(parser, outer)
+  }
+}
+
+/**
+ * Block tags that write their children to the surrounding buffer and start
+ * with the line break that follows their own opening tag.
+ */
+const INLINE_BLOCK_TAGS = ['if', 'unless', 'each']
+
+/**
  * Processes block tag children with automatic dedentation.
- * Strips `dedent` leading spaces from raw tokens that follow newlines.
+ *
+ * Strips `dedent` leading spaces, plus the dedent of every enclosing block,
+ * from raw tokens that follow newlines.
+ *
+ * When the first child is a nested `@if`, `@unless` or `@each`, the newline
+ * after the outer tag is dropped: the nested block emits its own leading
+ * newline, so keeping both would produce a blank line.
  */
 export function processChildrenDedented(
   parser: Parser,
@@ -249,22 +290,31 @@ export function processChildrenDedented(
   children: Token[],
   dedent: number
 ): void {
+  const total = getActiveDedent(parser) + dedent
   let afterNewline = true
 
-  for (const child of children) {
-    if (child.type === 'newline') {
+  withDedent(parser, dedent, () => {
+    children.forEach((child, index) => {
+      if (child.type === 'newline') {
+        const next = children[index + 1]
+        const nextIsInlineBlock =
+          next !== undefined && INLINE_BLOCK_TAGS.some((name) => lexerUtils.isTag(next, name))
+
+        if (!(index === 0 && nextIsInlineBlock)) {
+          parser.processToken(child, buffer)
+        }
+        afterNewline = true
+        return
+      }
+
+      if (child.type === 'raw' && afterNewline && total > 0) {
+        buffer.outputRaw(dedentRaw(child.value, total))
+        afterNewline = false
+        return
+      }
+
       parser.processToken(child, buffer)
-      afterNewline = true
-      continue
-    }
-
-    if (child.type === 'raw' && afterNewline && dedent > 0) {
-      buffer.outputRaw(dedentRaw(child.value, dedent))
       afterNewline = false
-      continue
-    }
-
-    parser.processToken(child, buffer)
-    afterNewline = false
-  }
+    })
+  })
 }

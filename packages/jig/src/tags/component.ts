@@ -20,6 +20,8 @@ import {
   StringifiedObject,
   computeDedent,
   dedentRaw,
+  getActiveDedent,
+  withDedent,
   processChildrenDedented,
 } from '../utils.js'
 
@@ -239,6 +241,7 @@ export const componentTag: TagContract = {
      */
     const mainSlotChildren = token.children.filter((c) => !lexerUtils.isTag(c, 'slot'))
     const mainDedent = computeDedent(mainSlotChildren, token.indent)
+    const mainTotalDedent = getActiveDedent(parser) + mainDedent
     let mainAfterNewline = true
 
     /**
@@ -263,13 +266,13 @@ export const componentTag: TagContract = {
           return
         }
 
-        if (child.type === 'raw' && mainAfterNewline && mainDedent > 0) {
-          mainSlot.buffer.outputRaw(dedentRaw(child.value, mainDedent))
+        if (child.type === 'raw' && mainAfterNewline && mainTotalDedent > 0) {
+          mainSlot.buffer.outputRaw(dedentRaw(child.value, mainTotalDedent))
           mainAfterNewline = false
           return
         }
 
-        parser.processToken(child, mainSlot.buffer)
+        withDedent(parser, mainDedent, () => parser.processToken(child, mainSlot.buffer))
         mainAfterNewline = false
         return
       }

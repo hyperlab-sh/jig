@@ -10,7 +10,7 @@
 import { expressions, type Parser } from '@jig-lang/parser'
 
 import type { TagContract } from '../types.js'
-import { unallowedExpression, isSubsetOf, parseJsArg } from '../utils.js'
+import { unallowedExpression, isSubsetOf, parseJsArg, getActiveDedent } from '../utils.js'
 
 /**
  * List of expressions allowed for the include tag
@@ -87,8 +87,9 @@ export const includeTag: TagContract = {
 
     const renderExpr = `${awaitKeyword}${getRenderExpression(parser, parsed)}`
 
-    if (token.indent > 0) {
-      const indentStr = JSON.stringify(' '.repeat(token.indent))
+    const indent = Math.max(0, token.indent - getActiveDedent(parser))
+    if (indent > 0) {
+      const indentStr = JSON.stringify(' '.repeat(indent))
       buffer.outputExpression(
         `template.indentOutput(${renderExpr}, ${indentStr})`,
         token.filename,

@@ -520,8 +520,8 @@ test.group('Component | context API', (group) => {
       dedent`
 		<p> Some content </p>
 
-		  	<p>closePopup</p>
-		  	<p>undefined</p>
+		 	<p>closePopup</p>
+		 	<p>undefined</p>
 		`
     )
   })
@@ -566,8 +566,8 @@ test.group('Component | context API', (group) => {
       output,
       dedent`
 		<p> Some content </p>
-		  	<p>closePopup</p>
-		  	<p>closePopup</p>
+		 	<p>closePopup</p>
+		 	<p>closePopup</p>
 		`
     )
   })

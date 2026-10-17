@@ -3,11 +3,10 @@ let $lineNumber = 1;
 let $filename = "{{__dirname}}index.edge";
 try {
 if (state.show) {
-out += "\n";
 $lineNumber = 2;
 template.loop(state.users, function (user) {
 out += "\n";
-out += "    - ";
+out += "  - ";
 $lineNumber = 3;
 out += `${user}`;
 });

@@ -14,6 +14,7 @@ import { computeDedent, dedentRaw } from '../src/utils.js'
 import { Template } from '../src/template.js'
 import { Compiler } from '../src/compiler.js'
 import { Loader } from '../src/loader.js'
+import { Edge } from '../src/edge/main.js'
 import { Processor } from '../src/processor.js'
 
 test.group('computeDedent', () => {
@@ -139,5 +140,90 @@ test.group('template.indentOutput', () => {
   test('handles multiple levels of indentation', ({ assert }) => {
     const template = makeTemplate()
     assert.equal(template.indentOutput('a\nb\nc', '    '), 'a\n    b\n    c')
+  })
+
+  test('does not indent after a trailing newline', ({ assert }) => {
+    const template = makeTemplate()
+    assert.equal(template.indentOutput('a\nb\n', '  '), 'a\n  b\n')
+  })
+
+  test('does not indent blank lines', ({ assert }) => {
+    const template = makeTemplate()
+    assert.equal(template.indentOutput('a\n\nb', '  '), 'a\n\n  b')
+    assert.equal(template.indentOutput('a\r\n\r\nb\r\n', '  '), 'a\r\n\r\n  b\r\n')
+  })
+})
+
+test.group('nested block dedent', (group) => {
+  let edge: Edge
+
+  group.each.setup(() => {
+    edge = new Edge()
+    edge.registerTemplate('partial', { template: 'line1\nline2\n' })
+    edge.registerTemplate('partial_no_newline', { template: 'line1\nline2' })
+  })
+
+  async function render(template: string, state: Record<string, any> = {}) {
+    edge.registerTemplate('main', { template })
+    return edge.render('main', state)
+  }
+
+  test('nested @if is dedented by the enclosing block too', async ({ assert }) => {
+    const output = await render('@if(true)\n  @if(true)\n    deep\n  @end\n  after\n@end\n')
+    assert.equal(output, 'deep\nafter')
+  })
+
+  test('nested @if does not add a blank line', async ({ assert }) => {
+    const output = await render('before\n@if(true)\n  @if(true)\n    deep\n  @end\n@end\nafter\n')
+    assert.equal(output, 'before\ndeep\nafter')
+  })
+
+  test('@if inside @each is dedented and has no blank lines', async ({ assert }) => {
+    const output = await render(
+      'before\n@each(i in [1, 2])\n  @if(true)\n    {{ i }}\n  @end\n@end\nafter\n'
+    )
+    assert.equal(output, 'before\n1\n2\nafter')
+  })
+
+  test('three levels of nesting', async ({ assert }) => {
+    const output = await render(
+      '@if(true)\n  @each(i in [1])\n    @unless(false)\n      deep {{ i }}\n    @end\n  @end\n@end\nafter\n'
+    )
+    assert.equal(output, 'deep 1\nafter')
+  })
+
+  test('empty nested block does not leave a stray newline', async ({ assert }) => {
+    const output = await render('before\n@if(true)\n  @if(false)\n    x\n  @end\n@end\nafter\n')
+    assert.equal(output, 'before\nafter')
+  })
+
+  test('include inside a block is indented relative to the dedented block', async ({ assert }) => {
+    const output = await render("@if(true)\n  @include('partial_no_newline')\n  x\n@end\n")
+    assert.equal(output, 'line1\nline2\nx')
+  })
+
+  test('include nested two levels deep is dedented by both enclosing blocks', async ({
+    assert,
+  }) => {
+    const output = await render(
+      "@if(true)\n  @if(true)\n    @include('partial_no_newline')\n  @end\n@end\n"
+    )
+    assert.equal(output, 'line1\nline2')
+  })
+
+  test('partial ending in a newline leaves no whitespace-only line', async ({ assert }) => {
+    const output = await render("@if(true)\n  @include('partial')\n  x\n@end\n")
+    assert.notMatch(output, /^[ \t]+$/m)
+    assert.equal(output, 'line1\nline2\n\nx')
+  })
+
+  test('top-level include still indents continuation lines', async ({ assert }) => {
+    const output = await render("before\n  @include('partial_no_newline')\nafter\n")
+    assert.equal(output, 'beforeline1\n  line2\nafter')
+  })
+
+  test('@includeIf follows the same dedent rules', async ({ assert }) => {
+    const output = await render("@if(true)\n  @includeIf(true, 'partial_no_newline')\n  x\n@end\n")
+    assert.equal(output, 'line1\nline2\nx')
   })
 })

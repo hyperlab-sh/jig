@@ -23,7 +23,7 @@ $lineNumber = 7;
 template.loop(user.skills, function (skill) {
 out += "\n";
 $lineNumber = 8;
-out += template.indentOutput(template.compilePartial('yaml-partials/skills',"user","skill")(template,state,$context,user,skill), "    ");
+out += template.indentOutput(template.compilePartial('yaml-partials/skills',"user","skill")(template,state,$context,user,skill), "  ");
 });
 });
 } catch (error) {
