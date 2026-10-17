@@ -43,16 +43,16 @@ Run from the repo root. `lint`, `typecheck`, `build` and `format` fan out to `pa
 
 ```bash
 bun install              # install + link workspace packages
-bun run test             # all packages: lint + tests with coverage (runs generate first)
-bun run quick:test       # all packages: tests only (runs generate first)
+bun run test             # builds libs + generates grammar, then each package's `test`: lexer/parser = lint + tests with c8 coverage; jig = lint + tests (no coverage); vscode = tests with coverage (no lint)
+bun run quick:test       # builds libs + generates grammar, then each package's tests only (no lint, no coverage)
 bun run lint             # ESLint
 bun run typecheck        # builds lexer + parser (build:libs), then tsc --noEmit everywhere
-bun run build            # build every package
+bun run build            # build every package (lexer, parser, jig, vscode)
 bun run format           # Prettier
 
 bun run test:lexer       # quick:test in one package
-bun run test:parser
-bun run test:jig
+bun run test:parser      # builds lexer first
+bun run test:jig         # builds lexer + parser first
 bun run test:vscode      # runs generate (grammar) first
 ```
 
@@ -74,7 +74,21 @@ bun run --cwd docs export  # Static build → dist/ (requires APP_URL env var)
 
 ## Releases
 
-`release-it` runs per package (lexer, parser, jig). Tags are prefixed per package: `lexer-v<version>`, `parser-v<version>`, `jig-v<version>`; release commits read `chore(release): <pkg> <version>`.
+`release-it` runs per package (lexer, parser, jig). Tags are prefixed per package: `lexer-v<version>`, `parser-v<version>`, `jig-v<version>`; release commits read `chore(release): <pkg> <version>`. Version bump and release notes only consider commits touching that package's directory.
+
+```bash
+bun run --cwd packages/lexer release    # release in order: lexer, then parser, then jig
+bun run --cwd packages/parser release
+bun run --cwd packages/jig release
+```
+
+Publishing goes through `bun publish` (`npm.publishPackageManager: "bun"`), which rewrites the `workspace:^` sibling ranges to real versions. Plain `npm publish` would ship `workspace:` specifiers verbatim; never publish by hand with npm.
+
+Tags named `<pkg>-edge-v*` are the upstream Edge.js history imported into this repo; they are not Jig releases.
+
+### VS Code extension releases
+
+The old per-package release workflow was removed in the workspace migration. The root release workflow arrives with the CI task; until then the extension has no automated release.
 
 ## Key Differences from Edge.js
 

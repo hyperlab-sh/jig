@@ -12,7 +12,7 @@ Dependency chain: **lexer** → parser → jig (this is the lowest-level package
 
 ```bash
 # Run full test suite (lint + tests with coverage)
-bun test
+bun run test
 
 # Run tests without lint/coverage
 bun run quick:test

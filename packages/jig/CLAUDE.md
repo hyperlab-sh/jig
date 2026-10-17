@@ -11,8 +11,8 @@ Published as `@jig-lang/jig` (1.x). ESM-only. Node.js >=18.16.0.
 ## Commands
 
 ```bash
-# Run full test suite (lint + tests with coverage)
-bun test
+# Run full test suite (lint + tests)
+bun run test
 
 # Run tests without lint/coverage (fast iteration)
 bun run quick:test
@@ -33,7 +33,7 @@ bun run typecheck
 bun run build
 ```
 
-Testing uses **Japa** (`@japa/runner`) with `@japa/assert` and `@japa/file-system` plugins. Config is in `bin/test.ts`. The lockfile is `bun.lock` (`.npmrc: package-lock=false`). CI installs with `bun install --frozen-lockfile`.
+Testing uses **Japa** (`@japa/runner`) with `@japa/assert` and `@japa/file-system` plugins. Config is in `bin/test.ts`. The lockfile is the root `bun.lock` (one lockfile for the whole workspace).
 
 ## Architecture
 
