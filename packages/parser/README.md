@@ -173,7 +173,7 @@ parser.utils.transformAst(parser.utils.generateAST('2 + 2', loc, filename), file
 
 #### tokenize (template, options: { filename })
 
-Returns an array of [lexer tokens](https://github.com/svallory/jig-lexer) for the given template. The method is a shortcut to self import the lexer module and then generating tokens.
+Returns an array of [lexer tokens](https://github.com/hyperlab-sh/jig/tree/main/packages/lexer) for the given template. The method is a shortcut to self import the lexer module and then generating tokens.
 
 ```ts
 const tokens = parser.tokenize('Hello {{ username }}', {
@@ -433,8 +433,8 @@ Support for update expression
 ```
 
 
-[gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/svallory/jig-parser/checks.yml?style=for-the-badge
-[gh-workflow-url]: https://github.com/svallory/jig-parser/actions/workflows/checks.yml "Github action"
+[gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/hyperlab-sh/jig/checks.yml?style=for-the-badge
+[gh-workflow-url]: https://github.com/hyperlab-sh/jig/actions/workflows/checks.yml "Github action"
 
 [npm-image]: https://img.shields.io/npm/v/@jig-lang/parser.svg?style=for-the-badge&logo=npm
 [npm-url]: https://www.npmjs.com/package/@jig-lang/parser 'npm'
@@ -442,4 +442,4 @@ Support for update expression
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
 
 [license-url]: LICENSE.md
-[license-image]: https://img.shields.io/github/license/svallory/jig-parser?style=for-the-badge
+[license-image]: https://img.shields.io/github/license/hyperlab-sh/jig?style=for-the-badge

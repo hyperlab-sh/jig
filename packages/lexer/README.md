@@ -61,7 +61,7 @@ Following measures are taken to keep the analysis performant.
 
 1. Only analyse markup that is detected as Edge whitelisted syntax.
 2. Only analyse `tags`, that are passed to the tokenizer. Which means even if the syntax for tags is whitelisted, the tokeniser will analyse them if they are used by your app.
-3. Do not analyse Javascript expression and leave that for [@jig-lang/parser](https://github.com/svallory/jig-parser).
+3. Do not analyse Javascript expression and leave that for [@jig-lang/parser](https://github.com/hyperlab-sh/jig/tree/main/packages/parser).
 4. Only uses one Regular expression.
 
 ---
@@ -512,8 +512,8 @@ Following the links to documented error codes raised by the lexer.
 
 [Harminder virk](https://github.com/sponsors/thetutlage)
 
-[gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/svallory/jig-lexer/checks.yml?style=for-the-badge
-[gh-workflow-url]: https://github.com/svallory/jig-lexer/actions/workflows/checks.yml "Github action"
+[gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/hyperlab-sh/jig/checks.yml?style=for-the-badge
+[gh-workflow-url]: https://github.com/hyperlab-sh/jig/actions/workflows/checks.yml "Github action"
 
 [npm-image]: https://img.shields.io/npm/v/@jig-lang/lexer.svg?style=for-the-badge&logo=npm
 [npm-url]: https://www.npmjs.com/package/@jig-lang/lexer 'npm'
@@ -521,4 +521,4 @@ Following the links to documented error codes raised by the lexer.
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
 
 [license-url]: LICENSE.md
-[license-image]: https://img.shields.io/github/license/svallory/jig-lexer?style=for-the-badge
+[license-image]: https://img.shields.io/github/license/hyperlab-sh/jig?style=for-the-badge

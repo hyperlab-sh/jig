@@ -6,10 +6,10 @@
     },
     "github": {
       "title": "Jig on Github",
-      "href": "https://github.com/svallory/jig"
+      "href": "https://github.com/hyperlab-sh/jig"
     }
   },
   "search": {},
-  "fileEditBaseUrl": "https://github.com/svallory/jig/blob/main/docs",
+  "fileEditBaseUrl": "https://github.com/hyperlab-sh/jig/edit/main/docs/content/docs",
   "copyright": "Jig"
 }
