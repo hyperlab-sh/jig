@@ -126,7 +126,16 @@ export class Edge {
       this.loader = new Loader()
     }
 
-    this.globals.$filters = this.#filters
+    this.globals.$filters = new Proxy(this.#filters, {
+      get(filters, name) {
+        if (typeof name === 'string' && !Object.hasOwn(filters, name)) {
+          throw new Error(
+            `Unknown filter "${name}". Register it with registerFilter('${name}', fn)`
+          )
+        }
+        return Reflect.get(filters, name)
+      },
+    })
 
     this.compiler = new Compiler(this.loader, this.tags, this.processor, {
       cache: !!options.cache,

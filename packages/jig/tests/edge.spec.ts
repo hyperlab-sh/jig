@@ -625,8 +625,31 @@ test.group('Edge | filters', () => {
     })
     await assert.rejects(
       () => edge.render('eval', { value: 'x' }),
-      /\$filters\.nope is not a function/
+      /Unknown filter "nope"\. Register it with registerFilter\('nope', fn\)/
     )
+  })
+
+  test('unknown filter error points at the template', async ({ assert }) => {
+    const edge = new Edge()
+    edge.registerTemplate('eval', {
+      template: 'hello\n{{ nope :: value }}',
+    })
+    await assert.rejects(async () => {
+      try {
+        await edge.render('eval', { value: 'x' })
+      } catch (error: any) {
+        assert.equal(error.line, 2)
+        throw error
+      }
+    }, /Unknown filter "nope"/)
+  })
+
+  test('names inherited from Object.prototype are not filters', async ({ assert }) => {
+    const edge = new Edge()
+    edge.registerTemplate('eval', {
+      template: '{{ constructor :: value }}',
+    })
+    await assert.rejects(() => edge.render('eval', { value: 'x' }), /Unknown filter "constructor"/)
   })
 
   test('{{ }} without filter outputs raw value', async ({ assert }) => {
