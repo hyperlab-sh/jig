@@ -9,10 +9,11 @@
   "homepage": "https://jig-lang.com/docs/introduction",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jig-lang/jig-vscode.git"
+    "url": "git+https://github.com/hyperlab-sh/jig.git",
+    "directory": "packages/vscode"
   },
   "bugs": {
-    "url": "https://github.com/jig-lang/jig-vscode/issues"
+    "url": "https://github.com/hyperlab-sh/jig/issues"
   },
   "keywords": [
     "jig",

@@ -60,14 +60,14 @@
     "@jig-lang/lexer": "workspace:*",
     "js-stringify": "^1.0.2"
   },
-  "homepage": "https://github.com/svallory/jig#readme",
+  "homepage": "https://github.com/hyperlab-sh/jig#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/svallory/jig.git",
-    "directory": "parser"
+    "url": "git+https://github.com/hyperlab-sh/jig.git",
+    "directory": "packages/parser"
   },
   "bugs": {
-    "url": "https://github.com/svallory/jig/issues"
+    "url": "https://github.com/hyperlab-sh/jig/issues"
   },
   "keywords": [
     "jig",
@@ -103,13 +103,14 @@
     "git": {
       "requireCleanWorkingDir": true,
       "requireUpstream": true,
-      "commitMessage": "chore(release): ${version}",
-      "tagAnnotation": "v${version}",
+      "commitMessage": "chore(release): parser ${version}",
+      "tagAnnotation": "parser-v${version}",
       "push": true,
-      "tagName": "v${version}"
+      "tagName": "parser-v${version}"
     },
     "github": {
-      "release": true
+      "release": true,
+      "releaseName": "parser v${version}"
     },
     "npm": {
       "publish": true,
