@@ -1,0 +1,20 @@
+#include <stdio.h>
+
+int main() {
+    // Example for jig-c
+    char* title = "{{ title }}";
+    printf("Title: %s\n", title);
+
+    @if(debugMode)
+    printf("Debug mode active\n");
+    @end
+
+    char* items[] = {
+        @each(item in items)
+        "{{ item }}",
+        @end
+    };
+
+    {{-- Jig comment in C --}}
+    return 0;
+}

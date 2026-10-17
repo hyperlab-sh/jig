@@ -1,0 +1,21 @@
+// Example for jig-dart
+function init() {
+  const config = {
+    apiKey: '{{ secrets.apiKey }}',
+    environment: '{{ env }}'
+  };
+
+  @if(debugMode)
+    console.log('Jig is active for jig-dart');
+  @end
+
+  const list = [
+    @each(val in values)
+      '{{ val }}',
+    @end
+  ];
+
+  return config.{{ property }};
+}
+
+{{-- Jig structures interleaved with host language --}}

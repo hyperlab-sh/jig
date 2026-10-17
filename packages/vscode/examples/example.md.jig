@@ -1,0 +1,31 @@
+# {{ title }}
+
+This is a **Jig** markdown template.
+
+This router handles {{ routes.length }} **routes**.
+
+@if(showBanner)
+![Banner]({{ bannerUrl }})
+@end
+
+## Features
+
+@each(feature in features)
+- **{{ feature.name }}**: {{ feature.description }}
+@end
+
+{{-- Jig comment --}}
+
+> Quote: {{{ rawQuote }}}
+
+@if(showTypes): ts
+interface Route {
+  path: string
+  method: 'GET' | 'POST'
+}
+
+const routes: Route[] = []
+@end
+
+## Footer
+Made by {{ author }}

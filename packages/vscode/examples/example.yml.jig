@@ -1,0 +1,20 @@
+# Example for jig-yaml
+name: {{ projectName }}
+version: {{ version }}
+@if(isEnabled)
+  enabled: true
+@else
+  enabled: false
+@end
+settings:
+  theme: {{ theme }}
+  features:
+    @each(feature in features)
+    - {{ feature }}
+    @end
+@section('readme'): markdown
+# Readme
+This is **bold** markdown
+{{ variable }}
+- list item
+@end

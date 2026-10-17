@@ -1,0 +1,17 @@
+def main():
+    # Example for jig-python
+    title = "{{ title }}"
+    print(f"Title: {title}")
+
+    @if(debugMode)
+    print("Debug mode is active")
+    @end
+
+    items = [
+        @each(item in items)
+        "{{ item }}",
+        @end
+    ]
+
+    {{-- Jig comment in Python --}}
+    return items

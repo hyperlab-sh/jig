@@ -1,0 +1,18 @@
+fn main() {
+    // Example for jig-rust
+    let title = "{{ title }}";
+    println!("Title: {}", title);
+
+    @if(debugMode)
+    println!("Debug mode is active");
+    @end
+
+    let items = vec![
+        @each(item in items)
+        "{{ item }}",
+        @end
+    ];
+
+    {{-- Jig comment in Rust --}}
+    println!("{:?}", items);
+}
