@@ -101,6 +101,7 @@
   },
   "release-it": {
     "git": {
+      "requireBranch": "main",
       "requireCleanWorkingDir": true,
       "requireUpstream": true,
       "commitMessage": "chore(release): parser ${version}",
