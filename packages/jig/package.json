@@ -60,14 +60,14 @@
     "@jig-lang/lexer": "workspace:*",
     "@jig-lang/parser": "workspace:*"
   },
-  "homepage": "https://github.com/svallory/jig#readme",
+  "homepage": "https://github.com/hyperlab-sh/jig#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/svallory/jig.git",
-    "directory": "jig"
+    "url": "git+https://github.com/hyperlab-sh/jig.git",
+    "directory": "packages/jig"
   },
   "bugs": {
-    "url": "https://github.com/svallory/jig/issues"
+    "url": "https://github.com/hyperlab-sh/jig/issues"
   },
   "keywords": [
     "jig",
@@ -102,13 +102,14 @@
     "git": {
       "requireCleanWorkingDir": true,
       "requireUpstream": true,
-      "commitMessage": "chore(release): ${version}",
-      "tagAnnotation": "v${version}",
+      "commitMessage": "chore(release): jig ${version}",
+      "tagAnnotation": "jig-v${version}",
       "push": true,
-      "tagName": "v${version}"
+      "tagName": "jig-v${version}"
     },
     "github": {
-      "release": true
+      "release": true,
+      "releaseName": "jig v${version}"
     },
     "npm": {
       "publish": true,
