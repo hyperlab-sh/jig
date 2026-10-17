@@ -219,7 +219,31 @@ test.group('nested block dedent', (group) => {
 
   test('top-level include still indents continuation lines', async ({ assert }) => {
     const output = await render("before\n  @include('partial_no_newline')\nafter\n")
-    assert.equal(output, 'beforeline1\n  line2\nafter')
+    assert.equal(output, 'before\n  line1\n  line2\nafter')
+  })
+
+  test('tag on its own line starts on a new line', async ({ assert }) => {
+    assert.equal(await render("a\n@include('partial_no_newline')\nb\n"), 'a\nline1\nline2\nb')
+  })
+
+  test('include inside nested components has no stray indent', async ({ assert }) => {
+    edge.registerTemplate('wrap', { template: '{{ await $slots.main() }}' })
+    edge.registerTemplate('btn', { template: '<b>x</b>' })
+    const output = await render(
+      "@component('wrap')\n  @component('wrap')\n    @include('btn')\n  @end\n@end\n"
+    )
+    assert.equal(output, '<b>x</b>')
+  })
+
+  test('@includeIf starts on a new line and indents its first line', async ({ assert }) => {
+    assert.equal(
+      await render("a\n  @includeIf(true, 'partial_no_newline')\nb\n"),
+      'a\n  line1\n  line2\nb'
+    )
+  })
+
+  test('tags without output still add no line break', async ({ assert }) => {
+    assert.equal(await render('a\n@let(x = 1)\nb\n'), 'ab')
   })
 
   test('@includeIf follows the same dedent rules', async ({ assert }) => {

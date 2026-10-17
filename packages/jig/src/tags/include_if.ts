@@ -31,6 +31,7 @@ import {
 export const includeIfTag: TagContract = {
   block: false,
   seekable: true,
+  outputsContent: true,
   tagName: 'includeIf',
 
   /**
@@ -92,7 +93,7 @@ export const includeIfTag: TagContract = {
     if (indent > 0) {
       const indentStr = JSON.stringify(' '.repeat(indent))
       buffer.outputExpression(
-        `template.indentOutput(${renderExpr}, ${indentStr})`,
+        `template.indentOutput(${renderExpr}, ${indentStr}, true)`,
         token.filename,
         token.loc.start.line,
         false

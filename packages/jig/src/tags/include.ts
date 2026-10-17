@@ -65,6 +65,7 @@ export function getRenderExpression(parser: Parser, parsedExpression: any) {
 export const includeTag: TagContract = {
   block: false,
   seekable: true,
+  outputsContent: true,
   tagName: 'include',
 
   /**
@@ -91,7 +92,7 @@ export const includeTag: TagContract = {
     if (indent > 0) {
       const indentStr = JSON.stringify(' '.repeat(indent))
       buffer.outputExpression(
-        `template.indentOutput(${renderExpr}, ${indentStr})`,
+        `template.indentOutput(${renderExpr}, ${indentStr}, true)`,
         token.filename,
         token.loc.start.line,
         false

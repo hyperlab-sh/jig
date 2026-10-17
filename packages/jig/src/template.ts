@@ -153,13 +153,15 @@ export class Template extends Macroable {
 
   /**
    * Indents every line of output by the given prefix string.
-   * First line is NOT indented (it follows the @include tag's position
-   * which is already on the correct line). Blank lines and a trailing
-   * newline are left alone so no whitespace-only lines are produced.
+   * The first line is only indented when `indentFirstLine` is set (include
+   * tags start on a fresh line, so it needs the tag's indent too). Blank
+   * lines and a trailing newline are left alone so no whitespace-only lines
+   * are produced.
    */
-  indentOutput(output: string, indent: string): string {
+  indentOutput(output: string, indent: string, indentFirstLine: boolean = false): string {
     if (!indent || !output) return output
-    return output.replace(/\n(?![\r\n]|$)/g, '\n' + indent)
+    const indented = output.replace(/\n(?![\r\n]|$)/g, '\n' + indent)
+    return indentFirstLine && !/^[\r\n]/.test(indented) ? indent + indented : indented
   }
 
   /**
