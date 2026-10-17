@@ -1,17 +1,37 @@
 # Changelog
 
-## 7.0.0 (Jig Fork)
+## 1.1.0 (2026-10-17)
+
+### Bug Fixes
+
+- **Nested blocks** are dedented by every enclosing block, not only their own
+- A nested `@if`, `@unless` or `@each` no longer adds a blank line after its parent block's opening tag
+- `@include` and `@includeIf` indent relative to the dedented block they sit in
+- `template.indentOutput()` no longer indents blank lines or a trailing newline
+- An unregistered filter (`{{ nope :: value }}`) now throws `Unknown filter "nope"` with the template location instead of a bare `TypeError`
+
+### Internal
+
+- Rebased on Edge 6.5.1 (adds `pushToTop` and `pushToTopOnce`)
+- Depends on `@jig-lang/lexer` and `@jig-lang/parser` 1.1.0
+- Added `getActiveDedent()` and `withDedent()` to track cumulative dedent
+
+---
+
+## 1.0.0 (2026-02-08, Jig fork of Edge 6.4.0)
 
 ### Breaking Changes
 
-- **Renamed**: Package renamed from `edge.js` to `jig`
+- **Renamed**: Package renamed from `edge.js` to `@jig-lang/jig`
 - **Removed HTML escaping**: `{{ }}` now outputs raw values. No `template.escape()` wrapping in compiled output
 - **Removed `safe()` function**: No longer needed since there's no escaping
 - **Removed `SafeValue` class**: Internal class for escape bypass removed
 - **Removed HTML helpers**: `html.attrs`, `html.classNames`, `html.escape`, `html.safe`, `nl2br` removed
 - **Removed `$props.toAttrs()`**: HTML attribute serialization removed from ComponentProps
 - **Removed `EdgeOptions.escape`**: Custom escape function option removed
-- **Removed migration plugin**: `edge.js/plugins/migrate` export removed
+- **Removed migration plugin**: the v5 to v6 migration plugin (`src/migrate`) is gone
+- **Removed layout compatibility**: the `compat` option and the `@layout`, `@section`, `@set` and `@super` tags are gone; use components and `@let`/`@assign`
+- **`ComponentProps.merge`** no longer merges `class` values
 
 ### New Features
 
@@ -27,7 +47,7 @@
 - `template.escape()` method kept for backward compatibility (returns `String(input)`)
 - Added `computeDedent()`, `dedentRaw()`, `processChildrenDedented()` utility functions
 - Added `template.indentOutput()` method for include tag output indentation
-- Updated edge-lexer (6.1.0) and edge-parser (9.2.0) for tag indent tracking
+- Depends on `@jig-lang/lexer` and `@jig-lang/parser` for tag indent tracking
 
 ---
 

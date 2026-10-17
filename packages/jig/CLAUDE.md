@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Jig is a template engine for Node.js focused on code generation, forked from Edge.js (part of the AdonisJS ecosystem). It compiles `.edge` templates into JavaScript functions. The compilation pipeline is: **Lexer** (`@jig-lang/lexer`) → **Parser** (`@jig-lang/parser`) → **Compiler** (`src/compiler.ts`) → **Template runtime** (`src/template.ts`).
 
-Current version: 7.x. ESM-only. Node.js >=18.16.0.
+Published as `@jig-lang/jig` (1.x). ESM-only. Node.js >=18.16.0.
 
 ## Commands
 
@@ -33,7 +33,7 @@ bun run typecheck
 bun run build
 ```
 
-Testing uses **Japa** (`@japa/runner`) with `@japa/assert` and `@japa/file-system` plugins. Config is in `bin/test.ts`. No package-lock.json is used (`.npmrc: package-lock=false`).
+Testing uses **Japa** (`@japa/runner`) with `@japa/assert` and `@japa/file-system` plugins. Config is in `bin/test.ts`. The lockfile is `bun.lock` (`.npmrc: package-lock=false`). CI installs with `bun install --frozen-lockfile`.
 
 ## Architecture
 
@@ -84,8 +84,8 @@ Plugins are functions `(edge: Edge, firstRun: boolean, options?: T) => void`. Th
 ### Exports
 
 ```
-jig          → Edge class, default instance, Template, EdgeError, edgeGlobals
-jig/types    → All TypeScript types
+@jig-lang/jig        → Edge class, default instance, Template, EdgeError, edgeGlobals
+@jig-lang/jig/types  → All TypeScript types
 ```
 
 ## Test Fixture Pattern

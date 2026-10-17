@@ -24,8 +24,8 @@ import type {
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor
 
 /**
- * Compiler is to used to compile templates using the `@jig-lang/parser`. Along with that
- * it natively merges the contents of a layout with a parent template.
+ * Compiler is used to compile templates using the `@jig-lang/parser`. It also loads
+ * templates through the loader and caches the compiled output.
  */
 export class Compiler {
   /**
@@ -85,7 +85,7 @@ export class Compiler {
 
   /**
    * Hook called for every mustache token before parsing.
-   * - Converts MUSTACHE → SMUSTACHE so escape wrapping is never applied
+   * - Converts MUSTACHE → SMUSTACHE (the parser never wraps output in an escape call)
    * - Parses `{{ mode :: expr }}` filter syntax
    */
   static #onMustache(token: MustacheToken) {
@@ -159,7 +159,7 @@ export class Compiler {
 
   /**
    * Converts the template content to an array of lexer tokens. The method is
-   * same as the `parser.tokenize`, but it also handles layouts natively.
+   * same as the `parser.tokenize`, but it loads the template through the loader.
    *
    * ```
    * compiler.tokenize('<template-path>')
@@ -185,8 +185,7 @@ export class Compiler {
 
   /**
    * Compiles the template contents to string. The output is same as the `@jig-lang/parser`,
-   * it's just that the compiler uses the loader to load the templates and also
-   * handles layouts.
+   * it's just that the compiler uses the loader to load the templates.
    *
    * ```js
    * compiler.compile('welcome')
@@ -230,8 +229,7 @@ export class Compiler {
 
   /**
    * Compiles the template contents to string. The output is same as the `@jig-lang/parser`,
-   * it's just that the compiler uses the loader to load the templates and also
-   * handles layouts.
+   * it's just that the compiler uses the loader to load the templates.
    *
    * ```js
    * compiler.compileRaw('welcome')

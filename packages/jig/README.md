@@ -58,12 +58,12 @@ export interface User {
 
 Using npm:
 ```bash
-npm i jig
+npm i @jig-lang/jig
 ```
 
 Using bun:
 ```bash
-bun add jig
+bun add @jig-lang/jig
 ```
 
 ## Documentation
@@ -80,13 +80,16 @@ MIT
 
 ---
 
-[gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/edge-js/edge/checks.yml?style=for-the-badge
-[gh-workflow-url]: https://github.com/edge-js/edge/actions/workflows/checks.yml "Github action"
+[gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/svallory/jig/checks.yml?style=for-the-badge
+[gh-workflow-url]: https://github.com/svallory/jig/actions/workflows/checks.yml "Github action"
 
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
-[typescript-url]: "typescript"
+[typescript-url]: https://www.typescriptlang.org "typescript"
 
-[license-image]: https://img.shields.io/npm/l/jig?color=blueviolet&style=for-the-badge
+[npm-image]: https://img.shields.io/npm/v/@jig-lang/jig?color=blue&style=for-the-badge
+[npm-url]: https://www.npmjs.com/package/@jig-lang/jig "npm"
+
+[license-image]: https://img.shields.io/npm/l/@jig-lang/jig?color=blueviolet&style=for-the-badge
 [license-url]: LICENSE.md 'license'
 
 [npm-image]: https://img.shields.io/npm/v/jig.svg?style=for-the-badge&logo=npm
