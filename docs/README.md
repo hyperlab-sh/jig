@@ -98,13 +98,13 @@ Install dependencies
 
 ```sh
 cd <my-website>
-npm i
+bun install
 ```
 
 Run the development server.
 
 ```sh
-npm run dev
+bun run dev
 ```
 
 And visit [http://localhost:3333/docs/introduction](http://localhost:3333/docs/introduction) URL to view the website in the browser.
@@ -279,7 +279,7 @@ trigger is displayed in mobile view only.
 ## Deployment
 The docs boilerplate allows you to create a static build and deploy it on any CDN including Netlify, Cloudflare pages and so on.
 
-You can create the static build using the `npm run export` command. The command runs the following actions.
+You can create the static build using the `bun run export` command. The command runs the following actions.
 
 - Create a production build for assets using Vite.
 - Convert collections to HTML pages.

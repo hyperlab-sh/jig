@@ -22,8 +22,8 @@ This repo is a Bun workspace monorepo (`workspaces: ["packages/*", "docs"]`) wit
 lexer → parser → jig
 ```
 
-- `packages/parser` depends on `@jig-lang/lexer` via `workspace:*`
-- `packages/jig` depends on `@jig-lang/lexer` and `@jig-lang/parser` via `workspace:*`
+- `packages/parser` depends on `@jig-lang/lexer` via `workspace:^`
+- `packages/jig` depends on `@jig-lang/lexer` and `@jig-lang/parser` via `workspace:^`
 - Siblings resolve through each package's `build/` directory (`exports` point there), so build lexer, then parser, before typechecking or testing a dependent package from a clean checkout. The root `typecheck` does this through `build:libs`.
 
 ### Compilation Pipeline
@@ -43,16 +43,16 @@ Run from the repo root. `lint`, `typecheck`, `build` and `format` fan out to `pa
 
 ```bash
 bun install              # install + link workspace packages
-bun run test             # builds libs + generates grammar, then each package's `test`: lexer/parser = lint + tests with c8 coverage; jig = lint + tests (no coverage); vscode = tests with coverage (no lint)
-bun run quick:test       # builds libs + generates grammar, then each package's tests only (no lint, no coverage)
+bun run test             # build:libs + generate, then each package's `test`: lexer/parser = lint + tests with c8 coverage; jig = lint + tests (no coverage); vscode = tests with coverage (no lint)
+bun run quick:test       # build:libs + generate, then each package's `quick:test` (no coverage). build:libs lints and builds lexer and parser first, so they are linted even here
 bun run lint             # ESLint
-bun run typecheck        # builds lexer + parser (build:libs), then tsc --noEmit everywhere
+bun run typecheck        # build:libs first (lint + build lexer and parser), then tsc --noEmit everywhere
 bun run build            # build every package (lexer, parser, jig, vscode)
 bun run format           # Prettier
 
 bun run test:lexer       # quick:test in one package
-bun run test:parser      # builds lexer first
-bun run test:jig         # builds lexer + parser first
+bun run test:parser      # lints + builds lexer first (its `build` runs `precompile`)
+bun run test:jig         # lints + builds lexer and parser first (build:libs)
 bun run test:vscode      # runs generate (grammar) first
 ```
 
@@ -81,6 +81,10 @@ bun run --cwd packages/lexer release    # release in order: lexer, then parser, 
 bun run --cwd packages/parser release
 bun run --cwd packages/jig release
 ```
+
+Before releasing a package, release every workspace dependency of it that changed, in order lexer -> parser -> jig. `bun publish` rewrites `workspace:^` to `^<current workspace version>`, so releasing jig without releasing a changed parser publishes a range that points at the older parser.
+
+Before the first real release of a package, run `bun publish --dry-run` from its directory to confirm auth and the folder form work. `npm.skipChecks` is true, so otherwise release-it would tag and push before a failed publish.
 
 Publishing goes through `bun publish` (`npm.publishPackageManager: "bun"`), which rewrites the `workspace:^` sibling ranges to real versions. Plain `npm publish` would ship `workspace:` specifiers verbatim; never publish by hand with npm.
 
