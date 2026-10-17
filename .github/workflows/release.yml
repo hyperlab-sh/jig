@@ -22,10 +22,13 @@ permissions:
 jobs:
   checks:
     uses: ./.github/workflows/checks.yml
+    with:
+      run-all: true
 
   release:
     needs: checks
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     environment: release
     permissions:
       contents: write
@@ -40,6 +43,8 @@ jobs:
         with:
           node-version: 24
       - run: bun install --frozen-lockfile
+      - name: Build workspace libs (needed by the version script of parser and jig)
+        run: bun run build:libs
       - name: Configure git
         run: |
           git config user.name "github-actions[bot]"
