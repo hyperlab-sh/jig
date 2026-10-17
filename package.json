@@ -1,0 +1,28 @@
+{
+  "name": "jig-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Monorepo for the Jig template engine: lexer, parser, engine, VS Code extension and docs.",
+  "packageManager": "bun@1.4.2",
+  "workspaces": [
+    "packages/*",
+    "docs"
+  ],
+  "engines": {
+    "node": ">=18.16.0"
+  },
+  "scripts": {
+    "generate": "bun run --cwd packages/vscode generate",
+    "test": "bun run generate && bun run --filter './packages/*' test",
+    "quick:test": "bun run generate && bun run --filter './packages/*' quick:test",
+    "lint": "bun run --filter './packages/*' lint",
+    "typecheck": "bun run --filter './packages/*' typecheck",
+    "build": "bun run --filter './packages/*' build",
+    "format": "bun run --filter './packages/*' format",
+    "test:lexer": "bun run --cwd packages/lexer quick:test",
+    "test:parser": "bun run --cwd packages/parser quick:test",
+    "test:jig": "bun run --cwd packages/jig quick:test",
+    "test:vscode": "bun run generate && bun run --cwd packages/vscode quick:test"
+  }
+}
