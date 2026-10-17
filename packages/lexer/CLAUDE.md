@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**edge-lexer** is the tokenizer for the Jig/Edge template engine. It converts `.edge` template markup into a token array by detecting Edge-whitelisted syntax (tags, mustache expressions, comments) and performing lexical analysis only within detected markup — not character-by-character. Published as `edge-lexer` on npm.
+**@jig-lang/lexer** is the tokenizer for the Jig template engine (forked from Edge). It converts `.edge` template markup into a token array by detecting Edge-whitelisted syntax (tags, mustache expressions, comments) and performing lexical analysis only within detected markup — not character-by-character. Published as `@jig-lang/lexer` on npm.
 
 Dependency chain: **lexer** → parser → jig (this is the lowest-level package).
 
@@ -57,12 +57,18 @@ Tags passed to the Tokenizer must satisfy `LexerTagDefinitionContract`:
 - `seekable: boolean` — Does it require arguments in `()`?
 - `noNewLine?: boolean` — Drop newline after tag?
 
+Tag tokens also carry `indent` (column of the tag) and, when the line has a `: type` suffix, `properties.contentType`.
+
+### Newline model
+
+A newline token is pushed *before* every non-tag line, never before a tag line (unless the previous line was a tag too). A block tag's first child is therefore the newline that ends its own line. A tag on its own line adds no line break before its output, so `a\n@include('p')` renders as `a` immediately followed by the partial.
+
 ### Exports
 
 ```
-edge-lexer       → Tokenizer, MustacheTypes, TagTypes
-edge-lexer/types → All TypeScript types
-edge-lexer/utils → Type guard utilities (isTag, isMustache, etc.)
+@jig-lang/lexer       → Tokenizer, MustacheTypes, TagTypes
+@jig-lang/lexer/types → All TypeScript types
+@jig-lang/lexer/utils → Type guard utilities (isTag, isMustache, etc.)
 ```
 
 ### Error Codes

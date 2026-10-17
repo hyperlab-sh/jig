@@ -1,5 +1,5 @@
 /*
- * edge-lexer
+ * @jig-lang/lexer
  *
  * (c) Jig
  *
