@@ -1,0 +1,17 @@
+/*
+ * @jig-lang/parser
+ *
+ * (c) Jig
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+import { type Parser } from '../parser/main.js'
+
+export default {
+  toStatement(statement: any, filename: string, parser: Parser): object {
+    statement.argument = parser.utils.transformAst(statement.argument, filename, parser)
+    return statement
+  },
+}
