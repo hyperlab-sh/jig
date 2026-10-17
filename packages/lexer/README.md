@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="logo.png" width="128" alt="Jig logo" />
+</p>
+
 # edge-lexer
 > Generate tokens by parsing a raw edge markup file
 
