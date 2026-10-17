@@ -25,4 +25,6 @@ bun run typecheck
 bun run test:jig       # one package: test:lexer, test:parser, test:jig, test:vscode
 ```
 
+The CI badge links in the package READMEs resolve once the root `checks.yml` workflow lands (CI task).
+
 See [CLAUDE.md](CLAUDE.md) for architecture and conventions.

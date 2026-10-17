@@ -26,7 +26,7 @@ import {
 
 /**
  * Edge parser converts template strings to an invokable function. This module
- * uses [@jig-lang/lexer](https://github.com/svallory/jig-lexer) to generate a list
+ * uses [@jig-lang/lexer](https://github.com/hyperlab-sh/jig/tree/main/packages/lexer) to generate a list
  * of tokens and process them against [acorn](https://npm.im/acorn).
  *
  * Edge has concepts of Tags, which are not implemented by this module and must
