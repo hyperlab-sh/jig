@@ -194,8 +194,10 @@ export class Tokenizer {
     }
 
     /**
-     * When tag is not seekable, then their is no need to create
-     * a scanner instance, just consume it right away.
+     * When tag is not seekable, there is no need to create a scanner
+     * instance, just consume it right away. Text after the tag name is
+     * only honoured when it is `~` or a content type suffix (optionally
+     * followed by `~`); anything else is ignored, as before.
      */
     if (!tag.seekable) {
       const rest = line.slice(tag.col).trim()

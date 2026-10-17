@@ -11,7 +11,8 @@ import { EdgeError } from 'edge-error'
 
 /**
  * Raised when there is inline content next to a tag opening
- * block. For example:
+ * block. A content type suffix (`@if(x): markdown`) is not inline
+ * content and is allowed. For example:
  *
  * Incorrect
  * ```
