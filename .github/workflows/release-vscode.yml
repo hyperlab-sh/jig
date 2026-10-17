@@ -1,0 +1,52 @@
+name: release-vscode
+
+on:
+  push:
+    tags:
+      - 'vscode-v*'
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    uses: ./.github/workflows/checks.yml
+
+  release:
+    needs: checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: packages/vscode
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+        working-directory: .
+      - name: Generate grammars
+        run: bun run generate
+      - name: Build
+        run: bun run build
+      - name: Package VSIX
+        run: bunx @vscode/vsce package --no-dependencies
+      - name: Publish to VS Code Marketplace
+        run: bunx @vscode/vsce publish --no-dependencies --packagePath ./*.vsix
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      - name: Publish to OpenVSX
+        run: bunx ovsx publish ./*.vsix
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: packages/vscode/*.vsix
+          generate_release_notes: true
