@@ -251,8 +251,8 @@ This ensures partials integrate cleanly into the surrounding code structure.
 
 Jig requires updated versions of the lexer and parser:
 
-- **edge-lexer** 6.1.0+ — Adds `indent: number` field to tag tokens
-- **edge-parser** 9.2.0+ — Propagates indent information through AST
+- **@jig-lang/lexer** — Adds `indent: number` field to tag tokens
+- **@jig-lang/parser** — Propagates indent information through AST
 
 ## Migration from Edge.js
 
