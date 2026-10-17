@@ -18,7 +18,7 @@ This is a [Bun](https://bun.sh) workspace.
 
 ```bash
 bun install            # install and link all packages
-bun run build          # build lexer, parser, jig
+bun run build          # build lexer, parser, jig and the VS Code extension
 bun run quick:test     # run all test suites
 bun run lint
 bun run typecheck

@@ -12,16 +12,16 @@ Documentation site: [jig.saulo.engineer](https://jig.saulo.engineer)
 
 ```bash
 # Development server (build assets + start server)
-npm run dev
+bun run dev
 
 # Start dev server only (without rebuilding assets)
-npm run serve
+bun run serve
 
 # Production static export → dist/
-APP_URL=https://jig.saulo.engineer npm run export
+APP_URL=https://jig.saulo.engineer bun run export
 
 # Download sponsor data
-npm run download:sponsors
+bun run download:sponsors
 ```
 
 Dev server runs at `http://localhost:3333/docs/introduction`.
