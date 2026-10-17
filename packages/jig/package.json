@@ -1,7 +1,7 @@
 {
   "name": "@jig-lang/jig",
   "description": "A template engine for code generation. Forked from Edge.js by Harminder Virk.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "engines": {
     "node": ">=18.16.0"
   },
