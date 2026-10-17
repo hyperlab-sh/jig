@@ -1,5 +1,5 @@
 /*
- * edge.js.js
+ * edge.js
  *
  * (c) EdgeJS
  *
@@ -9,35 +9,21 @@
 
 // @ts-expect-error untyped module
 import stringify from 'js-stringify'
-import classNames from 'classnames'
 // @ts-expect-error untyped module
 import inspect from '@poppinss/inspect'
 import string from '@poppinss/utils/string'
 
 import type { EdgeGlobals } from '../types.js'
-import { htmlSafe, escape } from '../template.js'
-import { stringifyAttributes } from '../utils.js'
 
 /**
  * Inbuilt globals
  */
 export const edgeGlobals: EdgeGlobals = {
   /**
-   * Converts new lines to break
-   */
-  nl2br: (value: string | null | undefined) => {
-    if (!value) {
-      return
-    }
-
-    return String(value).replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br>')
-  },
-
-  /**
    * Inspect state
    */
   inspect: (value: any) => {
-    return htmlSafe(inspect.string.html(value))
+    return inspect.string(value)
   },
 
   /**
@@ -68,18 +54,6 @@ export const edgeGlobals: EdgeGlobals = {
       completeWords: options.completeWords !== undefined ? options.completeWords : !options.strict,
       suffix: options.suffix,
     })
-  },
-
-  /**
-   * Helpers related to HTML
-   */
-  html: {
-    escape: escape,
-    safe: htmlSafe,
-    classNames: classNames,
-    attrs: (values: Record<string, any>) => {
-      return htmlSafe(stringifyAttributes(values))
-    },
   },
 
   /**

@@ -20,7 +20,6 @@ import * as tags from '../src/tags/main.js'
 import { Template } from '../src/template.js'
 import { Compiler } from '../src/compiler.js'
 import { Processor } from '../src/processor.js'
-import * as compatTags from '../src/migrate/tags/main.js'
 
 import { normalizeNewLines, normalizeFilename } from '../tests_helpers/index.js'
 const basePath = join(dirname(fileURLToPath(import.meta.url)), '../fixtures')
@@ -43,9 +42,6 @@ test.group('Fixtures', (group) => {
     Object.keys(tags).forEach((tag) => {
       tags[tag as keyof typeof tags].boot?.(Template)
     })
-    Object.keys(compatTags).forEach((tag) => {
-      compatTags[tag as keyof typeof compatTags].boot?.(Template)
-    })
   })
 
   const dirs = readdirSync(basePath).filter((file) => statSync(join(basePath, file)).isDirectory())
@@ -53,7 +49,6 @@ test.group('Fixtures', (group) => {
     loader,
     {
       ...tags,
-      ...compatTags,
     },
     processor,
     { async: false }
@@ -61,11 +56,8 @@ test.group('Fixtures', (group) => {
 
   dirs.forEach((dir) => {
     const dirBasePath = join(basePath, dir)
-    const compatMode = dir.endsWith('-compat')
 
     test(dir, ({ assert }) => {
-      compiler.compat = compatMode
-
       /**
        * Compiled output
        */
@@ -99,7 +91,7 @@ test.group('Fixtures', (group) => {
       )
       assert.stringEqual(output.trim(), out)
       assert.stringEqual(outputRaw.trim(), out)
-    }).tags(compatMode ? ['compat'] : [])
+    })
   })
 })
 
@@ -115,9 +107,6 @@ test.group('Fixtures | Cache', (group) => {
     Object.keys(tags).forEach((tag) => {
       tags[tag as keyof typeof tags].boot?.(Template)
     })
-    Object.keys(compatTags).forEach((tag) => {
-      compatTags[tag as keyof typeof compatTags].boot?.(Template)
-    })
   })
 
   const dirs = readdirSync(basePath).filter((file) => statSync(join(basePath, file)).isDirectory())
@@ -125,7 +114,6 @@ test.group('Fixtures | Cache', (group) => {
     loader,
     {
       ...tags,
-      ...compatTags,
     },
     processor,
     { async: false, cache: true }
@@ -133,11 +121,8 @@ test.group('Fixtures | Cache', (group) => {
 
   dirs.forEach((dir) => {
     const dirBasePath = join(basePath, dir)
-    const compatMode = dir.endsWith('-compat')
 
     test(dir, ({ assert }) => {
-      compiler.compat = compatMode
-
       /**
        * Compiled output
        */
@@ -171,6 +156,6 @@ test.group('Fixtures | Cache', (group) => {
       )
       assert.stringEqual(output.trim(), out)
       assert.stringEqual(outputRaw.trim(), out)
-    }).tags(compatMode ? ['compat'] : [])
+    })
   })
 })

@@ -7,9 +7,9 @@
  * file that was distributed with this source code.
  */
 
-import type { TagToken } from 'edge-lexer/types'
-import type { Parser, EdgeBuffer } from 'edge-parser'
-import type { ParserTagDefinitionContract } from 'edge-parser/types'
+import type { TagToken } from '@jig-lang/lexer/types'
+import type { Parser, EdgeBuffer } from '@jig-lang/parser'
+import type { ParserTagDefinitionContract } from '@jig-lang/parser/types'
 
 import type { Edge } from './edge/main.js'
 import type { Template } from './template.js'
@@ -122,7 +122,6 @@ export interface CacheManagerContract {
 export type CompilerOptions = {
   cache?: boolean
   async?: boolean
-  compat?: boolean
 }
 
 /**
@@ -133,6 +132,11 @@ export type EdgeOptions = {
   loader?: LoaderContract
   cache?: boolean
 }
+
+/**
+ * Shape of a filter function used with {{ mode :: expr }} syntax
+ */
+export type FilterFn = (input: any) => string
 
 /**
  * Shape of edge plugin
@@ -151,7 +155,7 @@ export type ParserContract = Parser
 export type TagTokenContract = TagToken
 export type EdgeBufferContract = EdgeBuffer
 
-export type * from 'edge-lexer/types'
+export type * from '@jig-lang/lexer/types'
 export type {
   AcornLoc,
   ClaimTagFn,
@@ -160,4 +164,4 @@ export type {
   ParserOptions,
   ParserTagDefinitionContract,
   TagTransformer,
-} from 'edge-parser/types'
+} from '@jig-lang/parser/types'

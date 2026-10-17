@@ -10,18 +10,18 @@
   </head>
   <body>
     {{ inspect(state.user) }}
-    @set('time', 'afternoon')
+    @let(time = 'afternoon')
 
-      @component('components/modal', title = 'foo', title = 'bar')
-        @slot('body')
-          <p>
-            hello
-          </p>
-        @endslot
-        
-        @slot('actions')
-          @include('partials/button')
-        @endslot
-      @endcomponent
-    </body>
-  </html>
+    @component('components/modal', title = 'foo', title = 'bar')
+      @slot('body')
+        <p>
+          hello
+        </p>
+      @endslot
+      
+      @slot('actions')
+        @include('partials/button')
+      @endslot
+    @endcomponent
+  </body>
+</html>

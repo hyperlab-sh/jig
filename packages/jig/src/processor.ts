@@ -8,7 +8,7 @@
  */
 
 import type { Template } from './template.js'
-import type { TagToken } from 'edge-lexer/types'
+import type { TagToken } from '@jig-lang/lexer/types'
 
 /**
  * Exposes the API to register a set of handlers to process the

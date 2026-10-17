@@ -5,13 +5,13 @@ try {
 out += template.compileComponent("components-slot-props/alert")(template, template.getComponentState({}, { $context: Object.assign({}, $context), main: function () { return "" }, "title": function (user) { const $context = this.$context;
 let slot_1 = "";
 try {
-slot_1 += "    Hello ";
+slot_1 += "  Hello ";
 $lineNumber = 3;
-slot_1 += `${template.escape(user.username)}`;
+slot_1 += `${user.username}`;
 slot_1 += "\n";
-slot_1 += "    Hi ";
+slot_1 += "  Hi ";
 $lineNumber = 4;
-slot_1 += `${template.escape(state.username)}`;
+slot_1 += `${state.username}`;
 } catch (error) {
 template.reThrow(error, $filename, $lineNumber);
 }

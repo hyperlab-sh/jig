@@ -7,11 +7,17 @@
  * file that was distributed with this source code.
  */
 
-import { expressions } from 'edge-parser'
+import { expressions } from '@jig-lang/parser'
 import lodash from '@poppinss/utils/lodash'
 
 import { type TagContract } from '../types.js'
 import { isSubsetOf, unallowedExpression } from '../utils.js'
+
+declare module '../template.js' {
+  export interface Template {
+    setValue: (typeof lodash)['set']
+  }
+}
 
 /**
  * The let tag is used to set runtime values within the template. The value

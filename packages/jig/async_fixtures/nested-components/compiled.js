@@ -5,7 +5,7 @@ try {
 out += await template.compileComponent("nested-components/alert")(template, template.getComponentState({}, { $context: Object.assign({}, $context), main: async function () { const $context = this.$context;
 let slot_main = "";
 try {
-slot_main += "  Hello world";
+slot_main += "Hello world";
 } catch (error) {
 template.reThrow(error, $filename, $lineNumber);
 }

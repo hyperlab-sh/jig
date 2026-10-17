@@ -6,9 +6,9 @@ await template.loopAsync([{
   username: "virk"
 }], async function (user) {
 out += "\n";
-out += "  - Hello ";
+out += "- Hello ";
 $lineNumber = 2;
-out += `${template.escape(user.username)}`;
+out += `${user.username}`;
 });
 } catch (error) {
 template.reThrow(error, $filename, $lineNumber);

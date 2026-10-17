@@ -1,3 +1,36 @@
+# Changelog
+
+## 7.0.0 (Jig Fork)
+
+### Breaking Changes
+
+- **Renamed**: Package renamed from `edge.js` to `jig`
+- **Removed HTML escaping**: `{{ }}` now outputs raw values. No `template.escape()` wrapping in compiled output
+- **Removed `safe()` function**: No longer needed since there's no escaping
+- **Removed `SafeValue` class**: Internal class for escape bypass removed
+- **Removed HTML helpers**: `html.attrs`, `html.classNames`, `html.escape`, `html.safe`, `nl2br` removed
+- **Removed `$props.toAttrs()`**: HTML attribute serialization removed from ComponentProps
+- **Removed `EdgeOptions.escape`**: Custom escape function option removed
+- **Removed migration plugin**: `edge.js/plugins/migrate` export removed
+
+### New Features
+
+- **Implicit indentation control**: Block tag content is automatically dedented based on the tag's position. Content inside `@if`, `@each`, `@unless`, `@pushTo`, `@pushOnceTo`, `@component`, and `@slot` blocks has cosmetic indentation removed using the formula `dedent = firstContentLineIndent - tagIndent`. Include tags (`@include`, `@includeIf`) auto-indent subsequent lines of partial output based on the include tag's column position.
+- **Filter syntax**: `{{ mode :: expr }}` — apply registered filters to expressions
+- **Built-in `json` filter**: `{{ json :: value }}` outputs `JSON.stringify(value)`
+- **`registerFilter()` API**: `edge.registerFilter('name', fn)` for custom filters
+
+### Internal
+
+- `{{ }}` and `{{{ }}}` now behave identically (both output raw values)
+- Compiler uses `onMustache` hook to convert all MUSTACHE tokens to SMUSTACHE
+- `template.escape()` method kept for backward compatibility (returns `String(input)`)
+- Added `computeDedent()`, `dedentRaw()`, `processChildrenDedented()` utility functions
+- Added `template.indentOutput()` method for include tag output indentation
+- Updated edge-lexer (6.1.0) and edge-parser (9.2.0) for tag indent tracking
+
+---
+
 <a name="1.1.4"></a>
 
 ## [1.1.4](https://github.com/poppinss/edge/compare/v1.1.3...v1.1.4) (2018-01-26)

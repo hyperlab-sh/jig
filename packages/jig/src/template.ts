@@ -7,40 +7,14 @@
  * file that was distributed with this source code.
  */
 
-import he from 'he'
 import { EdgeError } from 'edge-error'
-import lodash from '@poppinss/utils/lodash'
 import Macroable from '@poppinss/macroable'
 
 import Stacks from './edge/stacks.js'
 import { type Compiler } from './compiler.js'
 import { type Processor } from './processor.js'
-import { Props } from './migrate/props.js'
 import type { CompiledTemplate } from './types.js'
 import { ComponentProps } from './component/props.js'
-
-/**
- * An instance of this class passed to the escape
- * method ensures that underlying value is never
- * escaped.
- */
-class SafeValue {
-  constructor(public value: any) {}
-}
-
-/**
- * Escapes a given string
- */
-export function escape(input: any): string {
-  return input instanceof SafeValue ? input.value : he.escape(String(input))
-}
-
-/**
- * Mark value as safe and not to be escaped
- */
-export function htmlSafe(value: string) {
-  return new SafeValue(value)
-}
 
 /**
  * The template is used to compile and run templates. Also the instance
@@ -68,12 +42,10 @@ export class Template extends Macroable {
     super()
     this.#compiler = compiler
     this.#processor = processor
-    this.#sharedState = compiler.compat
-      ? lodash.merge({}, globals, locals)
-      : {
-          ...globals,
-          ...locals,
-        }
+    this.#sharedState = {
+      ...globals,
+      ...locals,
+    }
   }
 
   /**
@@ -147,7 +119,7 @@ export class Template extends Macroable {
       ...props,
       $slots: slots,
       $caller: caller,
-      $props: this.#compiler.compat ? new Props(props) : new ComponentProps(props),
+      $props: new ComponentProps(props),
     }
   }
 
@@ -180,11 +152,22 @@ export class Template extends Macroable {
   }
 
   /**
-   * Escapes the value to be HTML safe. Only strings are escaped
-   * and rest all values will be returned as it is.
+   * Indents every line of output by the given prefix string.
+   * First line is NOT indented (it follows the @include tag's position
+   * which is already on the correct line). Blank lines and a trailing
+   * newline are left alone so no whitespace-only lines are produced.
+   */
+  indentOutput(output: string, indent: string): string {
+    if (!indent || !output) return output
+    return output.replace(/\n(?![\r\n]|$)/g, '\n' + indent)
+  }
+
+  /**
+   * Converts input to string.
+   * Kept for backward compatibility with cached compiled templates.
    */
   escape(input: any): string {
-    return escape(input)
+    return String(input)
   }
 
   /**
@@ -211,7 +194,12 @@ export class Template extends Macroable {
    * to point back to the original filename
    */
   reThrow(error: any, filename: string, lineNumber: number): never {
-    if (error instanceof EdgeError) {
+    if (
+      error instanceof Error &&
+      typeof (error as any).filename === 'string' &&
+      typeof (error as any).line === 'number' &&
+      typeof (error as any).col === 'number'
+    ) {
       throw error
     }
 

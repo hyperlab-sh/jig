@@ -13,7 +13,6 @@ import { join } from 'node:path'
 import { test } from '@japa/runner'
 
 import { Edge } from '../src/edge/main.js'
-import { migrate } from '../src/migrate/plugin.js'
 import { normalizeNewLines } from '../tests_helpers/index.js'
 
 test.group('Template FileName', () => {
@@ -50,42 +49,6 @@ test.group('Template FileName', () => {
 			`)
     )
   })
-
-  test('print file absolute path inside a layout', async ({ assert, fs }) => {
-    await fs.create(
-      'foo.edge',
-      dedent`
-			@layout('master')
-			@section('content')
-				@super
-				{{ $filename }}
-			@endsection
-		`
-    )
-
-    await fs.create(
-      'master.edge',
-      dedent`
-			@section('content')
-				{{ $filename }}
-			@endsection
-		`
-    )
-
-    const edge = new Edge()
-    edge.use(migrate)
-    edge.mount(fs.basePath)
-
-    const output = await edge.render('foo', {})
-
-    assert.stringEqual(
-      output.trim(),
-      normalizeNewLines(dedent`
-				${join(fs.basePath, 'master.edge')}
-					${join(fs.basePath, 'foo.edge')}
-			`)
-    )
-  }).tags(['compat'])
 
   test('print file absolute path inside a partial', async ({ assert, fs }) => {
     await fs.create(
@@ -126,7 +89,7 @@ test.group('Template FileName', () => {
     await fs.create(
       'button.edge',
       dedent`
-			{{{ await $slots.text() }}}
+			{{ await $slots.text() }}
 			{{ $filename }}
 		`
     )

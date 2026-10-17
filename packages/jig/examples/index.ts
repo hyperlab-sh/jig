@@ -1,10 +1,8 @@
 import { Edge } from '../index.js'
 import { join } from 'node:path'
 import { createServer } from 'node:http'
-import { migrate } from '../src/migrate/plugin.js'
 
 const edge = Edge.create()
-edge.use(migrate)
 edge.mount(join(import.meta.dirname, 'views'))
 
 class Base {

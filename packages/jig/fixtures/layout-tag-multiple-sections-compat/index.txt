@@ -1,5 +1,0 @@
-This is the base template
-
-Also the header
-
-I will override the content

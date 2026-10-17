@@ -10,13 +10,13 @@ if (true) {
 out += "\n";
 $lineNumber = 4;
 let stack_1 = "";
-stack_1 += "    \u003Cscript\u003E";
+stack_1 += "\u003Cscript\u003E";
 stack_1 += "\n";
-stack_1 += "    var a = ";
+stack_1 += "var a = ";
 $lineNumber = 6;
 stack_1 += `${state.requireFoo}`;
 stack_1 += "\n";
-stack_1 += "    \u003C\u002Fscript\u003E";
+stack_1 += "\u003C\u002Fscript\u003E";
 template.stacks.pushTo('js', stack_1);
 }
 } catch (error) {

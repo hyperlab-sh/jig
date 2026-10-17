@@ -8,11 +8,17 @@
  */
 
 import { EdgeError } from 'edge-error'
-import { expressions } from 'edge-parser'
+import { expressions } from '@jig-lang/parser'
 
 import { type TagContract } from '../types.js'
 import { ALLOWED_EXPRESSION, getRenderExpression } from './include.js'
-import { unallowedExpression, isSubsetOf, parseJsArg, isNotSubsetOf } from '../utils.js'
+import {
+  unallowedExpression,
+  isSubsetOf,
+  parseJsArg,
+  isNotSubsetOf,
+  getActiveDedent,
+} from '../utils.js'
 
 /**
  * Include tag is used to include partials in the same scope of the parent
@@ -79,12 +85,22 @@ export const includeIfTag: TagContract = {
       token.filename,
       token.loc.start.line
     )
-    buffer.outputExpression(
-      `${awaitKeyword}${getRenderExpression(parser, include)}`,
-      token.filename,
-      token.loc.start.line,
-      false
-    )
+
+    const renderExpr = `${awaitKeyword}${getRenderExpression(parser, include)}`
+
+    const indent = Math.max(0, token.indent - getActiveDedent(parser))
+    if (indent > 0) {
+      const indentStr = JSON.stringify(' '.repeat(indent))
+      buffer.outputExpression(
+        `template.indentOutput(${renderExpr}, ${indentStr})`,
+        token.filename,
+        token.loc.start.line,
+        false
+      )
+    } else {
+      buffer.outputExpression(renderExpr, token.filename, token.loc.start.line, false)
+    }
+
     buffer.writeStatement('}', token.filename, -1)
   },
 }

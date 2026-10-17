@@ -18,7 +18,6 @@ import * as tags from '../src/tags/main.js'
 import { Template } from '../src/template.js'
 import { Compiler } from '../src/compiler.js'
 import { Processor } from '../src/processor.js'
-import * as compatTags from '../src/migrate/tags/main.js'
 import { normalizeNewLines, normalizeFilename } from '../tests_helpers/index.js'
 
 const basePath = join(dirname(fileURLToPath(import.meta.url)), '../newline_fixtures')
@@ -32,26 +31,20 @@ test.group('Newline Fixtures', (group) => {
     Object.keys(tags).forEach((tag) => {
       tags[tag as keyof typeof tags].boot?.(Template)
     })
-    Object.keys(compatTags).forEach((tag) => {
-      compatTags[tag as keyof typeof compatTags].boot?.(Template)
-    })
   })
 
   const dirs = readdirSync(basePath).filter((file) => statSync(join(basePath, file)).isDirectory())
 
   dirs.forEach((dir) => {
     const dirBasePath = join(basePath, dir)
-    const compatMode = dir.endsWith('-compat')
 
     test(dir, ({ assert }) => {
       const compiler = new Compiler(
         loader,
         {
           ...tags,
-          ...compatTags,
         },
-        processor,
-        { compat: compatMode }
+        processor
       )
       const template = new Template(compiler, {}, {}, processor)
 
@@ -69,6 +62,6 @@ test.group('Newline Fixtures', (group) => {
           .map((line) => normalizeFilename(dirBasePath, line))
           .join('\n')
       )
-    }).tags(compatMode ? ['compat'] : [])
+    })
   })
 })

@@ -8,9 +8,9 @@
  */
 
 import { EdgeError } from 'edge-error'
-import { expressions } from 'edge-parser'
+import { expressions } from '@jig-lang/parser'
 import { type TagContract } from '../types.js'
-import { nanoid } from '../utils.js'
+import { nanoid, computeDedent, processChildrenDedented } from '../utils.js'
 
 /**
  * Stack tag to define stack placeholders
@@ -56,11 +56,10 @@ export const pushToTag: TagContract & { generateId(): string } = {
     const stackBuffer = buffer.create(token.filename, { outputVar: stackId })
 
     /**
-     * Process children
+     * Process children with dedentation
      */
-    for (let child of token.children) {
-      parser.processToken(child, stackBuffer)
-    }
+    const dedent = computeDedent(token.children, token.indent)
+    processChildrenDedented(parser, stackBuffer, token.children, dedent)
 
     /**
      * Flush the stack buffer content to the main buffer

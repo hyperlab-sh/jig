@@ -1,3 +1,0 @@
-<button type="submit" class="mb-4 px-4" id="foo-bar">
-  Click me
-</button>

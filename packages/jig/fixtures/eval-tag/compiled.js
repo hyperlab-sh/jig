@@ -5,7 +5,7 @@ try {
 state.user.username = state.user.username.toUpperCase();
 out += "Hello ";
 $lineNumber = 2;
-out += `${template.escape(state.user.username)}`;
+out += `${state.user.username}`;
 } catch (error) {
 template.reThrow(error, $filename, $lineNumber);
 }

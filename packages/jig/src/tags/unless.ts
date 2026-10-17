@@ -7,10 +7,16 @@
  * file that was distributed with this source code.
  */
 
-import { expressions } from 'edge-parser'
+import { expressions } from '@jig-lang/parser'
 
 import { type TagContract } from '../types.js'
-import { isNotSubsetOf, unallowedExpression, parseJsArg } from '../utils.js'
+import {
+  isNotSubsetOf,
+  unallowedExpression,
+  parseJsArg,
+  computeDedent,
+  processChildrenDedented,
+} from '../utils.js'
 
 /**
  * Inverse of the `if` condition. The term `unless` is more readable and logical
@@ -54,9 +60,10 @@ export const unlessTag: TagContract = {
     )
 
     /**
-     * Process of all children recursively
+     * Process of all children recursively with dedentation
      */
-    token.children.forEach((child) => parser.processToken(child, buffer))
+    const dedent = computeDedent(token.children, token.indent)
+    processChildrenDedented(parser, buffer, token.children, dedent)
 
     /**
      * Close if block

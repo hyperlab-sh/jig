@@ -1,7 +1,7 @@
-@set('getData', () => {
+@let(getData = () => {
   return {
     foo: 'bar'
   }
 })
 @inject(getData())
-{{{ $slots.main() }}}
+{{ $slots.main() }}

@@ -8,11 +8,18 @@
  */
 
 import lodash from '@poppinss/utils/lodash'
-import * as lexerUtils from 'edge-lexer/utils'
-import { type Parser, expressions } from 'edge-parser'
+import * as lexerUtils from '@jig-lang/lexer/utils'
+import { type Parser, expressions } from '@jig-lang/parser'
 
 import { type TagContract } from '../types.js'
-import { isSubsetOf, asyncEach, each, unallowedExpression } from '../utils.js'
+import {
+  isSubsetOf,
+  asyncEach,
+  each,
+  unallowedExpression,
+  computeDedent,
+  processChildrenDedented,
+} from '../utils.js'
 
 declare module '../template.js' {
   export interface Template {
@@ -170,9 +177,10 @@ export const eachTag: TagContract = {
     index && parser.stack.defineVariable(index)
 
     /**
-     * Process all children
+     * Process all children with dedentation
      */
-    token.children.forEach((child) => parser.processToken(child, buffer))
+    const dedent = computeDedent(token.children, token.indent)
+    processChildrenDedented(parser, buffer, token.children, dedent)
 
     /**
      * Clear scope
@@ -189,7 +197,7 @@ export const eachTag: TagContract = {
      * else childs and close the if block
      */
     if (elseIndex > -1) {
-      elseChildren.forEach((elseChild) => parser.processToken(elseChild, buffer))
+      processChildrenDedented(parser, buffer, elseChildren, dedent)
       buffer.writeStatement('}', token.filename, -1)
     }
   },

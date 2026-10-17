@@ -1,73 +1,84 @@
-# Edge
+<p align="center">
+  <img src="logo.png" width="128" alt="Jig logo" />
+</p>
+
+# Jig
 
 [![gh-workflow-image]][gh-workflow-url] [![typescript-image]][typescript-url] [![npm-image]][npm-url] [![license-image]][license-url]
 
-Edge is a simple, Modern, and batteries included template engine for Node.js. Edge is similar to writing JavaScript. If you know JavaScript, you know Edge.
+A template engine purpose-built for code generation. Fork of [Edge](https://edgejs.dev).
 
-## 👉 [Learn more](https://edgejs.dev)
+## What is Jig?
 
-**Featured sponsors**
+Jig is a fork of [Edge](https://edgejs.dev) — the template engine behind [AdonisJS](https://adonisjs.com) — purpose-built for code generation. It strips away HTML escaping and HTML-specific helpers, adds implicit indentation control and filter syntax, and keeps everything else that makes Edge great: components, slots, partials, and full JavaScript expressions.
 
-<table>
+If you know JavaScript, you know Jig. Use familiar control flow (`@if`, `@each`, `@component`), interpolation (`{{ }}`), and add custom filters for transformations.
 
-<tr>
-<td>
+## Key Differences from Edge
 
-<a href="https://route4me.com/?utm_source=adonisjs.com">
-  <img src="https://raw.githubusercontent.com/thetutlage/static/refs/heads/main/featured_sponsors/logos/route4me.jpg" />
-</a>
+- **No HTML escaping** — `{{ value }}` outputs raw values without any escaping
+- **No HTML helpers** — `html.attrs`, `html.classNames`, `nl2br`, and other HTML-specific utilities are removed
+- **Filter syntax** — `{{ mode :: expr }}` applies registered filters to expressions
+- **No `safe()` function** — Unnecessary since all output is raw
 
-</td>
+## Quick Example
 
-<td>
+Generate TypeScript interfaces from a data structure:
 
-<a href="https://ezycourse.com/?utm_source=adonisjs.com">
-  <img src="https://raw.githubusercontent.com/thetutlage/static/refs/heads/main/featured_sponsors/logos/ezycourse.jpg" />
-</a>
+```edge
+export interface {{ interfaceName }} {
+  @each(field in fields)
+    {{ field.name }}: {{ field.type }};
+  @end
+}
+```
 
-</td>
+With data:
 
-</tr>
+```json
+{
+  "interfaceName": "User",
+  "fields": [
+    { "name": "id", "type": "number" },
+    { "name": "email", "type": "string" }
+  ]
+}
+```
 
-<tr>
+Outputs:
 
-<td>
+```typescript
+export interface User {
+  id: number;
+  email: string;
+}
+```
 
-<a href="https://meteor.software/g6h?utm_source=adonisjs.com">
-  <img src="https://raw.githubusercontent.com/thetutlage/static/refs/heads/main/featured_sponsors/logos/galaxy.jpg" />
-</a>
+## Installation
 
-</td>
+Using npm:
+```bash
+npm i jig
+```
 
-<td>
+Using bun:
+```bash
+bun add jig
+```
 
-<a href="https://www.lambdatest.com/?utm_source=adonisjs.com">
-  <img src="https://raw.githubusercontent.com/thetutlage/static/refs/heads/main/featured_sponsors/logos/lambdatest.jpg" />
-</a>
+## Documentation
 
-</td>
+Full documentation is available at [https://jig.saulo.engineer](https://jig.saulo.engineer)
 
-</tr>
+## Built on Edge
 
-<tr>
+Jig is forked from [Edge](https://edgejs.dev), the template engine created by the [AdonisJS](https://adonisjs.com) team. We thank them for building such a solid foundation.
 
-<td>
+## License
 
-<a href="https://relancer.com/?utm_source=adonisjs.com">
-  <img src="https://raw.githubusercontent.com/thetutlage/static/refs/heads/main/featured_sponsors/logos/relancer.jpg" />
-</a>
+MIT
 
-</td>
-
-<td>
-
-</td>
-
-</tr>
-
-</table>
-
-![](https://cdn.jsdelivr.net/gh/thetutlage/static/sponsorkit/sponsors.png)
+---
 
 [gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/edge-js/edge/checks.yml?style=for-the-badge
 [gh-workflow-url]: https://github.com/edge-js/edge/actions/workflows/checks.yml "Github action"
@@ -75,8 +86,8 @@ Edge is a simple, Modern, and batteries included template engine for Node.js. Ed
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
 [typescript-url]: "typescript"
 
-[license-image]: https://img.shields.io/npm/l/edge.js?color=blueviolet&style=for-the-badge
+[license-image]: https://img.shields.io/npm/l/jig?color=blueviolet&style=for-the-badge
 [license-url]: LICENSE.md 'license'
 
-[npm-image]: https://img.shields.io/npm/v/edge.js.svg?style=for-the-badge&logo=npm
-[npm-url]: https://npmjs.org/package/edge.js 'npm'
+[npm-image]: https://img.shields.io/npm/v/jig.svg?style=for-the-badge&logo=npm
+[npm-url]: https://npmjs.org/package/jig 'npm'
