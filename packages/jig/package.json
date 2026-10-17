@@ -57,7 +57,7 @@
     "@poppinss/macroable": "^1.1.2",
     "@poppinss/utils": "^7.0.1",
     "edge-error": "^4.0.2",
-    "@jig-lang/lexer": "^1.1.0",
+    "@jig-lang/lexer": "^1.2.0",
     "@jig-lang/parser": "^1.1.0"
   },
   "homepage": "https://github.com/svallory/jig#readme",

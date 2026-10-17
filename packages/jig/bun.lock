@@ -5,7 +5,7 @@
     "": {
       "name": "edge.js",
       "dependencies": {
-        "@jig-lang/lexer": "^1.1.0",
+        "@jig-lang/lexer": "^1.2.0",
         "@jig-lang/parser": "^1.1.0",
         "@poppinss/inspect": "^1.0.1",
         "@poppinss/macroable": "^1.1.2",
@@ -135,7 +135,7 @@
 
     "@jest/schemas": ["@jest/schemas@30.0.5", "", { "dependencies": { "@sinclair/typebox": "^0.34.0" } }, "sha512-DmdYgtezMkh3cpU8/1uyXakv3tJRcmcXxBOcO0tbaozPwpmh4YMsnWrQm9ZmZMfa5ocbxzbFk6O4bDPEc/iAnA=="],
 
-    "@jig-lang/lexer": ["@jig-lang/lexer@1.1.0", "", { "dependencies": { "edge-error": "^4.0.2" } }, "sha512-8J8aTIjcQeZHudrxZ3xrDNCjJRJfZPbG8Cpa8RXqnyFJt99JSx3l0dacWQdNVauvTMf/Vv466Drnqavmk0AIAA=="],
+    "@jig-lang/lexer": ["@jig-lang/lexer@1.2.0", "", { "dependencies": { "edge-error": "^4.0.2" } }, "sha512-tpcCgsLcev1GjKrEFG4KAl6FXqbeBW0ABRkH0o79ojyWSjXNsmwSqBOcwGSkBbwWG1zfNZ5/X4HVD/D1HuaCYA=="],
 
     "@jig-lang/parser": ["@jig-lang/parser@1.1.0", "", { "dependencies": { "@jig-lang/lexer": "^1.1.0", "acorn": "^8.15.0", "astring": "^1.9.0", "edge-error": "^4.0.2", "js-stringify": "^1.0.2" } }, "sha512-SW2Vi39acLtsyKLYwExvMOPLk/Ky04QIf2bbfI3PxEbK0gvpYkZAZrk4DvIG0FLEvh7acK1GOx1KTYeJIU2BFQ=="],
 
