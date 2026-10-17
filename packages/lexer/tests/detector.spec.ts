@@ -33,6 +33,7 @@ test.group('Detector (tag)', () => {
       seekable: true,
       block: false,
       noNewLine: false,
+      outputsContent: false,
       indent: 0,
     })
   })
@@ -51,6 +52,7 @@ test.group('Detector (tag)', () => {
       seekable: false,
       block: false,
       noNewLine: false,
+      outputsContent: false,
       indent: 0,
     })
   })
@@ -69,6 +71,7 @@ test.group('Detector (tag)', () => {
       seekable: false,
       block: false,
       noNewLine: false,
+      outputsContent: false,
       indent: 0,
     })
   })
@@ -87,6 +90,7 @@ test.group('Detector (tag)', () => {
       seekable: false,
       block: false,
       noNewLine: false,
+      outputsContent: false,
       indent: 0,
     })
   })
@@ -105,6 +109,7 @@ test.group('Detector (tag)', () => {
       seekable: false,
       block: false,
       noNewLine: false,
+      outputsContent: false,
       indent: 0,
     })
   })
@@ -123,6 +128,7 @@ test.group('Detector (tag)', () => {
       seekable: false,
       block: false,
       noNewLine: false,
+      outputsContent: false,
       indent: 0,
     })
   })
@@ -141,6 +147,7 @@ test.group('Detector (tag)', () => {
       seekable: true,
       block: true,
       noNewLine: false,
+      outputsContent: false,
       indent: 0,
     })
   })
@@ -159,6 +166,7 @@ test.group('Detector (tag)', () => {
       seekable: true,
       block: true,
       noNewLine: false,
+      outputsContent: false,
       indent: 0,
     })
   })
@@ -177,6 +185,7 @@ test.group('Detector (tag)', () => {
       seekable: true,
       block: true,
       noNewLine: false,
+      outputsContent: false,
       indent: 2,
     })
   })
@@ -195,6 +204,7 @@ test.group('Detector (tag)', () => {
       seekable: true,
       block: true,
       noNewLine: false,
+      outputsContent: false,
       indent: 2,
     })
   })

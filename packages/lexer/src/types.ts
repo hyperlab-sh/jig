@@ -48,6 +48,11 @@ export interface LexerTagDefinitionContract {
   block: boolean
   seekable: boolean
   noNewLine?: boolean
+  /**
+   * The tag renders content of its own (e.g. an include). A newline is
+   * pushed before it, so its output starts on a new line.
+   */
+  outputsContent?: boolean
 }
 
 /**
