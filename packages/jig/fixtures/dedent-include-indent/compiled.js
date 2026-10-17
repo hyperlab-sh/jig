@@ -5,7 +5,7 @@ try {
 if (true) {
 out += "\n";
 $lineNumber = 2;
-out += template.indentOutput(template.compilePartial('dedent-include-indent/partial')(template,state,$context), "  ");
+out += template.indentOutput(template.compilePartial('dedent-include-indent/partial')(template,state,$context), "  ", true);
 }
 } catch (error) {
 template.reThrow(error, $filename, $lineNumber);

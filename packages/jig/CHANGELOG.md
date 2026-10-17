@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+### Bug Fixes
+
+- `@include`, `@includeIf` and `@stack` on their own line now start on a new line. Before, `class X {` followed by `@include('p')` rendered as `class X {` glued to the partial's first line
+- `@include` and `@includeIf` indent the first line of the partial too, not only the continuation lines
+
+### Internal
+
+- Tags opt in with the lexer's new `outputsContent` flag (requires `@jig-lang/lexer` 1.2.0)
+- `template.indentOutput()` takes an optional `indentFirstLine` argument
+- `@component` is not flagged yet: a component whose template starts with its own newline would render an extra blank line
+
 ## 1.1.0 (2026-10-17)
 
 ### Bug Fixes

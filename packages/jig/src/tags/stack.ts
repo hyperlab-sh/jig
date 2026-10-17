@@ -19,6 +19,7 @@ export const stackTag: TagContract = {
   block: false,
   seekable: true,
   noNewLine: false,
+  outputsContent: true,
   compile(parser, buffer, token) {
     const parsed = parser.utils.transformAst(
       parser.utils.generateAST(token.properties.jsArg, token.loc, token.filename),

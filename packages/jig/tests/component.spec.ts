@@ -597,14 +597,14 @@ test.group('Component | context API', (group) => {
       <p> Some content </p>
 
       @component('modalsRoot')
-	      @component('modal')
-	      	@include('button')
-	      @endcomponent
+        @component('modal')
+          @include('button')
+        @endcomponent
 
-	      @component('modal')
-	      	@include('button')
-	      @endcomponent
-	    @end
+        @component('modal')
+          @include('button')
+        @endcomponent
+      @end
     `
     )
 
