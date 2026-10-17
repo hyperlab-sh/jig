@@ -235,7 +235,7 @@ function render() {
 
 Without implicit indentation control, the output would contain extra leading whitespace on the `return` line. Jig strips the excess indentation so output aligns with the tag's position, not the template's visual nesting.
 
-Include tags (`@include`, `@includeIf`) handle indentation differently: they indent subsequent lines of the partial's output based on the include tag's column position. This ensures multi-line partial output stays aligned with where the include tag appears.
+Include tags (`@include`, `@includeIf`) handle indentation differently: they start the partial's output on a new line and indent every line of it based on the include tag's column position. This ensures multi-line partial output stays aligned with where the include tag appears.
 
 ```edge
 // title: Template
