@@ -80,8 +80,8 @@ MIT
 
 ---
 
-[gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/svallory/jig/checks.yml?style=for-the-badge
-[gh-workflow-url]: https://github.com/svallory/jig/actions/workflows/checks.yml "Github action"
+[gh-workflow-image]: https://img.shields.io/github/actions/workflow/status/hyperlab-sh/jig/checks.yml?style=for-the-badge
+[gh-workflow-url]: https://github.com/hyperlab-sh/jig/actions/workflows/checks.yml "Github action"
 
 [typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?style=for-the-badge&logo=typescript
 [typescript-url]: https://www.typescriptlang.org "typescript"

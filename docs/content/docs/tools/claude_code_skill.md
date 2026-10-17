@@ -14,7 +14,7 @@ The skill provides Claude with complete knowledge of Jig's syntax, tags, filters
 
 ```sh
 mkdir -p ~/.claude/skills/jig-templates
-curl -fsSL https://raw.githubusercontent.com/svallory/jig-docs/main/.claude/skills/jig-templates/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/hyperlab-sh/jig/main/docs/.claude/skills/jig-templates/SKILL.md \
   -o ~/.claude/skills/jig-templates/SKILL.md
 ```
 
@@ -22,7 +22,7 @@ curl -fsSL https://raw.githubusercontent.com/svallory/jig-docs/main/.claude/skil
 
 ```sh
 mkdir -p .claude/skills/jig-templates
-curl -fsSL https://raw.githubusercontent.com/svallory/jig-docs/main/.claude/skills/jig-templates/SKILL.md \
+curl -fsSL https://raw.githubusercontent.com/hyperlab-sh/jig/main/docs/.claude/skills/jig-templates/SKILL.md \
   -o .claude/skills/jig-templates/SKILL.md
 ```
 
