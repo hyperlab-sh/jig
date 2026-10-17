@@ -57,8 +57,8 @@
     "@poppinss/macroable": "^1.1.2",
     "@poppinss/utils": "^7.0.1",
     "edge-error": "^4.0.2",
-    "@jig-lang/lexer": "workspace:*",
-    "@jig-lang/parser": "workspace:*"
+    "@jig-lang/lexer": "workspace:^",
+    "@jig-lang/parser": "workspace:^"
   },
   "homepage": "https://github.com/hyperlab-sh/jig#readme",
   "repository": {
@@ -113,7 +113,8 @@
     },
     "npm": {
       "publish": true,
-      "skipChecks": true
+      "skipChecks": true,
+      "publishPackageManager": "bun"
     },
     "plugins": {
       "@release-it/conventional-changelog": {
