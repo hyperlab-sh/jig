@@ -109,7 +109,8 @@
     },
     "npm": {
       "publish": true,
-      "skipChecks": true
+      "skipChecks": true,
+      "publishPackageManager": "bun"
     },
     "plugins": {
       "@release-it/conventional-changelog": {
