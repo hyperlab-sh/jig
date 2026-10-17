@@ -17,12 +17,13 @@
     "test": "bun run generate && bun run --filter './packages/*' test",
     "quick:test": "bun run generate && bun run --filter './packages/*' quick:test",
     "lint": "bun run --filter './packages/*' lint",
-    "typecheck": "bun run --filter './packages/*' typecheck",
+    "typecheck": "bun run build:libs && bun run --filter \"./packages/*\" typecheck",
     "build": "bun run --filter './packages/*' build",
     "format": "bun run --filter './packages/*' format",
     "test:lexer": "bun run --cwd packages/lexer quick:test",
     "test:parser": "bun run --cwd packages/parser quick:test",
     "test:jig": "bun run --cwd packages/jig quick:test",
-    "test:vscode": "bun run generate && bun run --cwd packages/vscode quick:test"
+    "test:vscode": "bun run generate && bun run --cwd packages/vscode quick:test",
+    "build:libs": "bun run --cwd packages/lexer build && bun run --cwd packages/parser build"
   }
 }
