@@ -1,0 +1,91 @@
+/*
+ * edge.js
+ *
+ * (c) EdgeJS
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+import lodash from '@poppinss/utils/lodash'
+
+/**
+ * Representation of component props
+ */
+export class ComponentProps {
+  #values: Record<string, any>
+
+  constructor(values: Record<string, any>) {
+    this.#values = values
+    Object.assign(this, values)
+  }
+
+  /**
+   * Create a typed instance of Component props with properties
+   */
+  static create<T extends Record<string, any>>(values: T): ComponentProps & T {
+    return new ComponentProps(values) as ComponentProps & T
+  }
+
+  /**
+   * Reference to props raw values
+   */
+  all() {
+    return this.#values
+  }
+
+  /**
+   * Check if a key exists
+   */
+  has(key: string) {
+    return lodash.has(this.#values, key)
+  }
+
+  /**
+   * Get key value
+   */
+  get(key: string, defaultValue?: any) {
+    return lodash.get(this.#values, key, defaultValue)
+  }
+
+  /**
+   * Returns a new props bag with only the mentioned keys
+   */
+  only(keys: string[]) {
+    return new ComponentProps(lodash.pick(this.#values, keys))
+  }
+
+  /**
+   * Returns a new props bag with except the mentioned keys
+   */
+  except(keys: string[]) {
+    return new ComponentProps(lodash.omit(this.#values, keys))
+  }
+
+  /**
+   * Merge defaults with the props
+   */
+  merge(values: Record<string, any>) {
+    return new ComponentProps({ ...values, ...this.#values })
+  }
+
+  /**
+   * Merge defaults with the props, if the given condition is truthy
+   */
+  mergeIf(conditional: any, values: Record<string, any>) {
+    if (conditional) {
+      return this.merge(values)
+    }
+    return this
+  }
+
+  /**
+   * Merge defaults with the props, if the given condition is falsy
+   */
+  mergeUnless(conditional: any, values: Record<string, any>) {
+    if (!conditional) {
+      return this.merge(values)
+    }
+    return this
+  }
+}

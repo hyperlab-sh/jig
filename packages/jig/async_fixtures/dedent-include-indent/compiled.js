@@ -1,0 +1,13 @@
+let out = "";
+let $lineNumber = 1;
+let $filename = "{{__dirname}}index.edge";
+try {
+if (true) {
+out += "\n";
+$lineNumber = 2;
+out += template.indentOutput(await template.compilePartial('dedent-include-indent/partial')(template,state,$context), "  ", true);
+}
+} catch (error) {
+template.reThrow(error, $filename, $lineNumber);
+}
+return out;

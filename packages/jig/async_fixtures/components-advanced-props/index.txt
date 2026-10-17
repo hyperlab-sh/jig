@@ -1,0 +1,3 @@
+<button type="submit" data-extra="{"class":"mb-4 px-4","id":"foo-bar"}">
+  Click me
+</button>
