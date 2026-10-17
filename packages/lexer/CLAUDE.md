@@ -56,12 +56,13 @@ Tags passed to the Tokenizer must satisfy `LexerTagDefinitionContract`:
 - `block: boolean` — Is it a block-level tag (has children, requires `@end`)?
 - `seekable: boolean` — Does it require arguments in `()`?
 - `noNewLine?: boolean` — Drop newline after tag?
+- `outputsContent?: boolean` — Tag renders content of its own (e.g. an include); a newline is pushed before it so the output starts on its own line
 
 Tag tokens also carry `indent` (column of the tag) and, when the line has a `: type` suffix, `properties.contentType`.
 
 ### Newline model
 
-A newline token is pushed *before* every non-tag line, never before a tag line (unless the previous line was a tag too). A block tag's first child is therefore the newline that ends its own line. A tag on its own line adds no line break before its output, so `a\n@include('p')` renders as `a` immediately followed by the partial.
+A newline token is pushed *before* every non-tag line, never before a tag line (unless the previous line was a tag too). A block tag's first child is therefore the newline that ends its own line. A tag on its own line adds no line break before its output, so `a\n@let(x = 1)\nb` renders as `ab`. Tags flagged `outputsContent` are the exception: they get a newline before them, so `a\n@include('p')` keeps the partial on its own line.
 
 ### Exports
 

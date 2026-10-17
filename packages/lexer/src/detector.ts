@@ -65,6 +65,7 @@ export function getTag(
   const seekable = tag.seekable
   const block = tag.block
   const noNewLine = !!tag.noNewLine
+  const outputsContent = !!tag.outputsContent
 
   /**
    * Advanced the col position
@@ -90,6 +91,7 @@ export function getTag(
     escaped,
     hasBrace,
     noNewLine,
+    outputsContent,
     indent: whitespaceLeft,
   }
 }

@@ -564,9 +564,10 @@ export class Tokenizer {
     if (tag) {
       /**
        * When two back to back lines are tags, then we put a newline between them
-       * and one can use `skipNewLines` syntax to remove new lines (if required)
+       * and one can use `skipNewLines` syntax to remove new lines (if required).
+       * Tags that output content of their own also start on a new line.
        */
-      if (this.#isLastLineATag) {
+      if (this.#isLastLineATag || tag.outputsContent) {
         this.#pushNewLine()
       }
 
