@@ -204,7 +204,7 @@ Applies to: `@if`, `@elseif`, `@else`, `@unless`, `@each`, `@component`, `@slot`
 
 #### Include Tag Re-indenting
 
-When including a partial, subsequent lines are automatically indented to match the include tag's position:
+When including a partial, every line is automatically indented to match the include tag's position, and the output always starts on its own line:
 
 **partial.edge**:
 ```
@@ -229,7 +229,7 @@ class MyClass {
 }
 ```
 
-The first line of the partial is inserted as-is, and subsequent lines are indented by the column position of the `@include` tag (4 spaces in this example).
+Each line of the partial is indented by the column position of the `@include` tag (4 spaces in this example). Blank lines stay empty.
 
 This ensures partials integrate cleanly into the surrounding code structure.
 
