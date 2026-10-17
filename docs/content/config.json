@@ -1,0 +1,15 @@
+{
+  "links": {
+    "home": {
+      "title": "Jig",
+      "href": "/"
+    },
+    "github": {
+      "title": "Jig on Github",
+      "href": "https://github.com/svallory/jig"
+    }
+  },
+  "search": {},
+  "fileEditBaseUrl": "https://github.com/svallory/jig/blob/main/docs",
+  "copyright": "Jig"
+}

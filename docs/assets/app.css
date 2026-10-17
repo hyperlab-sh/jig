@@ -1,0 +1,196 @@
+@import 'unpoly';
+@import '@docsearch/css';
+
+/* Gray colors */
+@import '@radix-ui/colors/sage.css';
+@import '@radix-ui/colors/sage-alpha.css';
+@import '@radix-ui/colors/sage-dark.css';
+@import '@radix-ui/colors/sage-dark-alpha.css';
+
+/* Accent colors */
+@import '@radix-ui/colors/sky.css';
+@import '@radix-ui/colors/sky-alpha.css';
+@import '@radix-ui/colors/sky-dark.css';
+@import '@radix-ui/colors/sky-dark-alpha.css';
+
+/* Interface colors */
+@import '@radix-ui/colors/crimson-alpha.css';
+@import '@radix-ui/colors/plum-alpha.css';
+@import '@radix-ui/colors/crimson-dark-alpha.css';
+@import '@radix-ui/colors/plum-dark-alpha.css';
+
+@import '@dimerapp/docs-theme/styles';
+
+@font-face {
+  font-family: 'Martian Grotesk';
+  src: url('/fonts/MartianGrotesk-VFVF.woff2') format('woff2'),
+       url('/fonts/MartianGrotesk-VFVF.ttf') format('truetype');
+  font-weight: 100 900;
+  font-stretch: 75% 125%;
+  font-display: swap;
+}
+
+:root {
+  --logo-width: 100px;
+  --mobile-logo-width: 30px;
+  --font-mono: 'Roboto Mono';
+}
+
+:root {
+  --neutral-gray-1: var(--sage-1);
+  --neutral-gray-2: var(--sage-2);
+  --neutral-gray-3: var(--sage-3);
+  --neutral-gray-4: var(--sage-4);
+  --neutral-gray-5: var(--sage-5);
+  --neutral-gray-6: var(--sage-6);
+  --neutral-gray-7: var(--sage-7);
+  --neutral-gray-8: var(--sage-8);
+  --neutral-gray-9: var(--sage-9);
+  --neutral-gray-10: var(--sage-10);
+  --neutral-gray-11: var(--sage-11);
+  --neutral-gray-12: var(--sage-12);
+
+  --neutral-gray-a1: var(--sage-a1);
+  --neutral-gray-a2: var(--sage-a2);
+  --neutral-gray-a3: var(--sage-a3);
+  --neutral-gray-a4: var(--sage-a4);
+  --neutral-gray-a5: var(--sage-a5);
+  --neutral-gray-a6: var(--sage-a6);
+  --neutral-gray-a7: var(--sage-a7);
+  --neutral-gray-a8: var(--sage-a8);
+  --neutral-gray-a9: var(--sage-a9);
+  --neutral-gray-a10: var(--sage-a10);
+  --neutral-gray-a11: var(--sage-a11);
+  --neutral-gray-a12: var(--sage-a12);
+
+  --accent-1: var(--sky-1);
+  --accent-2: var(--sky-2);
+  --accent-3: var(--sky-3);
+  --accent-4: var(--sky-4);
+  --accent-5: var(--sky-5);
+  --accent-6: var(--sky-6);
+  --accent-7: var(--sky-7);
+  --accent-8: var(--sky-8);
+  --accent-9: var(--sky-9);
+  --accent-10: var(--sky-10);
+  --accent-11: var(--sky-11);
+  --accent-12: var(--sky-12);
+
+  --accent-a1: var(--sky-a1);
+  --accent-a2: var(--sky-a2);
+  --accent-a3: var(--sky-a3);
+  --accent-a4: var(--sky-a4);
+  --accent-a5: var(--sky-a5);
+  --accent-a6: var(--sky-a6);
+  --accent-a7: var(--sky-a7);
+  --accent-a8: var(--sky-a8);
+  --accent-a9: var(--sky-a9);
+  --accent-a10: var(--sky-a10);
+  --accent-a11: var(--sky-a11);
+  --accent-a12: var(--sky-a12);
+
+  --sidebar-active-link-text-color: var(--accent-12);
+}
+
+html.dark {
+  --neutral-gray-1: var(--sage-1);
+  --neutral-gray-2: var(--sage-2);
+  --neutral-gray-3: var(--sage-3);
+  --neutral-gray-4: var(--sage-4);
+  --neutral-gray-5: var(--sage-5);
+  --neutral-gray-6: var(--sage-6);
+  --neutral-gray-7: var(--sage-7);
+  --neutral-gray-8: var(--sage-8);
+  --neutral-gray-9: var(--sage-9);
+  --neutral-gray-10: var(--sage-10);
+  --neutral-gray-11: var(--sage-11);
+  --neutral-gray-12: var(--sage-12);
+
+  --neutral-gray-a1: var(--sage-a1);
+  --neutral-gray-a2: var(--sage-a2);
+  --neutral-gray-a3: var(--sage-a3);
+  --neutral-gray-a4: var(--sage-a4);
+  --neutral-gray-a5: var(--sage-a5);
+  --neutral-gray-a6: var(--sage-a6);
+  --neutral-gray-a7: var(--sage-a7);
+  --neutral-gray-a8: var(--sage-a8);
+  --neutral-gray-a9: var(--sage-a9);
+  --neutral-gray-a10: var(--sage-a10);
+  --neutral-gray-a11: var(--sage-a11);
+  --neutral-gray-a12: var(--sage-a12);
+
+  --accent-1: var(--sky-1);
+  --accent-2: var(--sky-2);
+  --accent-3: var(--sky-3);
+  --accent-4: var(--sky-4);
+  --accent-5: var(--sky-5);
+  --accent-6: var(--sky-6);
+  --accent-7: var(--sky-7);
+  --accent-8: var(--sky-8);
+  --accent-9: var(--sky-9);
+  --accent-10: var(--sky-10);
+  --accent-11: var(--sky-11);
+  --accent-12: var(--sky-12);
+
+  --accent-a1: var(--sky-a1);
+  --accent-a2: var(--sky-a2);
+  --accent-a3: var(--sky-a3);
+  --accent-a4: var(--sky-a4);
+  --accent-a5: var(--sky-a5);
+  --accent-a6: var(--sky-a6);
+  --accent-a7: var(--sky-a7);
+  --accent-a8: var(--sky-a8);
+  --accent-a9: var(--sky-a9);
+  --accent-a10: var(--sky-a10);
+  --accent-a11: var(--sky-a11);
+  --accent-a12: var(--sky-a12);
+}
+
+.dark_mode {
+  display: none;
+}
+.dark .dark_mode {
+  display: block;
+}
+.dark .light_mode {
+  display: none;
+}
+
+.cards_grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+/* Sponsors CTA */
+.sponsors_wrapper {
+  max-width: var(--content-width);
+  margin: auto;
+  padding: 24px var(--surface-spacing) 40px;
+  text-align: center;
+  color: var(--neutral-gray-11);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.sponsors_wrapper p {
+  margin: 0 0 16px;
+}
+
+.become_sponsor_button {
+  display: inline-block;
+  padding: 10px 24px;
+  background-color: var(--accent-9);
+  color: white;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+
+.become_sponsor_button:hover {
+  background-color: var(--accent-10);
+  text-decoration: none;
+  color: white;
+}

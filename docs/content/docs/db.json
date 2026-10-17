@@ -1,0 +1,140 @@
+[
+  {
+    "permalink": "introduction",
+    "title": "Introduction",
+    "contentPath": "./introduction.md",
+    "category": "Guides"
+  },
+  {
+    "permalink": "getting_started",
+    "title": "Getting started",
+    "contentPath": "./getting_started.md",
+    "category": "Guides"
+  },
+  {
+    "permalink": "edge-vs-jig",
+    "title": "Edge vs Jig",
+    "contentPath": "./edge-vs-jig.md",
+    "category": "Guides"
+  },
+  {
+    "permalink": "interpolation",
+    "title": "Interpolation",
+    "contentPath": "./interpolation.md",
+    "category": "Guides"
+  },
+  {
+    "permalink": "templates_state",
+    "title": "Templates state",
+    "contentPath": "./templates_state.md",
+    "category": "Guides"
+  },
+  {
+    "permalink": "conditionals",
+    "title": "Conditionals",
+    "contentPath": "./conditionals.md",
+    "category": "Guides"
+  },
+  {
+    "permalink": "loops",
+    "title": "Loops",
+    "contentPath": "./loops.md",
+    "category": "Guides"
+  },
+  {
+    "permalink": "partials",
+    "title": "Partials",
+    "contentPath": "./partials.md",
+    "category": "Guides"
+  },
+  {
+    "permalink": "stacks",
+    "title": "Stacks",
+    "contentPath": "./stacks.md",
+    "category": "Guides"
+  },
+  {
+    "permalink": "debugging",
+    "title": "Debugging",
+    "contentPath": "./debugging.md",
+    "category": "Guides"
+  },
+  {
+    "permalink": "syntax_specification",
+    "title": "Syntax specification",
+    "contentPath": "./syntax_specification.md",
+    "category": "Guides"
+  },
+  {
+    "permalink": "components/introduction",
+    "title": "Introduction",
+    "contentPath": "./components/introduction.md",
+    "category": "Components"
+  },
+  {
+    "permalink": "components/props",
+    "title": "Props",
+    "contentPath": "./components/props.md",
+    "category": "Components"
+  },
+  {
+    "permalink": "components/slots",
+    "title": "Slots",
+    "contentPath": "./components/slots.md",
+    "category": "Components"
+  },
+  {
+    "permalink": "components/layouts",
+    "title": "Layouts",
+    "contentPath": "./components/layouts.md",
+    "category": "Components"
+  },
+  {
+    "permalink": "components/provide_inject",
+    "title": "Provide/Inject",
+    "contentPath": "./components/provide_inject.md",
+    "category": "Components"
+  },
+  {
+    "permalink": "helpers",
+    "title": "Helpers",
+    "contentPath": "./digging_deeper/helpers.md",
+    "category": "Digging deeper"
+  },
+  {
+    "permalink": "iconify",
+    "title": "SVG icons",
+    "contentPath": "./digging_deeper/iconify.md",
+    "category": "Digging deeper"
+  },
+  {
+    "permalink": "markdown",
+    "title": "Markdown rendering",
+    "contentPath": "./digging_deeper/edge-markdown.md",
+    "category": "Digging deeper"
+  },
+  {
+    "permalink": "creating-custom-tags",
+    "title": "Creating custom tags",
+    "contentPath": "./digging_deeper/creating-custom-tags.md",
+    "category": "Digging deeper"
+  },
+  {
+    "permalink": "tools/ide-extensions",
+    "title": "IDE Extensions",
+    "contentPath": "./tools/ide_extensions.md",
+    "category": "Tools"
+  },
+  {
+    "permalink": "tools/claude-code-skill",
+    "title": "Claude Code Skill",
+    "contentPath": "./tools/claude_code_skill.md",
+    "category": "Tools"
+  },
+  {
+    "permalink": "upgrading-to-v6",
+    "title": "Migrating to Jig",
+    "contentPath": "./changelog/upgrading-to-v6.md",
+    "category": "Changelog"
+  }
+]

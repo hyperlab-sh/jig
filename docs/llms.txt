@@ -1,0 +1,33 @@
+# Jig Documentation
+
+Jig is a template engine purpose-built for code generation, forked from Edge.js.
+It removes HTML escaping, adds implicit indentation control and filter syntax,
+while maintaining components, slots, partials, and full JavaScript expressions.
+
+## Documentation Index
+
+- [Introduction](/docs/introduction) — Guides
+- [Getting started](/docs/getting_started) — Guides
+- [Edge vs Jig](/docs/edge-vs-jig) — Guides
+- [Interpolation](/docs/interpolation) — Guides
+- [Templates state](/docs/templates_state) — Guides
+- [Conditionals](/docs/conditionals) — Guides
+- [Loops](/docs/loops) — Guides
+- [Partials](/docs/partials) — Guides
+- [Stacks](/docs/stacks) — Guides
+- [Debugging](/docs/debugging) — Guides
+- [Syntax specification](/docs/syntax_specification) — Guides
+- [Introduction](/docs/components/introduction) — Components
+- [Props](/docs/components/props) — Components
+- [Slots](/docs/components/slots) — Components
+- [Layouts](/docs/components/layouts) — Components
+- [Provide/Inject](/docs/components/provide_inject) — Components
+- [Helpers](/docs/helpers) — Digging deeper
+- [SVG icons](/docs/iconify) — Digging deeper
+- [Markdown rendering](/docs/markdown) — Digging deeper
+- [Creating custom tags](/docs/creating-custom-tags) — Digging deeper
+- [Migrating to Jig](/docs/upgrading-to-v6) — Changelog
+
+---
+
+For the complete documentation content, see llms-full.txt

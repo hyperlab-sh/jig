@@ -1,0 +1,3552 @@
+# Introduction
+
+URL: /docs/introduction
+Category: Guides
+
+---
+summary: Jig is a template engine for code generation in Node.js, forked from Edge
+---
+
+# Introduction
+
+Jig is a **simple**, **Modern**, and **batteries included** template engine, purpose-built for **code generation**. Jig is similar to writing JavaScript. If you know JavaScript, you know Jig. 
+
+Jig is a fork of [Edge](https://edgejs.dev), with HTML-specific features stripped out and new capabilities like **implicit indentation control** and **filter syntax** added in.
+
+If you already know Edge, just [check the differences](/docs/edge-vs-jig) and you'll know Jig too.
+
+<div class="feature_highlight">
+
+```edge
+Hello {{ user.username }}!
+```
+
+::include{template="partials/features/hello_world"}
+
+</div>
+
+
+<div class="feature_highlight">
+
+```edge
+{{ user.subscription?.plan || 'Not subscribed' }}
+```
+
+::include{template="partials/features/js_expressions"}
+
+</div>
+
+<div class="feature_highlight">
+
+```edge
+@let(payments = await user.getPayments())
+You have made {{ payments.length }} payments so far.
+```
+
+::include{template="partials/features/async_await"}
+
+</div>
+
+<div class="feature_highlight">
+
+```edge
+@if(user.hasSubscription)
+  Hurray! You have access to over 280 videos.
+@else
+  Videos are available only to subscribers.
+@end
+```
+
+::include{template="partials/features/conditionals"}
+
+</div>
+
+<div class="feature_highlight">
+
+```edge
+@each(comment in post.comments)
+  @include('partials/comment')
+@end
+```
+
+::include{template="partials/features/loops"}
+
+</div>
+
+<div class="feature_highlight">
+
+```edge
+@accordion()
+  @accordion.item({ title: 'What is Jig?' })
+    Jig is a template engine for code generation
+  @end
+
+  @accordion.item({ title: 'Why should I use Jig?' })
+    Because you need a template engine 🤷🏻‍♂️
+  @end
+
+  @accordion.item({ title: 'How can I contribute?' })
+    By opening issues and PRs on Github
+  @end
+@end
+```
+
+::include{template="partials/features/components"}
+
+</div>
+
+## Why another template engine?
+
+Edge has powered AdonisJS for almost seven years and is battle-tested. Jig inherits that foundation and adapts it for code generation — where you need clean, predictable output without HTML baggage.
+
+### Differences from Edge
+
+Jig is specifically optimized for code generation, not HTML rendering:
+
+- **No HTML escaping**: `{{ }}` outputs raw values. There's no automatic HTML escaping since you're generating code, not HTML.
+- **Implicit indentation control**: Block tag content is automatically dedented, and `@include` re-indents partial output. Clean output without manual whitespace management.
+- **Filter syntax**: New `{{ mode :: expr }}` syntax for output transformation. Built-in `json` filter with extensible `registerFilter` API.
+- **No HTML-specific helpers**: Removed `html.attrs`, `html.classNames`, `nl2br`, and other HTML utilities.
+- **Same powerful syntax**: Inherits Edge's lexer and parser, so you still get `.edge` file syntax, components, slots, and all the features you know.
+
+### Key Features
+
+- Not restrictive — write any JavaScript expression inside templates.
+- Accurate error stack pointing to the original source file and line.
+- Simple mental model — no custom dialect to learn.
+- **Implicit indentation control** — block tags automatically strip cosmetic indentation, and include tags re-indent partial output. Template nesting doesn't pollute output formatting.
+- Components layer with support for slots and provide/inject API.
+- Extensible API. 80% of Jig features are implemented using the public API.
+- Filter syntax for custom output transformations.
+
+## Why should I use Jig?
+
+If you're building code generators, scaffolding tools, or any system that needs to output structured text (TypeScript, GraphQL schemas, configuration files, etc.), Jig provides a clean template syntax without the overhead of HTML-specific features.
+
+## Next steps
+
+- Start with the [Getting Started](./getting_started.md) guide.
+- Read the [Syntax specification](./syntax_specification.md) guide to understand the Jig templating syntax better.
+
+
+================================================================================
+
+# Getting started
+
+URL: /docs/getting_started
+Category: Guides
+
+---
+summary: Get started by installing Jig inside an existing Node.js project
+---
+
+# Getting started
+
+You may install Jig inside an existing Node.js project from the npm packages registry.
+
+:::warning
+
+Jig is an ESM-only package, and therefore your applications must use ES modules to import the package.
+
+:::
+
+```sh
+npm i @jig-lang/jig
+```
+
+You can start using Jig as soon as you install it. You do not need any compiler or build tools to compile the templates.
+
+Let's start with the following project structure. We will store templates within the `templates` directory and use them to generate TypeScript interfaces.
+
+```ts
+.
+├── templates
+│  └── interface.edge
+├── index.js
+└── package.json
+```
+
+```ts
+// title: index.js
+import { Edge } from '@jig-lang/jig'
+
+// highlight-start
+const jig = Edge.create()
+jig.mount(new URL('./templates', import.meta.url))
+// highlight-end
+
+// highlight-start
+const data = {
+  name: 'User',
+  properties: [
+    { name: 'id', type: 'number' },
+    { name: 'username', type: 'string' },
+    { name: 'email', type: 'string' }
+  ]
+}
+
+const output = await jig.render('interface', data)
+console.log(output)
+// highlight-end
+```
+
+```edge
+// title: templates/interface.edge
+export interface {{ name }} {
+@each(prop in properties)
+  {{ prop.name }}: {{ prop.type }}
+@end
+}
+```
+
+Let's go through the source code line by line.
+
+- We start by importing the `@jig-lang/jig` package. Note: the class is still called `Edge` internally, but the package name is `@jig-lang/jig`.
+
+- We use the `jig.mount` method to register the `templates` directory as the root for our templates. Template files end with the `.edge` extension.
+
+- Finally, we use the `jig.render` method to render a template. The render method accepts the template path (without the extension) and the data object to share with the template.
+
+## Caching templates
+
+The templates are re-compiled whenever you call the `jig.render` method. You can verify this by editing the `interface.edge` file and re-running the script to see the modified output.
+
+You must enable the cache mode in production to avoid re-compiling the templates. The compiled output will be saved within the memory.
+
+```js
+const jig = Edge.create({
+  cache: process.env.NODE_ENV === 'production'
+})
+```
+
+## Mounting disks
+
+Jig uses the concept of disks to find and render templates from the local filesystem. You can register one default disk and multiple named disks to lookup templates.
+
+In the following example, we register the `templates` directory as the default disk for finding templates.
+
+```ts
+const BASE_URL = new URL('./', import.meta.url)
+
+jig.mount(new URL('templates', BASE_URL))
+
+/**
+ * Render interface.edge file from
+ * {BASE_URL/templates} directory
+ */
+await jig.render('interface')
+
+/**
+ * Render models/user.edge file from
+ * {BASE_URL/templates} directory
+ */
+await jig.render('models/user')
+```
+
+You can also mount multiple named disks, which can be helpful if you have multiple template collections.
+
+```ts
+const BASE_URL = new URL('./', import.meta.url)
+
+jig.mount(
+  'typescript',
+  new URL('templates/typescript', BASE_URL)
+)
+
+jig.mount(
+  'graphql',
+  new URL('templates/graphql', BASE_URL)
+)
+
+jig.mount(
+  'sql',
+  new URL('templates/sql', BASE_URL)
+)
+```
+
+Now you can render templates by prefixing the disk name before the template path. For example:
+
+```ts
+await jig.render('typescript::interface')
+await jig.render('graphql::schema')
+```
+
+## In-memory templates
+
+You can register templates that are kept within memory using the `.registerTemplate()` method. It accepts a unique name for the template as the first argument and the template contents via the options parameter.
+
+```ts
+jig.registerTemplate('code.function', {
+  template: `function {{ name }}({{ params.join(', ') }}) {
+  // TODO: implement
+}`
+})
+```
+
+Now, you can reference the above template as a component inside any other template.
+
+```edge
+@!component('code.function', {
+  name: 'calculateTotal',
+  params: ['items', 'taxRate']
+})
+```
+
+## Rendering API
+
+You can render Jig templates using one of the following methods.
+
+### render
+
+The `render` method accepts the template path relative to the disk root and an optional data object to share with the template.
+
+The return value is a string output of the rendered template.
+
+```ts
+const output = await jig.render('interface')
+console.log(output)
+```
+
+### renderSync
+
+The `renderSync` method is similar to the `render`. However, it uses synchronous APIs under the hood to read and render the template files.
+
+We recommend using the `render` method over the `renderSync` method.
+
+```ts
+const output = jig.renderSync('interface')
+console.log(output)
+```
+
+### renderRaw
+
+The `renderRaw` method allows you to render raw text as a template.
+
+```ts
+const template = `
+export interface {{ name }} {
+  id: number
+}
+`
+
+await jig.renderRaw(template, { name: 'User' })
+```
+
+### renderRawSync
+
+The `renderRawSync` method is the same as `renderRaw` but uses synchronous APIs under the hood.
+
+```ts
+const template = `
+export interface {{ name }} {
+  id: number
+}
+`
+
+jig.renderRawSync(template, { name: 'User' })
+```
+
+## Reserved keywords
+
+The internals of compiled template relies on the following variables, and you must not define them as template state.
+
+- `template`
+- `$context`
+- `state`
+- `$filename`
+
+
+================================================================================
+
+# Edge vs Jig
+
+URL: /docs/edge-vs-jig
+Category: Guides
+
+---
+summary: Comprehensive guide to the differences between Edge.js and Jig, including breaking changes, new features, and migration considerations
+---
+
+# Edge vs Jig
+
+Jig is a fork of [Edge.js](https://edgejs.dev) optimized for **code generation** rather than HTML rendering. It inherits Edge's battle-tested lexer, parser, and template syntax while stripping away HTML-specific features and adding new capabilities for clean code output.
+
+This guide documents all differences between Edge.js 6.x and Jig 7.0.
+
+## Philosophy Shift
+
+**Edge.js is designed for rendering HTML** with automatic escaping to prevent XSS attacks. It includes helpers for HTML attributes, class names, and newline-to-BR conversion.
+
+**Jig is designed for generating code**, configuration files, SQL, GraphQL schemas, and other structured text formats. It removes all HTML concerns and adds features for controlling output indentation and applying transformations via filters.
+
+## Breaking Changes
+
+### 1. No HTML Escaping
+
+Edge automatically escapes values in `{{ }}` expressions to prevent XSS:
+
+```edge
+{{-- Edge.js --}}
+{{ '<script>alert(1)</script>' }}
+{{-- Output: &lt;script&gt;alert(1)&lt;/script&gt; --}}
+```
+
+Jig outputs raw values directly:
+
+```edge
+{{-- Jig --}}
+{{ '<script>alert(1)</script>' }}
+{{-- Output: <script>alert(1)</script> --}}
+```
+
+**Impact**: In Jig, `{{ }}` and `{{{ }}}` behave identically (both output raw). There is no distinction between escaped and raw output.
+
+### 2. Removed `safe()` Function
+
+Edge provides `safe()` to bypass escaping:
+
+```edge
+{{-- Edge.js --}}
+{{ safe('<strong>Bold</strong>') }}
+```
+
+Jig has no `safe()` function since there's no escaping to bypass.
+
+**Migration**: Remove all `safe()` calls. Output is already raw.
+
+### 3. Removed HTML Helpers
+
+Edge provides HTML-specific helpers:
+
+```js
+// Edge.js globals
+html.attrs({ class: 'btn', disabled: true })  // → class="btn" disabled
+html.classNames({ active: true, disabled: false })  // → active
+html.escape('<script>')  // → &lt;script&gt;
+nl2br('Line 1\nLine 2')  // → Line 1<br>\nLine 2
+```
+
+Jig removes all `html.*` helpers and `nl2br()`.
+
+**Migration**: Handle HTML attribute serialization manually if generating HTML with Jig. For most code generation use cases, these helpers aren't needed.
+
+### 4. Removed `$props.toAttrs()`
+
+Edge components can serialize props to HTML attributes:
+
+```edge
+{{-- Edge.js component --}}
+<button {{ $props.toAttrs() }}>
+  {{ await $slots.main() }}
+</button>
+```
+
+Jig removes `toAttrs()` from `ComponentProps`.
+
+**Migration**: Manually serialize component props if needed, or avoid using Jig for HTML generation.
+
+### 5. Removed `EdgeOptions.escape`
+
+Edge allows customizing the escape function:
+
+```js
+// Edge.js
+const edge = new Edge({
+  escape: (value) => customEscape(value)
+})
+```
+
+Jig has no `escape` option since escaping is removed.
+
+### 6. Removed Migration Plugin
+
+Edge 6.x included a migration plugin (`edge.js/plugins/migrate`) for v5→v6 compatibility. Jig removes this plugin and all v5 compatibility code.
+
+### 7. Implicit Indentation Changes Output Whitespace
+
+Jig automatically dedents block tag content, which may change the exact whitespace in your output compared to Edge.
+
+**Example**:
+
+```edge
+@if(condition)
+    Some content
+        with indentation
+@end
+```
+
+**Edge output** (preserves exact whitespace):
+```
+    Some content
+        with indentation
+```
+
+**Jig output** (dedented relative to tag):
+```
+Some content
+    with indentation
+```
+
+The content is dedented by the tag's indent level (4 spaces in this example).
+
+## New Features
+
+### 1. Filter Syntax
+
+Jig introduces a new syntax for transforming mustache expressions:
+
+```edge
+{{ mode :: expression }}
+```
+
+The filter is applied by rewriting the expression to `$filters.mode(expression)` during compilation.
+
+**Built-in filter**:
+
+```edge
+{{ json :: { name: 'John', age: 30 } }}
+{{-- Output: {"name":"John","age":30} --}}
+```
+
+**Custom filters**:
+
+```js
+import { Edge } from 'jig'
+
+const jig = new Edge()
+
+jig.registerFilter('upper', (value) => String(value).toUpperCase())
+jig.registerFilter('quote', (value) => `"${value}"`)
+```
+
+```edge
+{{ upper :: 'hello world' }}
+{{-- Output: HELLO WORLD --}}
+
+{{ quote :: user.name }}
+{{-- Output: "John Doe" --}}
+```
+
+Filters can be chained (left-to-right evaluation):
+
+```edge
+{{ upper :: quote :: 'hello' }}
+{{-- Equivalent to: $filters.upper($filters.quote('hello')) --}}
+{{-- Output: "HELLO" --}}
+```
+
+### 2. Implicit Indentation Control
+
+Jig automatically manages indentation for clean output.
+
+#### Block Tag Dedenting
+
+Content inside block tags is automatically dedented based on the tag's position:
+
+```edge
+class User {
+    @if(hasName)
+        public name: string
+    @end
+
+    @if(hasAge)
+        public age: number
+    @end
+}
+```
+
+**Output** (no extra indentation from the block tags):
+```
+class User {
+    public name: string
+    public age: number
+}
+```
+
+The dedent amount is calculated as: `firstContentLineIndent - tagIndent`.
+
+Applies to: `@if`, `@elseif`, `@else`, `@unless`, `@each`, `@component`, `@slot`, `@pushTo`, `@pushOnceTo`
+
+#### Include Tag Re-indenting
+
+When including a partial, subsequent lines are automatically indented to match the include tag's position:
+
+**partial.edge**:
+```
+function example() {
+  return true
+}
+```
+
+**main.edge**:
+```
+class MyClass {
+    @include('partial')
+}
+```
+
+**Output**:
+```
+class MyClass {
+    function example() {
+      return true
+    }
+}
+```
+
+The first line of the partial is inserted as-is, and subsequent lines are indented by the column position of the `@include` tag (4 spaces in this example).
+
+This ensures partials integrate cleanly into the surrounding code structure.
+
+## Internal Changes
+
+### Compilation
+
+- `{{ }}` and `{{{ }}}` both compile to direct output with no escaping wrapper
+- Compiler uses `onMustache` hook to convert all MUSTACHE tokens to SMUSTACHE
+- Filter syntax is processed by the `onMustache` hook, rewriting `{{ mode :: expr }}` to `{{ $filters.mode(expr) }}`
+
+### Template API
+
+- `template.escape(value)` still exists for backward compatibility but just returns `String(value)`
+- New `template.indentOutput(output, column)` method for include tag re-indenting
+- `$filters` global object injected into all templates for filter syntax support
+
+### Dependencies
+
+Jig requires updated versions of the lexer and parser:
+
+- **edge-lexer** 6.1.0+ — Adds `indent: number` field to tag tokens
+- **edge-parser** 9.2.0+ — Propagates indent information through AST
+
+## Migration from Edge.js
+
+### 1. Remove `safe()` calls
+
+```diff
+- {{ safe(htmlContent) }}
++ {{ htmlContent }}
+```
+
+### 2. Remove HTML helper usage
+
+```diff
+- <div {{ html.attrs(attributes) }}></div>
++ <div>...</div>  {{-- Or handle attributes manually --}}
+```
+
+### 3. Review output whitespace
+
+Run your test suite and check for whitespace differences. The implicit dedenting may change output formatting, which is usually desirable for code generation but may require test fixture updates.
+
+### 4. Leverage new features
+
+#### Use filters for output transformation
+
+```diff
+- {{ JSON.stringify(data) }}
++ {{ json :: data }}
+```
+
+#### Rely on implicit indentation instead of manual management
+
+Edge templates often require manual whitespace trimming with `~`:
+
+```edge
+{{-- Edge.js --}}
+@if(condition)~
+Some content
+@end~
+```
+
+Jig handles this automatically:
+
+```edge
+{{-- Jig --}}
+@if(condition)
+    Some content
+@end
+```
+
+The output will be cleanly dedented without manual `~` trimming.
+
+## Use Cases
+
+### Edge.js is ideal for:
+
+- Rendering HTML in web applications
+- Email templates
+- Server-side rendering (SSR)
+- Any use case requiring XSS protection
+
+### Jig is ideal for:
+
+- Code generators (TypeScript, GraphQL, SQL, etc.)
+- Configuration file generation (YAML, JSON, TOML)
+- Build tool output (webpack configs, package.json)
+- Documentation generation
+- Template-based scaffolding tools
+- Any text format where manual control of escaping is preferred
+
+## Syntax Compatibility
+
+Since Jig uses the same lexer and parser as Edge, most Edge syntax works identically in Jig:
+
+- Tags: `@if`, `@each`, `@component`, `@include`, etc.
+- JavaScript expressions in mustache and tag arguments
+- Components, slots, layouts
+- Async/await support
+- Template inheritance via components
+- Globals and helpers (except removed HTML helpers)
+
+The only syntax additions are:
+- Filter syntax: `{{ mode :: expr }}`
+
+## Further Reading
+
+- [Edge.js Documentation](https://edgejs.dev)
+- [Jig Syntax Specification](syntax_specification)
+- [Jig Components Guide](components/introduction)
+
+
+================================================================================
+
+# Interpolation
+
+URL: /docs/interpolation
+Category: Guides
+
+---
+summary: Learn how to embed JavaScript expression alongside raw text
+---
+
+# Interpolation
+
+Interpolation refers to embedding the output of JavaScript expressions alongside the raw text markup. Jig uses double curly braces `{{ }}` as delimiters. 
+
+```edge
+Hello {{ username }}!
+```
+
+Given the username is `Virk`. The output will be
+
+```
+Hello Virk!
+```
+
+You can use any valid [JavaScript expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators#expressions) inside the curly braces, and Jig will evaluate it for you.
+
+```edge
+{{ user.username }}
+{{ user.username.toUpperCase() }}
+{{ (2 + 2) * 3 }}
+{{ (await getUser()).username }}
+```
+
+## Multiline expressions
+
+Expressions can also span across multiple lines. For example:
+
+```edge
+Hello {{
+  users.map((user) => {
+    return user.username
+  })
+}}
+```
+
+When writing multiline expressions, ensure the double curly braces are in the same line.
+
+<table>
+
+<thead>
+<tr>
+<th>
+Invalid ❌
+</th>
+
+<th>
+Valid ✅
+</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr>
+<td>
+
+```edge
+{
+{
+  users.map((user) => {
+    return user.username
+  })
+}}
+```
+
+```edge
+{{
+  users.map((user) => {
+    return user.username
+  })
+}
+}
+```
+
+</td>
+<td>
+
+```edge
+{{
+  users.map((user) => {
+    return user.username
+  })
+}}
+```
+
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+
+## Stringified output
+
+Since the output of a template is always a `string`, the output of a JavaScript expression is also converted to a string by wrapping the output inside the [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/String#return_value) function.
+
+Given the following expression
+
+```edge
+// title: Expression
+{{
+  users.map((user) => {
+    return user.username
+  })
+}}
+```
+
+The JavaScript output will be
+
+```ts
+// title: JavaScript output code
+String(users.map((user) => {
+  return user.username
+}))
+```
+
+The stringified output will be
+
+```txt
+// title: Output
+virk,romain,julien,michael
+```
+
+If you do not want to rely on the default behavior, you can self-convert the array to a string using the JavaScript `Array.join` method.
+
+```edge
+Hello {{
+  users.map((user) => {
+    return user.username
+  }).join(', ')
+}}
+```
+
+## Filter syntax
+
+Jig supports a filter syntax for transforming output. Use `{{ mode :: expression }}` where `mode` is a registered filter name.
+
+```edge
+{{ json :: { name: 'User', id: 1 } }}
+```
+
+Output:
+
+```
+{"name":"User","id":1}
+```
+
+The built-in `json` filter outputs JSON. You can register custom filters using `jig.registerFilter`:
+
+```ts
+jig.registerFilter('upper', (value) => String(value).toUpperCase())
+```
+
+```edge
+{{ upper :: username }}
+```
+
+## Skipping curly braces from evaluation
+
+If you are using Jig to generate code that includes double curly braces (e.g., generating templates for other systems), you can instruct Jig to skip certain statements by prefixing the braces with the `@` symbol.
+
+```edge
+{{-- Input -- }}
+Jig should not parse @{{ username }}
+
+{{-- Output -- }}
+Jig should not parse {{ username }}
+```
+
+
+================================================================================
+
+# Templates state
+
+URL: /docs/templates_state
+Category: Guides
+
+---
+summary: Learn about different APIs to define template state
+---
+
+# Templates state
+
+Templates state refers to the data the templates can access during their rendering phase. Jig provides four layers to pass or define the template state.
+
+## Globals
+
+The globals refer to the state defined using the `jig.global` method. Globals are available to all the templates, including components.
+
+For example, you can use globals to share configuration with all the templates.
+
+```ts
+jig.global('config', {
+  defaultType: 'string',
+  indent: 2,
+  exportKeyword: 'export'
+})
+```
+
+```edge
+{{ config.exportKeyword }} interface User {
+  id: {{ config.defaultType }}
+}
+```
+
+You can also share classes, functions, and almost every JavaScript data-type as global properties.
+
+```ts
+jig.global('getTypeDefinition', async function (name) {
+  return TypeRegistry.find(name)
+})
+```
+
+```edge
+@let(typedef = await getTypeDefinition('User'))
+{{ typedef.toTypeScript() }}
+```
+
+## Locals
+
+The `locals` are similar to the global state but isolated between multiple render calls.
+
+In the following example, we use the `jig.createRenderer` method to create multiple children instances of Jig and share separate data objects with them.
+
+The data will be available globally to all the templates included as partials or components, but not with the isolated children instances.
+
+```ts
+const renderer1 = jig.createRenderer()
+const renderer2 = jig.createRenderer()
+
+renderer1.share({
+  namespace: 'Models',
+})
+
+renderer2.share({
+  namespace: 'Controllers',
+})
+
+await renderer1.renderRaw('export namespace {{ namespace }} {}') // export namespace Models {}
+await renderer2.renderRaw('export namespace {{ namespace }} {}') // export namespace Controllers {}
+```
+
+### Why use locals?
+
+You might be thinking, why create a new isolated instance and use the `.share()` method to share locals with a template when you can pass the data during the `.render()` method call?
+
+:::caption{for="info"}
+
+**Why this?**
+
+:::
+
+```ts
+const renderer = jig.createRenderer().share({
+  namespace: 'Models'
+})
+
+await renderer.render('template-path')
+```
+
+:::caption{for="info"}
+
+**And not this?**
+
+:::
+
+```ts
+await jig.render('template-path', {
+  namespace: 'Models'
+})
+```
+
+Let's use a concrete example and understand when locals can be helpful.
+
+Imagine you're building a code generator that processes multiple entities in parallel, and each entity needs its own isolated context. You can create a new instance of the Jig renderer for each entity and use the `share` method to share data that's isolated between concurrent generation tasks.
+
+```ts
+async function generateModel(entity) {
+  const renderer = jig.createRenderer()
+  renderer.share({
+    namespace: entity.namespace,
+    imports: entity.dependencies
+  })
+
+  return await renderer.render('model', { entity })
+}
+
+// Generate multiple models concurrently
+await Promise.all(entities.map(generateModel))
+```
+
+## Rendering data object
+
+The rendering data refers to the data object passed when calling the `jig.render` method. The rendering data is not shared with the components used by a template.
+
+```ts
+const renderingData = {}
+await jig.render('template-path', renderingData)
+```
+
+## Inline variables
+
+Inline variables are defined within the template as let variables. You can define inline variables using the `@let` tag and re-assign them new values using the `@assign` tag.
+
+```edge
+@let(config = await loadConfig())
+
+{{ config.someKey }}
+```
+
+The scope of inline variables is similar to a let variable in JavaScript. Let's consider the following example, in which we mutate an inline variable inside an `each` loop.
+
+```edge
+// highlight-start
+{{-- Define variable --}}
+@let(total = 0)
+// highlight-end
+
+<ul>
+  @each(item in items)
+    // highlight-start
+    {{-- Re-assign it a new value --}}
+    @assign(total = total + item.price)
+    // highlight-end
+    <li> {{ item.name }} = {{ item.price }} </li>
+  @end
+
+  <li> Gross total = {{ total }} </li>
+<ul>
+```
+
+## Data layers and their scope
+
+The final template state is a merged copy of all the layers created using `Object.assign`. Therefore, the layer with top most priority will overwrite the values from the previous layers.
+
+```ts
+// title: Pseudocode
+const finalState = Object.assign(
+  {},
+  globals,
+  locals,
+  renderingData
+)
+```
+
+| Name | Shared with components? | Isolated? |
+|----------|------------------------|----------|
+| Globals | ✅ | ❌ |
+| Locals | ✅ | ✅ |
+| Rendering data object | ❌ | ✅ |
+| Inline variables | ❌ | ✅ |
+
+
+================================================================================
+
+# Conditionals
+
+URL: /docs/conditionals
+Category: Guides
+
+---
+summary: Learn how to write conditionals in Jig
+---
+
+# Conditionals
+
+You can write conditional blocks within Jig templates using the `@if`, `@elseif`, and the `@else` tags. The inner working of these tags is similar to the JavaScript `if/else` statements.
+
+```edge
+@if(user)
+  <p> {{ user.username }} </p>
+@end
+```
+
+```edge
+@if(user.fullName)
+  <p> Hello {{ user.fullName }}! </p>
+@elseif(user.firstName)
+  <p> Hello {{ user.firstName }}! </p>
+@else
+  <p> Hello Guest! </p>
+@end
+```
+
+## The unless tag
+
+Alongside the `@if` tag, you can also use the `@unless` tag to express **not if** statements. For example:
+
+```edge
+// title: With @if tag
+@if(!account.isActive)
+  <p>Please verify your email address to activate the account </p>
+@end
+```
+
+```edge
+// title: With @unless tag
+@unless(account.isActive)
+  <p>Please verify your email address to activate the account </p>
+@end
+```
+
+## Using the ternary operator
+
+You can write inline conditionals using the [JavaScript ternary operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_operator).
+
+```edge
+<input
+  class="input {{ hasError ? 'error' : '' }}"
+/>
+```
+
+
+================================================================================
+
+# Loops
+
+URL: /docs/loops
+Category: Guides
+
+---
+summary: Learn how to loop over Arrays and Objects in Jig
+---
+
+# Loops
+
+You can loop over `Objects` and `Arrays` using the `@each` tag. The `each` tag's inner workings are similar to the JavaScript `for of` loop.
+
+```edge
+@each(user in users)
+  <li> {{ user.username }} </li>
+@end
+```
+
+```edge
+@each((user, index) in users)
+  <li> {{ index + 1 }} {{ user.username }} </li>
+@end
+```
+
+## Looping over objects
+
+You can loop over JavaScript objects using the same `@each` tag. For example:
+
+```ts
+await jig.render('recipes', {
+  food: {
+    ketchup: '5 tbsp',
+    mustard: '1 tbsp',
+    pickle: '0 tbsp'
+  }
+})
+```
+
+```edge
+@each((amount, ingredient) in food)
+  <li> Use {{ amount }} of {{ ingredient }} </li>
+@end
+```
+
+## Defining fallback content
+
+The `@each` tag can be used with the `@else` tag to define fallback content in cases where the value is an empty array/object or undefined.
+
+```edge
+@each(comment in post.comments)
+  @include('partials/comment')
+@else
+  <p> This post has not received any comments </p>
+@end
+```
+
+
+================================================================================
+
+# Partials
+
+URL: /docs/partials
+Category: Guides
+
+---
+summary: Partials are reusable templates with access to the state of the parent template
+---
+
+# Partials
+
+Partials are markup fragments created to reuse them across different templates. Partials have access to all the data available to the parent template, including [inline variables](./templates_state.md#inline-variables).
+
+You may include a partial inside a template using the `@include` tag. The tag accepts the relative path to the template file.
+
+```edge
+@include('partials/header')
+
+<main>
+  The main content goes here
+</main>
+
+@include('partials/footer')
+```
+
+You may include partials from other disks by prefixing the disk name before the template path.
+
+```edge
+@include('shared::partials/header')
+@include('shared::partials/footer')
+```
+
+## Indentation handling
+
+When an `@include` tag is indented, Jig automatically indents subsequent lines of the partial's output to match. The first line of output appears at the tag's position, and all following lines receive the same indentation prefix.
+
+```edge
+// title: main.edge
+function setup() {
+  @include('body')
+}
+```
+
+```edge
+// title: body.edge
+const a = 1
+const b = 2
+return a + b
+```
+
+```
+// title: Output
+function setup() {
+  const a = 1
+  const b = 2
+  return a + b
+}
+```
+
+This is automatic — no configuration is needed. If the `@include` tag has no leading whitespace, no extra indentation is added.
+
+## Include conditionally
+
+You may use the `@includeIf` method to conditionally include partials when a given statement returns `true`. For example:
+
+```edge
+@includeIf(post.comments.length, 'partials/comments')
+```
+
+
+================================================================================
+
+# Stacks
+
+URL: /docs/stacks
+Category: Guides
+
+---
+summary: Stacks allows creating inline placeholders in which other templates can push content
+---
+
+# Stacks
+
+Stacks allow you to create inline placeholders for other templates to push content. For example, you can create a stack for inline JavaScript, and components/partials can push script tags inside it.
+
+:::note
+
+Stacks are available since version 6.1.0.
+
+:::
+
+The `@stack` tag will create a named stack (it should be unique) in which other templates can push contents.
+
+```edge
+// title: components/layouts/main.edge
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    // highlight-start
+    @stack('js')
+    // highlight-end
+  </head>
+  <body>
+    <main>
+      @!dialog()
+    </main>
+  </body>
+</html>
+```
+
+The `@pushOnceTo` tag will push the contents inside the earlier created stack. Since you may use the following component multiple times on a single page, we use the `pushOnceTo` tag to push the `script` tag only once. Otherwise, you will end up with multiple script tags.
+
+```edge
+// title: compontents/modal.edge
+<dialog x-data="alpineModal">
+</dialog>
+
+// highlight-start
+@pushOnceTo('js')
+  <script>
+    Alpine.data('alpineModal', function () {
+      return {
+        show() {},
+        hide() {},
+      }
+    })
+  </script>
+@end
+// highlight-end
+```
+
+Following will be the output HTML.
+
+```html
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      Alpine.data('alpineModal', function () {
+        return {
+          show() {},
+          hide() {},
+        }
+      })
+    </script>
+  </head>
+  <body>
+    <main>
+      <dialog x-data="alpineModal">
+      </dialog>
+    </main>
+  </body>
+</html>
+```
+
+Similar to the `@pushToOnce` tag, there is a `@pushTo` tag as well, which will push contents inside a named stack as many times as the component or the partial gets imported.
+
+
+================================================================================
+
+# Debugging
+
+URL: /docs/debugging
+Category: Guides
+
+---
+summary: Debug templates using the Node.js debugger
+---
+
+# Debugging
+
+You can debug a template's values or state using one of the following approaches. 
+
+## Using the inspect helper
+
+You may use the `inspect` helper to prettyprint a value alongside the rest of the markup. The inspect helper returns HTML, which you must view in a browser for better readability.
+
+```edge
+{{
+  inspect({
+    a: 1,
+    b: [3, 4, undefined, null],
+    c: undefined,
+    d: null,
+    e: {
+      regex: /^x/i,
+      buf: Buffer.from('abc'),
+    },
+    balance: BigInt(100),
+    id: Symbol('1234'),
+    scores: new Set([1, 2, 3]),
+    classes: new Map([['english', '1st'], ['maths', '2nd']]),
+    currentScores: new WeakSet([[1, 2, 3]]),
+    currentClasses: new WeakMap([[['english', '1st'], ['maths', '2nd']]]),
+    now: new Date()
+  })
+}}
+```
+
+Output
+
+![](./edge-inspect-output.png)
+
+## Using the debugger tag
+
+The `debugger` tag writes a JavaScript [debugger](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/debugger) statement to the compiled output. You can run the Node.js server with the `--inspect` flag and use the Chrome devtools to open a debugging session.
+
+```edge
+@debugger
+<p> Hello {{ user.username }} </p>
+```
+
+```sh
+node --inspect index.js
+```
+
+![](./edge-debugger-output.png)
+
+
+================================================================================
+
+# Syntax specification
+
+URL: /docs/syntax_specification
+Category: Guides
+
+---
+summary: In-depth guide on Jig syntax specification
+---
+
+# Syntax specification
+
+This document outlines the Jig templating syntax specification. You can reference this doc to understand Jig internals better or create a syntax highlighter for your favorite code editor.
+
+## Goals
+
+Jig's primary goal is not to introduce any new dialect to the templating layer. Instead, use JavaScript everywhere.
+
+1. Keep the syntax closer to JavaScript.
+2. It should be easier to type and understand.
+3. Jig should work with any text format (code, config files, schemas, etc.).
+4. Generate error stacks pointing to the original source file and the line number.
+
+## Primitives
+
+Jig is built on two core primitives:
+
+- **Curly braces**: The familiar curly braces `{{ }}` are used to evaluate a JavaScript expression.
+- **Jig tags**: Jig tags start with an `@` symbol followed by the tag name. Tags can receive properties and have children elements surrounded by an opening and a closing statement.
+
+## Curly braces
+
+Jig uses the familiar curly braces `{{ }}` for evaluating JavaScript expressions. The output of the expression is concatenated to the output string. For example:
+
+```edge
+Hello {{ username }}!
+```
+
+Given the username is `Virk`. The output will be
+
+```
+Hello Virk
+```
+
+### Multi-line expressions
+Expressions can span across multiple lines. For example:
+
+```edge
+Hello {{
+  users.map((user) => {
+    return user.username
+  })
+}}
+```
+
+Since the output of a template is always a `string`, the output of a JavaScript expression is also converted to a string. 
+
+In the above example, the JavaScript expression returns an array and will be converted to a comma-separated string. The output is the same as writing the following JavaScript code.
+
+```ts
+String(users.map((user) => {
+  return user.username
+}))
+```
+
+You can self-convert the array to string using the JavaScript `Array.join` method.
+
+```edge
+Hello {{
+  users.map((user) => {
+    return user.username
+  }).join(', ')
+}}
+```
+
+
+### Escaping curly braces
+
+Suppose you are using Jig to generate code that contains curly braces (e.g., generating templates for other systems). In that case, you may use the `@` symbol to inform Jig to skip a given statement. For example:
+
+```edge
+// title: Input
+Jig should not parse @{{ username }}
+```
+
+```edge
+// title: Output
+Jig should not parse {{ username }}
+```
+
+## Jig tags
+
+Jig tags are used to add rich features to the templating layer. Features like conditionals, loops, components, and partials are implemented using the [tags API](./digging_deeper/creating-custom-tags.md). 
+
+
+:::note
+
+
+A tag must be written in its line with no contents around it. This is a conscious decision to keep the tags API easy to scan at the compiler level. You can always mix content + JavaScript code on the same line using curly braces.
+
+
+:::
+
+Tags are further categorized into the following sub-categories.
+
+### Block-level tags
+
+Block-level tags have an opening and a closing statement with content inside it. The `@if` tag is a block-level tag.
+
+```edge
+@if(someCondition)
+  If block content
+@end
+```
+
+You can auto-close block-level tags by prefixing the `!` operator before the tag name.
+
+```edge
+// title: Auto close
+@!component('button', { size: 'large' })
+```
+
+```edge
+// title: Explicitly close
+@component('button', { size: 'large' })
+@end
+```
+
+### Inline tags
+
+Inline tags do not accept the body, so you do not have to close them explicitly. The `@include` tag is an inline tag.
+
+```edge
+@include('partials/some-file')
+```
+
+### Tags without arguments
+
+Tags can be specified without arguments as well. For example, the `@debugger` tag. However, if a tag accepts arguments, then you must always call it like a function.
+
+```edge
+@debugger
+```
+
+### Swallow newlines
+
+Tags should always be used with block-level content because they create a newline separator between two blocks of text. 
+
+However, if you are using tags where newlines can change the output meaning or make it invalid, you must append the `~` symbol to the tag.
+
+:::caption{for="info"}
+
+**Without tilde**
+
+:::
+
+```edge
+Hello
+@let(username = 'virk')
+ {{ username }}
+```
+
+```
+Hello
+ virk
+```
+
+
+:::caption{for="info"}
+
+**With tilde**
+
+:::
+
+```edge
+Hello
+@let(username = 'virk')~
+ {{ username }}
+```
+
+```
+Hello virk
+```
+
+### Implicit indentation control
+
+Block tags like `@if`, `@each`, `@unless`, `@component`, `@slot`, `@pushTo`, and `@pushOnceTo` automatically remove cosmetic indentation from their contents. This ensures the output reflects the logical structure of the data, not the visual nesting of the template source.
+
+The dedent amount is computed as: `firstContentLineIndent - tagIndent`, clamped to zero.
+
+```edge
+// title: Template
+function render() {
+  @if(showGreeting)
+    return "hello"
+  @end
+}
+```
+
+```
+// title: Output
+function render() {
+  return "hello"
+}
+```
+
+Without implicit indentation control, the output would contain extra leading whitespace on the `return` line. Jig strips the excess indentation so output aligns with the tag's position, not the template's visual nesting.
+
+Include tags (`@include`, `@includeIf`) handle indentation differently: they indent subsequent lines of the partial's output based on the include tag's column position. This ensures multi-line partial output stays aligned with where the include tag appears.
+
+```edge
+// title: Template
+before
+  @include('partial')
+after
+```
+
+If `partial` renders as `line1\nline2\nline3`, the output will be:
+
+```
+before
+  line1
+  line2
+  line3
+after
+```
+
+## Comments
+
+You can write comments in Jig by wrapping the text inside the `{{-- --}}` block.
+
+```edge
+{{-- Inline before --}} Hello {{-- Inline after --}}
+```
+
+```edge
+{{--
+  This is a multi-line comment.
+--}}
+```
+
+## Examples
+
+<table>
+<thead>
+<tr>
+<th> Invalid ❌ </th>
+<th> Valid ✅ </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+
+```edge
+@if
+(
+username
+)
+```
+
+</td>
+<td>
+
+```edge
+@if(username)
+```
+
+</td>
+</tr>
+<tr>
+<td>
+
+```edge
+@if(username) Hello @endif
+```
+
+</td>
+<td>
+
+```edge
+@if(username)
+  Hello
+@end
+```
+
+</td>
+</tr>
+<tr>
+<td>
+
+```edge
+@if(
+  username
+) <p> Hello </p>
+@endif
+```
+
+</td>
+<td>
+
+```edge
+@if(
+  username
+)
+  <p> Hello </p>
+@end
+```
+
+</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+<th> Invalid ❌ </th>
+<th> Valid ✅ </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+
+```edge
+@! component('button')
+```
+
+</td>
+<td>
+
+```edge
+@!component('button')
+```
+
+</td>
+</tr>
+<tr>
+<td>
+
+```edge
+@!component
+('button', {
+  type: 'primary'
+})
+```
+
+</td>
+<td>
+
+```edge
+@!component(
+  'button',
+  {
+    type: 'primary'
+  }
+)
+```
+
+</td>
+</tr>
+</tbody>
+</table>
+
+
+
+================================================================================
+
+# Introduction
+
+URL: /docs/components/introduction
+Category: Components
+
+---
+summary: A quick introduction to the components API
+---
+
+# Components
+
+Components allows you to split the application UI into reusable pieces with isolated state. You can use components to define layouts or create a collection of different UI elements.
+
+Before we talk more about components, let's understand how they differ from components in the frontend ecosystem.
+
+- **No reactivity**: Since Jig is a code generation template engine, there is no concept of reactivity in Jig or its components layer.
+
+- **No support CSS or frontend JavaScript**: Jig templates are not processed using build tools. They generate code output, not web pages.
+
+## Creating components
+
+Components are regular Jig templates created with the purpose of reuse. Components can access additional runtime properties like `$props` and `$slots`, which are unavailable to other Jig templates.
+
+We recommend you create components inside the `components` directory of your template's root path. This helps create a visual boundary between the components and the rest of the templates used by your code generator.
+
+Let's start by creating a button component. We will store it inside the `components/button.edge` file. 
+
+```edge
+// title: views/components/button.edge
+<button type="{{ type || 'submit' }}"> {{ text }} </button>
+```
+
+## Using components
+
+You must use the `@component` tag to render a component inside your templates. The component tag accepts the template path as the first parameter and `props` as the second parameter.
+
+```edge
+<form>
+  @!component('components/button', { text: 'Login' })
+  @!component('components/button', { text: 'Cancel', type: 'reset' })
+</form>
+```
+
+Output
+
+```html
+<form>
+  <button type="submit"> Login </button>
+  <button type="reset"> Cancel </button>
+</form>
+```
+
+Components from [named disks](../getting_started.md#mounting-disks) can be referenced by prefixing the disk name.
+
+```edge
+@!component('uikit::components/button', { text: 'Login' })
+```
+
+## Passing props
+
+The component props are passed as the second parameter using the `@component` tag. Props are always represented as an object, and you can access them inside the component's template using the object property name.
+
+See also: [Props reference](./props.md)
+
+```edge
+@component('components/button', {
+  type: 'submit',
+  class: 'btn btn-large',
+  text: 'Login'
+})
+```
+
+```edge
+// title: Within the component
+{{ type }}
+{{ class }}
+{{ text }}
+```
+
+Another way to access props is using the `$props` property. For example:
+
+```edge
+{{ $props.get('type') }}
+{{ $props.get('class') }}
+{{ $props.get('text') }}
+```
+
+## Using Slots
+
+Slots are named outlets with markup inside them. Since writing HTML markup within props can quickly become messy, the slots provide a better authoring experience.
+
+In the following example, we render the contents of the main slots using the `$slots.main` function.
+
+See also: [Slots reference](./slots.md)
+
+```edge
+<button {{ $props.serialize() }}>
+  {{ await $slots.main() }}
+</button>
+```
+
+The contents of the `main` slot are place between the opening and the closing tags.
+
+```edge
+@component('components/button', {
+  class: ['flex', 'align-center', 'space-x-4']
+})
+  <i class="fa-lock"></i>
+  <span> Login </span>
+@end
+```
+
+## Components as tags
+
+Jig allows you to reference components as tags. So, instead of using the `@component` tag, you can use the component filename as the tag name to render it.
+
+:::note
+
+Components as tags only work for components stored inside the `components` directory.
+
+:::
+
+
+```edge
+// title: templates/components/modal.edge
+<div class="modal">
+  <header>
+    {{ await $slots.header() }}
+  </header>
+
+  <main>
+    {{ await $slots.content() }}
+  </main>
+
+  <footer>
+    {{ await $slots.footer() }}
+  </footer>
+</div>
+```
+
+Given the above template is stored inside the `modal.edge` file, you can render it as follows.
+
+```edge
+@modal()
+  @slot('header')
+    <h2> Delete post </h2>
+  @end
+
+  @slot('content')
+    <p> You are about to delete the post permanently </p>
+  @end
+
+  @slot('footer')
+    <button> Yes, delete it </button>
+    <button> Cancel </button>
+  @end
+@end
+```
+
+You can reference components as tags from named disks by prefixing the disk name with a dot separator.
+
+```edge
+{{-- Component as a tag from the uikit disk --}}
+@!uikit.input()
+
+{{-- Via component tag --}}
+@!component('uikit::input')
+```
+
+### Filename to tagName conversion
+
+You can reference the files stored within the `components` directory as tags inside your Jig templates. The following transformation rules are applied when creating a tag from the file name.
+
+| Template path | Tag name |
+|---------------|------------|
+| `form/input.edge` | `@form.input` |
+| `tool_tip.edge` | `@toolTip` |
+| `checkout_form/input.edge` | `@checkoutForm.input` |
+| `modal/index.edge` | `@modal` |
+
+
+================================================================================
+
+# Props
+
+URL: /docs/components/props
+Category: Components
+
+---
+summary: Learn how to pass props to components in Jig
+---
+
+# Props
+
+Props are the primary way to share data with a component when rendering it. A component can accept any props without maintaining a list of allowed props.
+
+```edge
+// title: templates/components/function.edge
+function {{ name }}({{ params.join(', ') }}) {
+@if(returnType)
+  return {{ defaultReturnValue || 'null' }}
+@end
+}
+```
+
+Let's render the `function` component and pass it some props.
+
+```edge
+@!function({
+  name: 'calculateTotal',
+  params: ['items', 'tax'],
+  returnType: 'number',
+  defaultReturnValue: '0'
+})
+
+@!function({
+  name: 'logMessage',
+  params: ['message']
+})
+```
+
+## Props API
+
+Following is the list of methods available on the `$props` object.
+
+### has
+
+Find if a given prop exists.
+
+```edge
+{{ $props.has('returnType') }}
+```
+
+### get
+
+Get value for a given prop.
+
+```edge
+{{ $props.get('name') }}
+```
+
+### only
+
+Get a new props object with only the mentioned keys.
+
+```edge
+@let(essentialProps = $props.only(['name', 'params']))
+{{ essentialProps.get('name') }}
+```
+
+### except
+
+Get a new props object except for the mentioned keys.
+
+```edge
+@let(nonInternalProps = $props.except(['_internal', '_debug']))
+```
+
+### merge/mergeIf/mergeUnless
+
+Merge custom properties with the props values. The props values have priority over custom properties.
+
+In the following example, the value of the `returnType` property will be `void` unless an explicit value is provided at the time of rendering the component.
+
+```edge
+@let(allProps = $props.merge({ returnType: 'void' }))
+function {{ allProps.get('name') }}(): {{ allProps.get('returnType') }} {}
+```
+
+### serialize
+
+Get a plain JavaScript object with all props. Useful for passing props to other components or JSON output.
+
+```edge
+{{ json :: $props.serialize() }}
+```
+
+
+================================================================================
+
+# Slots
+
+URL: /docs/components/slots
+Category: Components
+
+---
+summary: Learn how to define markup using slots
+---
+
+# Slots
+
+Slots are named outlets you can define within the component opening and closing tag using the `@slot` tag. The component can access slots as functions via the `$slots` object.
+
+Let's create a card component and use slots to render different card sections.
+
+```edge
+// title: views/components/card.edge
+@let(mergedProps = $props.merge({ role: 'region' }))
+
+<div {{ json :: mergedProps.all() }}>
+  <div class="card_header">
+    {{ await $slots.header() }}
+  </div>
+
+  <div class="card_contents">
+    {{ await $slots.content() }}
+  </div>
+</div>
+```
+
+Now, let's use the `card` component and define its contents using slots.
+
+```edge
+@card({ role: 'article', variant: 'large' })
+  @slot('header')
+    Quick start
+  @end
+
+  @slot('content')
+    Start building your next project in minutes
+  @end
+@end
+```
+
+## Main and named slots
+
+In the previous example, we used named slots to define contents for multiple outlets. However, you can use the `main` slot if a component needs just one slot.
+
+The main slot refers to all the contents inside the component's opening and closing tag. In the following example, we accept the card title as a prop and its content as a `main` slot.
+
+```edge
+<div {{ attributes }}>
+  <div class="card_header">
+    {{ title }}
+  </div>
+
+  <div class="card_contents">
+    {{ await $slots.main() }}
+  </div>
+</div>
+```
+
+```edge
+@card({ title: 'Quick start' })
+  <p> Start building your next project in minutes </p>
+@end
+```
+
+## Slots scopes
+
+Slots defined using the `@slot` tag can access the state of the current template. They do not have access to the component state.
+
+In the following example, we define the `cardSize` and the `sizes` variables. These variables are available only to the component, not the parent template slots.
+
+```edge
+// title: views/components/card.edge
+// highlight-start
+@let(cardSize = 'medium')
+
+@let(sizes = {
+  medium: '350px',
+  small: '200px',
+  large: '450px'
+})
+// highlight-end
+
+<div class="{{ sizes[cardSize] }}">
+  <div class="card_header">
+    {{ await $slots.header() }}
+  </div>
+
+  <div class="card_contents">
+    {{ await $slots.content() }}
+  </div>
+</div>
+```
+
+```edge
+@card()
+  @slot('header')
+    <strong> Quick start </strong>
+  @end
+  
+  // highlight-start
+  @slot('content')
+    {{-- The value of cardSize will be undefined --}}
+    <p> I am a {{ cardSize }} card </p>
+  @end
+  // highlight-end
+@end
+```
+
+However, a component can pass data to the slot when rendering it. Let's look at the following example:
+
+```edge
+@let(cardSize = 'medium')
+
+@let(sizes = {
+  medium: '350px',
+  small: '200px',
+  large: '450px'
+})
+
+<div class="{{ sizes[cardSize] }}">
+  <div class="card_header">
+    // highlight-start
+    {{ await $slots.header({ sizes, cardSize }) }}}
+    // highlight-end
+  </div>
+
+  <div class="card_contents">
+    // highlight-start
+    {{ await $slots.content({ sizes, cardSize }) }}}
+    // highlight-end
+  </div>
+</div>
+```
+
+Now, you can access the shared state inside the `@slot` component as follows.
+
+```edge
+@card()
+  @slot('header')
+    <strong> Quick start </strong>
+  @end
+  
+  // highlight-start
+  @slot('content', componentState)
+    <p> I am a {{ componentState.cardSize }} card </p>
+  @end
+  // highlight-end
+@end
+```
+
+
+================================================================================
+
+# Layouts
+
+URL: /docs/components/layouts
+Category: Components
+
+---
+summary: Learn how to use layouts using slots
+---
+
+# Layouts
+
+You can use slots to render templates. Let's create a `app.edge` file inside the `views/components/layout` directory.
+
+```edge
+// title: views/components/layout/app.edge
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>{{ title || "Your default title" }}</title>
+  @if ($slots.meta)
+    {{ await $slots.meta() }}
+  @endif
+</head>
+<body>
+  {{ await $slots.main() }}
+</body>
+</html>
+```
+
+:::note
+
+Defining the layout inside the `components` directory allows us to leverage the [component as tags](./introduction.md#components-as-tags) feature. Since we are storing inside the `layout` directory and that we named the file `app.edge`, we can use the `@layout.app` tag to render the layout.
+
+:::
+
+Edit the `welcome.edge` file inside the `views` directory.  
+In this example, we want to render the main content of our welcome page using `$slots.main` function, add a meta markup with `$slots.meta`, and change the default title. 
+
+```edge
+// title: views/welcome.edge
+@layout.app({ title: "Welcome page title" })
+  @slot('meta')
+    <meta name="description" content="A welcome page made with Jig">
+  @endslot
+
+  @slot('main')
+    <h1>Hello world</h1>
+  @endslot
+@end
+```
+
+As you can see, we can use **slots** to replace section of our layout. This is what we have done with the **meta section** and the **main section**.
+
+
+================================================================================
+
+# Provide/Inject
+
+URL: /docs/components/provide_inject
+Category: Components
+
+---
+summary: Learn how to share state with a component tree using the provide/inject API
+---
+
+# Provide/inject API
+The provide/inject API is inspired by the [Svelte's context API](https://svelte.dev/tutorial/context-api) and the [Vue's provide/inject API](https://vuejs.org/guide/components/provide-inject.html#provide-inject). The purpose is to share the state with a component tree without explicitly passing it as props.
+
+Most of the time, a group of related components will use the Provide/inject API to share/access state with each other transparently.
+
+## Rendering a Map with Markers
+
+Let's reproduce the Maps example from Svelte's context API tutorial and learn how to build it with Jig. We will also use [Alpine.js](https://alpinejs.dev/) to render the Map using the Mapbox JavaScript SDK.
+
+:::note
+
+The final source code for this example is available on [Github](https://github.com/jig/example-map-component). You will need an [access token](https://docs.mapbox.com/help/glossary/access-token) for your Mapbox account to render the Map.
+
+:::
+
+### Desired API
+
+Following is an example of the desired API we want. The `map` component is responsible for rendering the map using the Mapbox JavaScript SDK, and the `map.marker` component displays a marker on the Map.
+
+```edge
+@map({ center: [-84, 35], zoom: 3 })
+  @!map.marker({ lat: 37.8225, lon: -122.0024, label: 'Edge Body Shaping' })
+  @!map.marker({ lat: 33.8981, lon: -118.4169, label: 'Edge Barbershop & Essentials' })
+  @!map.marker({ lat: 29.723, lon: -95.4189, label: 'Edge Waxing Studio' })
+  @!map.marker({ lat: 28.3378, lon: -81.3966, label: 'Edge 30 Nutritional Consultants' })
+  @!map.marker({ lat: 40.6483, lon: -74.0237, label: 'Edge Brands LLC' })
+@end
+```
+
+### The Map component
+
+Since the Map is rendered using the `map` component, it needs access to all the markers before rendering it. This is where the `provider/inject` API comes into the picture.
+
+- The `map` component will share/inject an object with its children.
+- The `map.marker` (a child of the map component) will access the shared object and push a new marker to the markers array.
+- Finally, the `map` component will pass all the data to an Alpine component and render the map using the Mapbox SDK.
+
+```edge
+// title: views/components/map/index.edge
+{{-- Define a local variable with map options --}}
+@let(map = {
+  center,
+  zoom,
+  markers: [],
+})
+
+{{-- Share map object with children --}}
+@inject({ map })
+
+{{-- Execute children, but do not render them --}}
+@eval(await $slots.main())
+
+{{-- Render a div and bind it to an Alpine component --}}
+<div x-data="map({{ js.stringify(map) }})" id="map"></div>
+```
+
+### The Marker component
+
+The `map.marker` component job is to push markers to the `map.markers` array. It can access the injected state using the `$context` variable.
+
+```edge
+// title: views/components/map/marker.edge
+{{-- Make sure the marker component is a child of the map component --}}
+@if(!$context.map)
+  @newError(
+    'The map.marker component should be nested within the map component',
+    $caller.filename,
+    $caller.line,
+    $caller.col
+  )
+@end
+
+{{-- Push props as a marker with the map --}}
+@eval($context.map.markers.push({ lat, lon, label }))
+```
+
+That is all we need to achieve our desired API.
+
+### Alpine component
+Finally, let's define an Alpine component that will use the Mapbox SDK to render the Map on the client side.
+
+```ts
+// title: public/js/app.js
+document.addEventListener('alpine:init', () => {
+  window.Alpine.data('map', function (data) {
+    return {
+      createMap() {
+        mapboxgl.accessToken = '<!-- YOUR ACCESS TOKEN -->'
+        return new mapboxgl.Map({
+          container: this.$root,
+          style: 'mapbox://styles/mapbox/streets-v9',
+          center: data.center,
+          zoom: data.zoom
+        })
+      },
+
+      addMarker(map, markerData) {
+        const popup = new mapboxgl.Popup({ offset: 25 }).setText(markerData.label);
+        new mapboxgl.Marker().setLngLat([markerData.lon, markerData.lat]).setPopup(popup).addTo(map);
+      },
+
+      init() {
+        const map = this.createMap()
+
+        if (data.markers && Array.isArray(data.markers)) {
+          data.markers.forEach((marker) => {
+            this.addMarker(map, marker)
+          })
+        }
+      }
+    }
+  })
+})
+```
+
+### Final result
+
+The final source code for this example is available on [Github](https://github.com/jig/example-map-component). You will need an [access token](https://docs.mapbox.com/help/glossary/access-token) for your Mapbox account to render the Map.
+
+![](./provide_inject_result.png)
+
+## The @inject decorator
+You can inject/share the state with the children of a component using the `@inject` tag. Make sure to call the `@inject` tag before rendering or evaluating component slots.
+
+```edge
+@let(sharedState = {})
+@inject(sharedState)
+```
+
+## The $context variable
+The component children can access the shared state using the `$context` variable.
+
+```edge
+@map()
+  {{ inspect($context) }}
+@end
+```
+
+
+================================================================================
+
+# Helpers
+
+URL: /docs/helpers
+Category: Digging deeper
+
+---
+summary: API reference for global helpers bundled with Jig
+---
+
+# Helpers
+
+Following is the list of globally available helpers within Jig templates. Since Jig is focused on code generation rather than HTML rendering, these helpers are oriented toward text manipulation and formatting.
+
+## truncate
+Truncate a string value to a given number of characters. For example:
+
+```edge
+{{
+  truncate(
+    'This is a very long sentence that i would like to be shortened',
+    18
+  )
+}}
+
+<!-- Output: This is a very long... -->
+```
+
+The `truncate` method doesn't chop the words in between and let them get completed. However, you can turn off this behavior by disabling the `completeWords` option.
+
+```edge
+{{
+  truncate(
+    'This is a very long sentence that i would like to be shortened',
+    18,
+    { completeWords: false }
+  )
+}}
+
+<!-- Output: This is a very lon... -->
+```
+
+Also, you can define a custom suffix for the truncated string.
+
+```edge
+{{
+  truncate(
+    'This is a very long sentence that i would like to be shortened',
+    18,
+    { suffix: ' [Read more]' }
+  )
+}}
+
+<!-- Output: This is a very long [Read more] -->
+```
+
+## excerpt
+The `excerpt` method is similar to the `truncate` method. However, this method first removes the HTML tags, truncates the string and returns back plain text. Therefore, it is more suitable, if you want to generate an excerpt from HTML contents.
+
+```edge
+{{
+  excerpt(
+    '<p> Hello, this is a dummy <strong> post </strong> </p>',
+    20
+  )
+}}
+
+<!-- Output: Hello, this is a dummy... -->
+```
+
+You can disable `completeWords` option to perform strict truncation.
+
+```edge
+{{
+  excerpt(
+    '<p> Hello, this is a dummy <strong> post </strong> </p>',
+    20,
+    { completeWords: false }
+  )
+}}
+
+<!-- Output: Hello, this is a du... -->
+```
+
+Finally, you also provide a `suffix` to use.
+
+```edge
+{{
+  excerpt(
+    '<p> Hello, this is a dummy <strong> post </strong> </p>',
+    20,
+    { suffix: ' [Read more]' }
+  )
+}}
+
+<!-- Output: Hello, this is a dummy [Read more] -->
+```
+
+## inspect
+You can use the `inspect` method to pretty print a value for debugging. The inspect helper returns HTML, which you must view in a browser for better readability.
+
+```edge
+{{
+  inspect({
+    a: 1,
+    b: [3, 4, undefined, null],
+    c: undefined,
+    d: null,
+    e: {
+      regex: /^x/i,
+      buf: Buffer.from('abc'),
+    },
+    balance: BigInt(100),
+    id: Symbol('1234'),
+    scores: new Set([1, 2, 3]),
+    classes: new Map([['english', '1st'], ['maths', '2nd']]),
+    currentScores: new WeakSet([[1, 2, 3]]),
+    currentClasses: new WeakMap([[['english', '1st'], ['maths', '2nd']]]),
+    now: new Date()
+  })
+}}
+```
+
+Output
+
+![](../edge-inspect-output.png)
+
+## Changing case
+
+You can use one of the following methods to transform a string case.
+
+```edge
+{{ camelCase('hello-world') }}     // Output: helloWorld
+{{ snakeCase('hello-world') }}     // Output: hello_world
+{{ dashCase('HelloWorld') }}       // Output: hello-world
+{{ pascalCase('hello-world') }}    // Output: HelloWorld
+{{ capitalCase('hello-world') }}   // Output: Hello-World
+{{ sentenceCase('hello-world') }}  // Output: Hello world
+{{ dotCase('hello-world') }}       // Output: hello.world
+{{ noCase('hello-world') }}        // Output: hello world
+{{ titleCase('hello-world') }}     // Output: Hello-World
+```
+
+
+================================================================================
+
+# SVG icons
+
+URL: /docs/iconify
+Category: Digging deeper
+
+# Svg Icons (via Iconify)
+
+Jig has an official integration for rendering icons using [Iconify](https://icon-sets.iconify.design/). Iconify has over 100 open-source icon sets you can reference using a unified API.
+
+## Installation
+The Jig and Iconify integration is a plugin you must install from the npm packages registry.
+
+```sh
+npm i edge-iconify
+```
+
+The next step is to register the plugin with Jig.
+
+```ts
+import edge from 'jig'
+import { edgeIconify } from 'edge-iconify'
+
+edge.use(edgeIconify)
+```
+
+### Installing Iconify bundles
+
+Before you can render icons, you will have to install the Iconify icon bundles. Iconify provides various distribution bundles. However, the Jig integration works only with JSON collections.
+
+Let's install and use the [HeroIcons](https://icon-sets.iconify.design/heroicons/) icon set.
+
+```sh
+npm i @iconify-json/heroicons
+```
+
+```ts
+import { Edge } from 'jig'
+// highlight-start
+import { edgeIconify, addCollection } from 'edge-iconify'
+import { icons as heroIcons } from '@iconify-json/heroicons'
+
+/**
+ * Add heroIcons collection
+ */
+addCollection(heroIcons)
+// highlight-end
+
+const edge = Edge.create()
+
+/**
+ * Register the plugin
+ */
+edge.use(edgeIconify)
+```
+
+## Usage
+Once the setup is completed, you can render icons using the `@svg` tag. The `svg` tag accepts the icon identifier and an optional set of attributes to define on the output SVG element.
+
+```edge
+@svg('heroicons:arrow-left-solid')
+```
+
+Output
+
+```html
+<svg width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M11.03 3.97a.75.75 0 0 1 0 1.06l-6.22 6.22H21a.75.75 0 0 1 0 1.5H4.81l6.22 6.22a.75.75 0 1 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"></path></svg>
+```
+
+In the following example, we define custom width, height, and color for the icon.
+
+```edge
+@svg('heroicons:arrow-left-solid', {
+  width: 40,
+  height: 40,
+  color: 'purple'
+})
+```
+
+Output
+
+```html
+<svg width="40" height="40" viewBox="0 0 24 24" color="purple"><path fill="currentColor" fill-rule="evenodd" d="M11.03 3.97a.75.75 0 0 1 0 1.06l-6.22 6.22H21a.75.75 0 0 1 0 1.5H4.81l6.22 6.22a.75.75 0 1 1-1.06 1.06l-7.5-7.5a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd"></path></svg>
+```
+
+### Inline rendering within markup
+You can use the `svg` global helper to render the SVG icons alongside the raw text markup (without a line break).
+
+```edge
+<button> {{ svg('heroicons:archive-box') }} Delete post <button>
+```
+
+## Finding the icon identifier
+You can view the available icons from the [Iconify icons set browser](https://icon-sets.iconify.design). 
+
+- Start by selecting the icon set you are using.
+- Search for the icon you want to use.
+- Click and copy its identifier displayed next to the Icon preview.
+
+::video{url="https://res.cloudinary.com/adonis-js/video/upload/v1692263692/icon-search_hi608m.mp4"  controls="true"}
+
+## Finding and installing icon bundles
+Unfortunately, we have not seen a detailed installation guide on the Iconify website for their JSON collections. You can use the following table to reference the collections and their npm package name.
+
+:::note
+
+The following table is aggregated from the [Iconify collections.json](https://github.com/iconify/icon-sets/blob/master/collections.json) file.
+:::
+
+::include{template="partials/iconify-icons-set-ref-table"}
+
+
+================================================================================
+
+# Markdown rendering
+
+URL: /docs/markdown
+Category: Digging deeper
+
+---
+summary: Learn how to use Jig Markdown to transform Markdown documents into HTML with support for MDC components, GitHub Flavored Markdown, and enhanced code blocks.
+---
+
+# Jig Markdown
+Jig Markdown builds on top of [Remark](https://unifiedjs.com/explore/package/remark/) and [MDC](https://github.com/nuxtlabs/remark-mdc) to transform Markdown documents into HTML.
+
+**MDC (Markdown Components)** is an extended Markdown format that allows you to use components directly inside Markdown. This makes it easy to combine prose and interactive elements in the same document.
+
+The following are some of the key features of Jig Markdown.
+
+- **GitHub Flavored Markdown (GFM)**: Support for GFM features such as tables, task lists, autolinks, and strikethrough.
+
+- **Embedding Jig components**: Use Jig components inline within your Markdown files using MDC syntax.
+
+- **Enhanced code blocks**: Code samples are rendered with **Shiki**, offering syntax highlighting, code block titles, line highlighting, and inline diffs.
+
+- **Custom prose rendering**: Standard Markdown elements (images, headings, lists, paragraphs, etc.) can be rendered using your own custom components.
+
+- **AST inspection utilities**: Since Markdown is compiled into an AST, you can analyze nodes to detect broken links, validate references, or rewrite image sources.
+
+## Installation
+Install the `edge-markdown` plugin from the npm packages registry.
+
+```sh
+npm i edge-markdown
+```
+
+The next step is to register the plugin with Edge.
+
+```ts
+import edge from 'jig'
+import { edgeMarkdown } from 'edge-markdown'
+
+edge.use(edgeMarkdown())
+```
+
+## Basic usage
+Once the plugin has been configured, you may render Markdown content and files using the `@markdown` tag. You can either specify an absolute path to the markdown file or specify the raw content using the `content` property.
+
+```edge
+@markdown({
+  file: absolutePathToMdFile,
+})
+
+@markdown({
+  content: contentAsString,
+})
+```
+
+The `@markdown` tag writes the generated HTML to the output. If you want to access additional properties like the document's frontmatter and table of contents, consider using the `$markdown.render` method.
+
+```edge
+@let(doc = await $markdown.render({
+  file: absolutePathToMdFile,
+}))
+
+<h1>{{ doc.frontmatter.title }}</h1>
+<div>{{ doc.content }}</div>
+
+<div>{{ doc.toc }}</div>
+```
+
+## Configuration options
+The `edgeMarkdown` function accepts various configuration options to customize the Markdown processing behavior. You can control component loading, syntax highlighting, HTML handling, table of contents generation, and plugin integration.
+
+```ts
+edge.use(edgeMarkdown({
+  prefix: 'markdown',
+  highlight: true,
+  allowHTML: true,
+  toc: {
+    enabled: true,
+    maxDepth: 2,
+  },
+  remarkPlugins: [],
+  rehypePlugins: [],
+  components: {},
+  allowedTags: [],
+  hooks: [
+    (node) => {},
+  ]
+}))
+```
+
+<dl>
+  <dt> prefix </dt>
+  <dd>
+
+  The `prefix` option defines the prefix to use for finding custom components within the `components` directory. For example, the `note` component by default will be loaded from the `components/markdown/note.edge` file.
+
+  </dd>
+
+  <dt>highlight</dt>
+  <dd>
+
+  Enable/disable the default Shiki setup for highlighting the code blocks. If you decide to disable it, then use a custom rehype plugin for processing code blocks.
+
+  </dd>
+
+  <dt>allowHTML</dt>
+  <dd>
+
+  Enable/disable the usage of HTML tags within Markdown. You should disable it when rendering user-authored content.
+
+  </dd>
+
+  <dt>toc</dt>
+  <dd>
+
+  Enable/disable the creation of a table of contents. The `toc` option accepts the same set of options accepted by the [`mdast-util-toc`](https://github.com/syntax-tree/mdast-util-toc?tab=readme-ov-file#options) package.
+
+  </dd>
+
+  <dt>allowedTags</dt>
+  <dd>
+
+  You may specify an array of HTML tags to render, and once defined, all other tags will be skipped. This setting may be helpful if you are converting Markdown content to an email and want to restrict the usage to specific HTML tags.
+
+  </dd>
+
+  <dt>remarkPlugins</dt>
+  <dd>
+
+  Register an array of remark plugins.
+
+  </dd>
+
+  <dt>rehypePlugins</dt>
+  <dd>
+
+  Register an array of rehype plugins.
+
+  </dd>
+
+  <dt>hooks</dt>
+  <dd>
+
+  The `hooks` property is an array of functions that are executed for every AST node. The AST nodes will be an `Element`, `Text`, or `Comment` from the [HAST](https://github.com/syntax-tree/hast) syntax tree.
+
+  </dd>
+</dl>
+
+## Generating TOC
+The HTML for the table of contents can be accessed from the return value of the `$markdown.render` method.
+
+By default, headings up to level 2 are used to generate the TOC. However, you may configure TOC generation settings via the `toc` configuration option.
+
+```edge
+@let(doc = await $markdown.render({
+  file: absolutePathToMdFile,
+  toc: {
+    maxDepth: 2
+  }
+}))
+
+<div>
+  {{ doc.content }}
+</div>
+
+<div>
+  {{ doc.toc }}
+</div>
+```
+
+## Configuring Shiki
+By default, Edge Markdown uses Shiki for syntax highlighting with sensible defaults. You can customize the Shiki configuration by passing a custom theme and languages.
+
+```ts
+import { edgeMarkdown } from 'edge-markdown'
+
+edge.use(edgeMarkdown({
+  shiki: {
+    theme: 'github-dark',
+    langs: ['javascript', 'typescript', 'json']
+  }
+}))
+```
+
+You can also disable Shiki entirely and use your own rehype plugin for code highlighting.
+
+```ts
+edge.use(edgeMarkdown({
+  highlight: false,
+  rehypePlugins: [yourCustomCodePlugin]
+}))
+```
+
+### Enabled transformers
+The following [transformers](https://shiki.style/packages/transformers) from Shiki are enabled by default.
+
+| Transformer | Usage |
+|--------------|--------|
+| `transformerNotationDiff` | Display diff markers using the `[!code --]` and `[!code ++]` inline comments. |
+| `transformerNotationHighlight` | Highlight the current line using the `[!code highlight]` inline comment. |
+| `transformerNotationWordHighlight` | Highlight a given word using the `[!code word:Hello]` comment before the line on which the word should be highlighted. |
+
+Along with that, the metadata from the codeblock backticks is made available via the pre tag `node.properties` property.
+
+````md
+```ts title=start/routes.ts
+console.log('Highlighted') // [!code highlight]
+console.log('Not highlighted')
+
+console.log('hewwo') // [!code --]
+console.log('hello') // [!code ++]
+
+// [!code word:Hello]
+const message = 'Hello World'
+```
+````
+
+## Displaying errors and warnings
+The errors and warnings generated during the Markdown rendering process can be accessed using the `messages` property returned by the `$markdown.render` method.
+
+These may include default and custom error messages reported using remark and rehype plugins. Every message is an instance of the [VFileMessage](https://unifiedjs.com/explore/package/vfile-message/) class.
+
+```edge
+@let(doc = await $markdown.render({
+  file: absolutePathToMdFile
+}))
+
+@each(message in doc.messages)
+  {{ message.line }}:{{ message.column }} {{ message.reason }}
+@end
+```
+
+## Parsing front-matter
+The front-matter from all the Markdown files is auto-extracted, and you may access it using the `frontmatter` property returned by the `$markdown.render` method.
+
+```edge
+@let(doc = await $markdown.render({
+  file: absolutePathToMdFile
+}))
+
+{{ doc.frontmatter.title }}
+{{ doc.frontmatter.summary }}
+```
+
+## Authoring components
+You can create reusable components to enhance your Markdown content with interactive elements and custom styling. Edge Markdown uses MDC (Markdown Components) syntax to embed Edge components directly within Markdown files.
+
+Components are automatically loaded from the `components/[prefix]` directory, where the prefix defaults to `markdown`. This allows you to organize your Markdown-specific components separately from your regular Edge components.
+
+See also: [MDC components syntax reference](https://github.com/nuxtlabs/remark-mdc?tab=readme-ov-file#syntax)
+
+Create a component file at `components/markdown/alert.edge`:
+
+```edge
+// title: components/markdown/alert.edge
+<div class="alert alert-{{ type ?? 'note' }}">
+  <h3>{{ title }}</h3>
+  @markdownSlot()
+</div>
+```
+
+Then use it in your Markdown files:
+
+```mdc
+::alert{title="Important" type="warning"}
+This is a warning alert with **markdown content** inside.
+::
+
+::alert{title="Tip"}
+You can also use components with slots.
+::
+```
+
+### Using slots
+MDC [allows using slots](https://github.com/nuxtlabs/remark-mdc?tab=readme-ov-file#-slots) within Markdown components. The slots are defined using the `#` tag followed by the slot name, and you can render their content using the `@markdownSlot` tag.
+
+```mdc
+::hero
+Default slot text
+
+#description
+This will be rendered inside the `description` slot.
+::
+```
+
+```edge
+// title: components/markdown/hero.edge
+<div>
+  <h1>
+    @markdownSlot()
+  </h1>
+
+  <div>
+    @markdownSlot('description')
+  </div>
+</div>
+```
+
+## Rendering prose elements as components
+You can override how standard Markdown elements are rendered by creating components with specific names. This allows you to customize the output of headings, paragraphs, images, and other elements.
+
+In the following example, we create custom components inside the `components/markdown` directory for rendering the `img` and the `h2` tags.
+
+```edge
+// title: components/markdown/img.edge
+<figure>
+  <img src="{{ src }}" alt="{{ alt }}" />
+  @if(title)
+    <figcaption>{{ title }}</figcaption>
+  @end
+</figure>
+```
+
+```edge
+// title: components/markdown/h2.edge
+<h2 id="{{ id }}" class="section-heading">
+  @markdownSlot()
+</h2>
+```
+
+
+================================================================================
+
+# Creating custom tags
+
+URL: /docs/creating-custom-tags
+Category: Digging deeper
+
+---
+summary: In-depth guide on creating custom Jig tags
+---
+
+# Creating custom tags
+
+Most of the Jig features are implemented using its public tags API, which you can use to extend the Jig capabilities further.
+
+When implementing a custom tag, you will be dealing with **Abstract syntax trees (AST)**, so having prior knowledge of the same will help. 
+
+However, if you are starting with ASTs, we recommend visiting [astexplorer.net](https://astexplorer.net/), select `acorn` as the parser, and experimenting with the tool. You do not have to do Ph.D. in Abstract syntax trees. Most of the time, you will learn about its usage on the go. 
+
+In this guide, we will cover the following topics.
+
+- Create and register a custom Jig tag.
+- A Hello World introduction to parsing and re-printing ASTs.
+- Implementing a conditional Jig tag.
+- Creating locally scoped variables within the conditional block.
+
+## Registering a Jig tag
+A tag must implement the `TagContract` interface, and you can register it using the `edge.registerTag` method.
+
+In the following example, we create a tag named `reverse` which writes a "Hello greeting" to the output.
+
+```ts
+import edge from 'jig'
+import { TagContract } from 'jig/types'
+
+/**
+ * Defining a tag
+ */
+const reverse: TagContract = {
+  block: false,
+  seekable: true,
+  tagName: 'reverse',
+  compile(parser, buffer, token) {
+    buffer.outputRaw('Hello from reverse tag')
+  }
+}
+
+/**
+ * Registering it with Jig
+ */
+edge.registerTag(reverse)
+
+/**
+ * Using the tag
+ */
+const output = await edge.renderRaw('@reverse()')
+
+console.log(output) // I am the reverse tag
+```
+
+- `block`: The `block` flag creates a block-level Jig tag which must be used with an opening and a closing statement. For example: The `@if` and `@each` tags are block-level.
+- `seekable`: A `seekable` tag accepts one or more arguments. If you create a tag that will never accept arguments, set this flag to `false`.
+- `tagName`: A unique name for the tag.
+- `compile`: The compile method converts the tag to JavaScript output. This is where you will be spending most of your time.
+
+### Generating AST
+Let's make the `reverse` tag accept a string value and create an AST of the arguments the tag accepts.
+
+```ts
+const reverse: TagContract = {
+  block: false,
+  seekable: true,
+  tagName: 'reverse',
+  // highlight-start
+  compile(parser, buffer, token) {
+    const expression = parser.utils.transformAst(
+      parser.utils.generateAST(token.properties.jsArg, token.loc, token.filename),
+      token.filename,
+      parser
+    )
+
+    console.log(JSON.stringify(expression, null, 2))
+  }
+  // highlight-end
+}
+```
+
+Now, let's try passing different values to the `@reverse` tag and monitor the console output of the `expression` variable.
+
+---
+
+#### Raw string
+
+```edge
+@reverse('hello world')
+```
+
+```json
+{
+  "type": "Literal",
+  "start": 0,
+  "end": 13,
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 9
+    },
+    "end": {
+      "line": 1,
+      "column": 13
+    }
+  },
+  "value": "hello world",
+  "raw": "'hello world'"
+}
+```
+
+---
+
+#### Variable reference
+
+```edge
+@reverse(username)
+```
+
+```json
+{
+  "type": "MemberExpression",
+  "object": {
+    "type": "Identifier",
+    "name": "state"
+  },
+  "computed": false,
+  "property": {
+    "type": "Identifier",
+    "start": 0,
+    "end": 8,
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 9
+      },
+      "end": {
+        "line": 1,
+        "column": 8
+      }
+    },
+    "name": "username"
+  }
+}
+```
+
+#### Function call
+
+```edge
+@reverse(getUserName())
+```
+
+```json
+{
+  "type": "CallExpression",
+  "start": 0,
+  "end": 13,
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 9
+    },
+    "end": {
+      "line": 1,
+      "column": 13
+    }
+  },
+  "callee": {
+    "type": "MemberExpression",
+    "object": {
+      "type": "Identifier",
+      "name": "state"
+    },
+    "computed": false,
+    "property": {
+      "type": "Identifier",
+      "start": 0,
+      "end": 11,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 9
+        },
+        "end": {
+          "line": 1,
+          "column": 11
+        }
+      },
+      "name": "getUserName"
+    }
+  },
+  "arguments": [],
+  "optional": false
+}
+```
+
+As you can notice, the AST differs based on the input value of the `@reverse` tag. You can use the `expression.type` property to disallow certain and also feel free to mutate the AST.
+
+### Converting AST to string
+Once you mutate the AST, you can convert it to a valid JavaScript expression using the `.stringify()` method.
+
+```ts
+const reverse: TagContract = {
+  block: false,
+  seekable: true,
+  tagName: 'reverse',
+  compile(parser, buffer, token) {
+    const expression = parser.utils.transformAst(
+      parser.utils.generateAST(token.properties.jsArg, token.loc, token.filename),
+      token.filename,
+      parser
+    )
+
+    // highlight-start
+    console.log(parser.utils.stringify(expression)))
+    // highlight-end
+  }
+}
+```
+
+### Finishing the reverse tag implementation
+Let's wrap up the `reverse` tag implementation. We will take the arguments provided to the tag, reverse its output value and write it to the output.
+
+```ts
+const reverse: TagContract = {
+  block: false,
+  seekable: true,
+  tagName: 'reverse',
+  compile(parser, buffer, token) {
+    const expression = parser.utils.transformAst(
+      parser.utils.generateAST(token.properties.jsArg, token.loc, token.filename),
+      token.filename,
+      parser
+    )
+
+    // highlight-start
+    const outputExpression = `${parser.utils.stringify(expression)}.split("").reverse().join("")`
+    buffer.outputExpression(outputExpression, token.filename, token.loc.start.line, false)
+    // highlight-end
+  }
+}
+```
+
+Let's test our implementation.
+
+```ts
+// With a raw string
+assert.equal(await edge.renderRaw(`@reverse('virk')`), 'kriv')
+
+// With variable reference
+assert.equal(await edge.renderRaw(`@reverse(username)`, {
+  username: 'virk'
+}), 'kriv')
+
+// With function call
+assert.equal(await edge.renderRaw(`@reverse(getUserName())`, {
+  getUserName() { return 'virk' }
+}), 'kriv')
+```
+
+## Creating a conditional tag
+Let's tune up the difficulty level and implement a custom conditional tag to display notifications. 
+
+The `@notification` tag will accept the notification type and render the children's content (within the opening and closing blocks) if a notification for the given type exists. For example:
+
+```edge
+@notification('success')
+  <div class="alert alert-{{ notification.type }}">
+    <p> {{ notification.message }} </p>
+  </div>
+@end
+```
+
+Under the hood, the tag will look for the `notifications` object within the [template state](../templates_state.md).
+
+```ts
+import edge from 'jig'
+import { TagContract } from 'jig/types'
+
+const notification: TagContract = {
+  /**
+   * Tag accepts content within the opening and
+   * closing tags
+   */
+  block: true,
+
+  /**
+   * Tag accepts parameters
+   */
+  seekable: true,
+
+  /**
+   * The tag name
+   */
+  tagName: 'notification',
+
+  /**
+   * Compiling tag to JavaScript output
+   */
+  compile(parser, buffer, token) {
+    const expression = parser.utils.transformAst(
+      parser.utils.generateAST(token.properties.jsArg, token.loc, token.filename),
+      token.filename,
+      parser
+    )
+
+    const key = parser.utils.stringify(expression)
+
+    /**
+     * Write an if statement
+     */
+    buffer.writeStatement(
+      `if (state.notifications && state.notifications[${key}]) {`,
+      token.filename,
+      token.loc.start.line
+    )
+
+    /**
+     * Define a local variable
+     */
+    buffer.writeExpression(`let notification = {
+      type: ${key},
+      message: state.notifications[${key}],
+    }`, token.filename, token.loc.start.line)
+
+    /**
+     * Create a local variables scope and tell the parser about
+     * the existence of the "notification" variable
+     */
+    parser.stack.defineScope()
+    parser.stack.defineVariable('notification')
+
+    /**
+     * Process component children using the parser
+     */
+    token.children.forEach((child) => {
+      parser.processToken(child, buffer)
+    })
+
+    /**
+     * Clear the scope of the local variables before we
+     * close the if statement
+     */
+    parser.stack.clearScope()
+
+    /**
+     * Close if statement
+     */
+    buffer.writeStatement(
+      `}`,
+      token.filename,
+      token.loc.start.line
+    )
+  }
+}
+
+edge.registerTag(notification)
+```
+
+Let's put the `notification` tag into action.
+
+```ts
+const notifications = {
+  success: 'Settings saved successfully'
+}
+
+const output = await edge.renderRaw(`
+  @notification('success')
+    <div class="alert alert-{{ notification.type }}">
+      <p> {{ notification.message }} </p>
+    </div>
+  @end
+`, { notifications })
+```
+
+
+================================================================================
+
+# Migrating to Jig
+
+URL: /docs/upgrading-to-v6
+Category: Changelog
+
+---
+summary: Migration guide for Edge.js v5 users and what changed in Jig
+---
+
+# Migrating to Jig (from Edge.js v5/v6)
+
+Jig is a fork of Edge.js v6, optimized for **code generation** rather than HTML rendering. This page covers all breaking changes and new features.
+
+For Jig-specific documentation, see the [Introduction](../introduction.md) page.
+
+## Breaking Changes
+
+### HTML escaping removed
+
+`{{ }}` now outputs raw values. There is no automatic escaping. `{{ }}` and `{{{ }}}` behave identically.
+
+**Before (Edge.js v5):**
+```edge
+{{-- Escaped output --}}
+{{ userInput }}
+
+{{-- Raw output --}}
+{{{ userInput }}}
+```
+
+**After (Jig):**
+```edge
+{{-- Both produce raw output --}}
+{{ userInput }}
+{{{ userInput }}}
+```
+
+### `safe()` function removed
+
+The `safe()` global function no longer exists. Since all output is raw, there is no need to bypass escaping.
+
+**Before:**
+```edge
+{{ safe('<strong>bold</strong>') }}
+```
+
+**After:**
+```edge
+{{ '<strong>bold</strong>' }}
+```
+
+### HTML helpers removed
+
+The following globals have been removed:
+
+| Removed helper | Reason |
+|---------------|--------|
+| `html.attrs()` | HTML-specific |
+| `html.classNames()` | HTML-specific |
+| `html.escape()` | No escaping in Jig |
+| `html.safe()` | No escaping in Jig |
+| `nl2br()` | HTML-specific |
+| `stringify()` | Use `{{ json :: value }}` filter instead |
+
+### `$props.toAttrs()` removed
+
+The `toAttrs()` method on `ComponentProps` has been removed because it serialized props as HTML attributes. Use `$props.all()` or `$props.serialize()` with the `json` filter instead.
+
+**Before:**
+```edge
+<div {{ $props.toAttrs() }}>
+```
+
+**After:**
+```edge
+{{ json :: $props.all() }}
+```
+
+### `@set` tag removed
+
+The `@set` tag was part of the v5 compatibility layer. Use `@let` for new variables and `@assign` for reassigning existing ones.
+
+**Before:**
+```edge
+@set('username', 'virk')
+```
+
+**After:**
+```edge
+@let(username = 'virk')
+```
+
+### Migration plugin removed
+
+The `edge.js/plugins/migrate` export no longer exists. All v5 compatibility features (layouts via `@layout`/`@section`/`@super`, `@set` tag, compat `Props` class) have been removed.
+
+## New Features
+
+### Implicit indentation control
+
+Block tags (`@if`, `@each`, `@unless`, `@component`, `@slot`, `@pushTo`, `@pushOnceTo`) automatically strip cosmetic indentation from their children. The formula is: `dedent = firstContentLineIndent - tagIndent`, clamped to zero.
+
+```edge
+function render() {
+  @if(showGreeting)
+    return "hello"
+  @end
+}
+```
+
+Output:
+```
+function render() {
+  return "hello"
+}
+```
+
+Include tags (`@include`, `@includeIf`) automatically indent subsequent lines of the partial's output based on the tag's column position.
+
+```edge
+function setup() {
+  @include('body')
+}
+```
+
+If `body.edge` renders `const a = 1\nreturn a`, the output is:
+```
+function setup() {
+  const a = 1
+  return a
+}
+```
+
+### Filter syntax
+
+Use `{{ filterName :: expression }}` to apply a registered filter to expression output.
+
+```edge
+{{ json :: { name: 'User', id: 1 } }}
+```
+
+The built-in `json` filter calls `JSON.stringify`. Register custom filters with:
+
+```ts
+jig.registerFilter('upper', (value) => String(value).toUpperCase())
+```
+
+```edge
+{{ upper :: username }}
+```
+
+
+================================================================================
+

@@ -1,0 +1,44 @@
+{
+  "version": "v1.0.0",
+  "entity": {
+    "type": "individual",
+    "role": "owner",
+    "name": "Saulo Vallory",
+    "description": "Creator of Jig, a template engine purpose-built for code generation.",
+    "webpageUrl": {
+      "url": "https://jig.saulo.engineer"
+    }
+  },
+  "projects": [
+    {
+      "guid": "jig",
+      "name": "Jig",
+      "description": "A template engine purpose-built for code generation. Forked from Edge.js, it strips away HTML escaping and HTML-specific helpers, adds implicit indentation control and filter syntax, and keeps components, slots, partials, and full JavaScript expressions.",
+      "webpageUrl": {
+        "url": "https://jig.saulo.engineer"
+      },
+      "repositoryUrl": {
+        "url": "https://github.com/svallory/jig"
+      },
+      "licenses": ["MIT"],
+      "tags": [
+        "template-engine",
+        "code-generation",
+        "typescript",
+        "nodejs"
+      ]
+    }
+  ],
+  "funding": {
+    "channels": [
+      {
+        "guid": "gh-sponsors",
+        "type": "payment-provider",
+        "address": "https://github.com/sponsors/svallory",
+        "description": "Support Jig through GitHub Sponsors"
+      }
+    ],
+    "plans": [],
+    "history": []
+  }
+}
