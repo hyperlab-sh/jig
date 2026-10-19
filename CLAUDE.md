@@ -82,11 +82,11 @@ bun run --cwd packages/parser release
 bun run --cwd packages/jig release
 ```
 
-Before releasing a package, release every workspace dependency of it that changed, in order lexer -> parser -> jig. `bun publish` rewrites `workspace:^` to `^<current workspace version>`, so releasing jig without releasing a changed parser publishes a range that points at the older parser.
+Releases run from the `release` workflow (Actions > release > Run workflow, pick the package; leave "Dry run" on for a rehearsal). It publishes with npm trusted publishing: the workflow's OIDC token authenticates to npm, so no npm token exists anywhere, and every version gets a provenance attestation. Each package has a trusted publisher on npmjs.com for repo `hyperlab-sh/jig`, workflow `release.yml`, environment `release`. The checkout uses the `RELEASE_DEPLOY_KEY` deploy key because the `main` ruleset only lets admins and deploy keys push commits that have not passed `ci`; release-it pushes the release commit and tag with it.
 
-Before the first real release of a package, run `bun publish --dry-run` from its directory to confirm auth and the folder form work. `npm.skipChecks` is true, so otherwise release-it would tag and push before a failed publish.
+Before releasing a package, release every workspace dependency of it that changed, in order lexer -> parser -> jig. The packed tarball rewrites `workspace:^` to `^<current workspace version>`, so releasing jig without releasing a changed parser publishes a range that points at the older parser.
 
-Publishing goes through `bun publish` (`npm.publishPackageManager: "bun"`), which rewrites the `workspace:^` sibling ranges to real versions. Plain `npm publish` would ship `workspace:` specifiers verbatim; never publish by hand with npm.
+How publishing works: release-it's `before:npm:release` hook builds the package and runs `bun pm pack`, which rewrites the `workspace:^` sibling ranges to real versions, into `.release/package.tgz`. release-it then runs `npm publish ./.release/package.tgz --provenance` (npm, not bun, because `bun publish` has no OIDC support), and only after that commits, tags and pushes. A failed publish therefore leaves no tag behind. Never run `npm publish` from a package folder: it would ship the `workspace:` specifiers verbatim. `--provenance` only works inside GitHub Actions, so `bun run release` on a laptop fails at the publish step; use the workflow.
 
 Tags named `<pkg>-edge-v*` are the upstream Edge.js history imported into this repo; they are not Jig releases.
 
