@@ -69,5 +69,10 @@ jobs:
           DRY_RUN: ${{ inputs.dry-run }}
         run: |
           args=(--ci)
-          if [ "$DRY_RUN" = "true" ]; then args+=(--dry-run); fi
+          if [ "$DRY_RUN" = "true" ]; then
+            args+=(--dry-run)
+            # A dry run skips the before:npm:release hook but still runs
+            # npm publish --dry-run, so the tarball has to exist up front.
+            bun run --cwd "packages/$PACKAGE" pack:release
+          fi
           bun run --cwd "packages/$PACKAGE" release -- "${args[@]}"

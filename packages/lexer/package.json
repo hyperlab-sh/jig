@@ -30,7 +30,8 @@
     "version": "npm run build",
     "prepublishOnly": "npm run build",
     "release": "release-it",
-    "quick:test": "node --enable-source-maps --import=@poppinss/ts-exec bin/test.ts"
+    "quick:test": "node --enable-source-maps --import=@poppinss/ts-exec bin/test.ts",
+    "pack:release": "bun run build && rm -rf .release && mkdir .release && bun pm pack --ignore-scripts --quiet --filename \"$PWD/.release/package.tgz\""
   },
   "devDependencies": {
     "@adonisjs/eslint-config": "^3.0.0-next.5",
@@ -133,7 +134,7 @@
       }
     },
     "hooks": {
-      "before:npm:release": "bun run build && rm -rf .release && mkdir .release && bun pm pack --ignore-scripts --quiet --filename \"$PWD/.release/package.tgz\"",
+      "before:npm:release": "bun run pack:release",
       "after:npm:release": "rm -rf .release"
     }
   },
