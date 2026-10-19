@@ -32,16 +32,29 @@ jobs:
     environment: release
     permissions:
       contents: write
+      # npm trusted publishing (OIDC) and provenance; no npm token is stored.
+      id-token: write
     steps:
+      # The deploy key is a bypass actor on the main ruleset, so release-it
+      # can push the release commit and tag; GITHUB_TOKEN pushes are rejected.
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ssh-key: ${{ secrets.RELEASE_DEPLOY_KEY }}
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: package.json
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+          registry-url: https://registry.npmjs.org
+      - name: Check npm supports trusted publishing
+        run: |
+          v=$(npm --version)
+          if [ "$(printf '%s\n' 11.5.1 "$v" | sort -V | head -1)" != 11.5.1 ]; then
+            echo "npm $v is too old for trusted publishing (needs >= 11.5.1)" >&2
+            exit 1
+          fi
       - run: bun install --frozen-lockfile
       - name: Build workspace libs (needed by the version script of parser and jig)
         run: bun run build:libs
@@ -49,17 +62,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-      - name: Write npm auth (not committed)
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          if [ -z "$NPM_TOKEN" ]; then echo "NPM_TOKEN secret is not set" >&2; exit 1; fi
-          # shellcheck disable=SC2016
-          printf '%s\n' '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > "$HOME/.npmrc"
       - name: Release
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PACKAGE: ${{ inputs.package }}
           DRY_RUN: ${{ inputs.dry-run }}
